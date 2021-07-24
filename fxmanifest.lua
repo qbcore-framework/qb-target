@@ -1,6 +1,8 @@
 fx_version 'cerulean'
 game 'gta5'
 
+version '2.0.0'
+
 dependency "PolyZone"
 
 ui_page 'html/index.html'
