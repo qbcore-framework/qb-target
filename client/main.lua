@@ -586,14 +586,6 @@ function DisableControls()
     end)
 end
 
-function ShallowCopy (oldTable)
-    local newTable = {}
-    for k,v in pairs(oldTable) do
-        newTable[k] = v
-    end
-    return newTable
-end
-
 --Exports
 
 function AddCircleZone(name, center, radius, options, targetoptions)
