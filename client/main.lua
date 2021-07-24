@@ -454,10 +454,10 @@ RegisterNUICallback('closeTarget', function(data, cb)
     success = false
     hasFocus = false
     targetActive = false
-end)
-
-RegisterNUICallback('nonMessage', function(data, cb)
-    ClearInterval(1)	
+		
+    if data == 'nonMessage' then
+	ClearInterval(1)		
+    end
 end)
 
 RegisterNUICallback('leftTarget', function(data, cb)
