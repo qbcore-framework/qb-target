@@ -73,6 +73,6 @@ $(document).on('mousedown', (event) => {
 window.addEventListener("keyup", function onEvent(event) {
     if (event.key == 'alt' || event.key == 'Alt' || event.key == 'escape' || event.key == 'Escape') {
         CloseTarget()
-        $.post(`https://${GetParentResourceName()}/closeTarget`)
+        $.post(`https://${GetParentResourceName()}/closeTarget`, JSON.stringify('nonMessage'))
     }
 });
