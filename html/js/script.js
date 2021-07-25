@@ -58,7 +58,7 @@ $(document).on('mousedown', (event) => {
 
     if (split[0] === 'target') {
 
-        $.post(`https://${GetParentResourceName()}/selectTarget`, JSON.stringify(Number(split[1] + 1)));
+        $.post(`https://${GetParentResourceName()}/selectTarget`, JSON.stringify(Number(split[1]) + 1));
 
         $(".target-label").html("");
         $('.target-wrapper').hide();
