@@ -41,8 +41,6 @@ elseif Config.QBCore then
             PlayerData.job = JobInfo
         end)
     end)
-else
-    PlayerData = Config.NonFrameworkData()
 end
 
 -- Functions
