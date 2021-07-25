@@ -32,6 +32,18 @@ Config.EntityZones = {
     
 }
 
+Config.PedOptions = {
+
+}
+
+Config.VehicleOptions = {
+
+}
+
+Config.ObjectOptions = {
+
+}
+
 Config.PlayerOptions = {
 
 }
