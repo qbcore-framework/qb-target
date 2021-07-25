@@ -119,8 +119,20 @@ Citizen.CreateThread(function()
         end
     end
 
+    if next(Config.PedOptions) then
+        AddPed({options = Config.PedOptions.options, distance = Config.PedOptions.distance})
+    end
+
+    if next(Config.VehicleOptions) then
+        AddVehicle({options = Config.VehicleOptions.options, distance = Config.VehicleOptions.distance})
+    end
+
+    if next(Config.ObjectOptions) then
+        AddObject({options = Config.ObjectOptions.options, distance = Config.ObjectOptions.distance})
+    end
+
     if next(Config.PlayerOptions) then
-        AddPlayer(Config.PlayerOptions.options)
+        AddPlayer({options = Config.PlayerOptions.options, distance = Config.PlayerOptions.distance})
     end
 end)
 
