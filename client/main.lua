@@ -100,6 +100,7 @@ local CheckZone = function(entity, zone, distance)
                 SetEntityDrawOutline(entity, false)
             elseif CheckRange(send_distance, distance) then
                 CheckZone(entity, zone, distance)
+		break
             end
 
             Citizen.Wait(5)
@@ -132,9 +133,9 @@ local CheckEntity = function(entity, data, distance)
         while success and targetActive do
             local playerCoords = GetEntityCoords(PlayerPedId())
             local hit, coords, entity2 = RaycastCamera()
-			local distance = #(playerCoords - coords)
+	    local distance = #(playerCoords - coords)
 
-			if entity ~= entity2 then
+	    if entity ~= entity2 then
                 leftTarget()
                 SetEntityDrawOutline(entity, false)
             end
@@ -146,7 +147,8 @@ local CheckEntity = function(entity, data, distance)
                 closeTarget()
                 SetEntityDrawOutline(entity, false)
             elseif CheckRange(send_distance, distance) then
-				CheckEntity(entity, data, distance)
+		CheckEntity(entity, data, distance)
+		break
             end
 
             Citizen.Wait(5)
