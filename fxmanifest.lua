@@ -1,7 +1,7 @@
 fx_version 'cerulean'
 game 'gta5'
 
-version '2.0.0'
+version '2.1.0'
 
 dependency "PolyZone"
 
@@ -13,13 +13,11 @@ client_scripts {
 	'@PolyZone/EntityZone.lua',
 	'@PolyZone/CircleZone.lua',
 	'@PolyZone/ComboZone.lua',
-	'config.lua',
 	'client/*.lua',
 }
 
-server_script 'server/main.lua'
-
 files {
+	'config.lua',
 	'html/*.html',
 	'html/css/*.css',
 	'html/js/*.js'
