@@ -45,97 +45,6 @@ else
     PlayerData = Config.NonFrameworkData()
 end
 
-Citizen.CreateThread(function()
-    RegisterKeyMapping("+playerTarget", "Player Targeting", "keyboard", "LMENU")
-    RegisterCommand('+playerTarget', playerTargetEnable, false)
-    RegisterCommand('-playerTarget', closeTarget, false)
-    TriggerEvent("chat:removeSuggestion", "/+playerTarget")
-    TriggerEvent("chat:removeSuggestion", "/-playerTarget")
-
-    if next(Config.BoxZones) then
-        for k, v in pairs(Config.BoxZones) do
-            AddBoxZone(v.name, v.coords, v.length, v.width, {
-                name = v.name,
-                heading = v.heading,
-                debugPoly = v.debugPoly,
-                minZ = v.minZ,
-                maxZ = v.maxZ
-            }, {
-                options = v.options,
-                distance = v.distance
-            })
-        end
-    end
-
-    if next(Config.CircleZones) then
-        for k, v in pairs(Config.CircleZones) do
-            AddCircleZone(v.name, v.coords, v.radius, {
-                name = v.name,
-                debugPoly = v.debugPoly,
-            }, {
-                options = v.options,
-                distance = v.distance
-            })
-        end
-    end
-
-    if next(Config.TargetModels) then
-        for k, v in pairs(Config.TargetModels) do
-            AddTargetModel(v.models, {
-                options = v.options,
-                distance = v.distance
-            })
-        end
-    end
-
-    if next(Config.TargetEntities) then
-        for k, v in pairs(Config.TargetEntities) do
-            AddTargetEntity(v.entity, {
-                options = v.options,
-                distance = v.distance
-            })
-        end
-    end
-
-    if next(Config.TargetBones) then
-        for k, v in pairs(Config.TargetBones) do
-            AddTargetBone(v.bones, {
-                options = v.options,
-                distance = v.distance
-            })
-        end
-    end
-
-    if next(Config.EntityZones) then
-        for k, v in pairs(Config.EntityZones) do
-            AddEntityZone(v.name, v.entity, {
-                name = v.name,
-                heading = v.heading,
-                debugPoly = v.debugPoly,
-            }, {
-                options = v.options,
-                distance = v.distance,
-            })
-        end
-    end
-
-    if next(Config.PedOptions) then
-        AddPed({options = Config.PedOptions.options, distance = Config.PedOptions.distance})
-    end
-
-    if next(Config.VehicleOptions) then
-        AddVehicle({options = Config.VehicleOptions.options, distance = Config.VehicleOptions.distance})
-    end
-
-    if next(Config.ObjectOptions) then
-        AddObject({options = Config.ObjectOptions.options, distance = Config.ObjectOptions.distance})
-    end
-
-    if next(Config.PlayerOptions) then
-        AddPlayer({options = Config.PlayerOptions.options, distance = Config.PlayerOptions.distance})
-    end
-end)
-
 local CreateInterval = function(name, interval, action, clear)
 	local self = {interval = interval}
 	CreateThread(function()
@@ -689,3 +598,94 @@ exports("RemoveObject", RemoveObject)
 exports("RemovePlayer", RemovePlayer)
 
 exports("Raycast", RaycastCamera)
+
+Citizen.CreateThread(function()
+    RegisterKeyMapping("+playerTarget", "Player Targeting", "keyboard", "LMENU")
+    RegisterCommand('+playerTarget', playerTargetEnable, false)
+    RegisterCommand('-playerTarget', closeTarget, false)
+    TriggerEvent("chat:removeSuggestion", "/+playerTarget")
+    TriggerEvent("chat:removeSuggestion", "/-playerTarget")
+
+    if next(Config.BoxZones) then
+        for k, v in pairs(Config.BoxZones) do
+            AddBoxZone(v.name, v.coords, v.length, v.width, {
+                name = v.name,
+                heading = v.heading,
+                debugPoly = v.debugPoly,
+                minZ = v.minZ,
+                maxZ = v.maxZ
+            }, {
+                options = v.options,
+                distance = v.distance
+            })
+        end
+    end
+
+    if next(Config.CircleZones) then
+        for k, v in pairs(Config.CircleZones) do
+            AddCircleZone(v.name, v.coords, v.radius, {
+                name = v.name,
+                debugPoly = v.debugPoly,
+            }, {
+                options = v.options,
+                distance = v.distance
+            })
+        end
+    end
+
+    if next(Config.TargetModels) then
+        for k, v in pairs(Config.TargetModels) do
+            AddTargetModel(v.models, {
+                options = v.options,
+                distance = v.distance
+            })
+        end
+    end
+
+    if next(Config.TargetEntities) then
+        for k, v in pairs(Config.TargetEntities) do
+            AddTargetEntity(v.entity, {
+                options = v.options,
+                distance = v.distance
+            })
+        end
+    end
+
+    if next(Config.TargetBones) then
+        for k, v in pairs(Config.TargetBones) do
+            AddTargetBone(v.bones, {
+                options = v.options,
+                distance = v.distance
+            })
+        end
+    end
+
+    if next(Config.EntityZones) then
+        for k, v in pairs(Config.EntityZones) do
+            AddEntityZone(v.name, v.entity, {
+                name = v.name,
+                heading = v.heading,
+                debugPoly = v.debugPoly,
+            }, {
+                options = v.options,
+                distance = v.distance,
+            })
+        end
+    end
+
+    if next(Config.PedOptions) then
+        AddPed({options = Config.PedOptions.options, distance = Config.PedOptions.distance})
+    end
+
+    if next(Config.VehicleOptions) then
+        AddVehicle({options = Config.VehicleOptions.options, distance = Config.VehicleOptions.distance})
+    end
+
+    if next(Config.ObjectOptions) then
+        AddObject({options = Config.ObjectOptions.options, distance = Config.ObjectOptions.distance})
+    end
+
+    if next(Config.PlayerOptions) then
+        AddPlayer({options = Config.PlayerOptions.options, distance = Config.PlayerOptions.distance})
+    end
+end)
