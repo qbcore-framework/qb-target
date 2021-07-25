@@ -47,26 +47,6 @@ end
 
 -- Functions
 
-function closeTarget()
-    SendNUIMessage({response = "closeTarget"})
-    SetNuiFocus(false, false)
-    success, hasFocus, targetActive = false, false, false
-    ClearInterval(1)
-end
-
-function leftTarget()
-    SendNUIMessage({response = "leftTarget"})
-    SetNuiFocus(false, false)
-    success, hasFocus = false, false
-end
-
-function validTarget(options)
-    SetNuiFocus(true, true)
-    SetCursorLocation(0.5, 0.5)
-    hasFocus = true
-    SendNUIMessage({response = "validTarget", data = options})
-end
-
 local CheckOptions = function(data, entity, distance)
     if (data.distance == nil or distance <= data.distance)
 	and (data.owner == nil or not data.owner or data.owner == NetworkGetNetworkIdFromEntity(PlayerPedId()))
@@ -289,6 +269,26 @@ end
 
 local ClearInterval = function(name)
 	Intervals[name].interval = -1
+end
+
+function closeTarget()
+    SendNUIMessage({response = "closeTarget"})
+    SetNuiFocus(false, false)
+    success, hasFocus, targetActive = false, false, false
+    ClearInterval(1)
+end
+
+function leftTarget()
+    SendNUIMessage({response = "leftTarget"})
+    SetNuiFocus(false, false)
+    success, hasFocus = false, false
+end
+
+function validTarget(options)
+    SetNuiFocus(true, true)
+    SetCursorLocation(0.5, 0.5)
+    hasFocus = true
+    SendNUIMessage({response = "validTarget", data = options})
 end
 
 --NUI CALL BACKS
