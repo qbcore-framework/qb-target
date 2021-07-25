@@ -54,11 +54,11 @@ function ValidTarget(item) {
 
 $(document).on('mousedown', (event) => {
     let element = event.target;
+    let split = element.id.split("-");
 
-    if (element.id.split("-")[0] === 'target') {
-        let TargetData = $("#" + element.id).data('TargetData');
+    if (split[0] === 'target') {
 
-        $.post(`https://${GetParentResourceName()}/selectTarget`, JSON.stringify(TargetData));
+        $.post(`https://${GetParentResourceName()}/selectTarget`, JSON.stringify(Number(split[1] + 1)));
 
         $(".target-label").html("");
         $('.target-wrapper').hide();
