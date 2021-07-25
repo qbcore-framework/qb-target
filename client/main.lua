@@ -62,7 +62,7 @@ local CheckRange = function(range, distance)
 	return false
 end
 
-local CheckZone = function(entity, zone, distance)
+function CheckZone(entity, zone, distance)
     local send_options, send_distance = {}, {}
     for o, data in pairs(zone.targetoptions.options) do
         if CheckOptions(data, entity, distance) then
@@ -110,7 +110,7 @@ local CheckZone = function(entity, zone, distance)
     end
 end
 
-local CheckEntity = function(entity, data, distance)
+function CheckEntity(entity, data, distance)
     local send_options, send_distance = {}, {}
     for o, data in pairs(data.options) do
         if CheckOptions(data, entity, distance) then 
