@@ -191,7 +191,7 @@ function playerTargetEnable()
     while targetActive do
         local sleep = 10
         local plyCoords = GetEntityCoords(PlayerPedId())
-        local hit, coords, entity, entityType = RayCastCamera(30)
+        local hit, coords, entity, entityType = RaycastCamera()
 
         if hit then
             if entityType ~= 0 then
@@ -219,7 +219,7 @@ function playerTargetEnable()
                             SetEntityDrawOutline(entity, true)
                             while success and targetActive do
                                 local playerCoords = GetEntityCoords(PlayerPedId())
-                                local hit, coords, entity2 = RayCastCamera(30)
+                                local hit, coords, entity2 = RaycastCamera()
                                 local closestBone2, closestPos2, closestBoneName2, distance = CheckBones(coords, entity, min, max, Config.VehicleBones, false)
                                 
                                 if closestBone ~= closestBone2 or #(coords - closestPos2) > distance or #(playerCoords - coords) > 1.1 then
@@ -260,7 +260,7 @@ function playerTargetEnable()
                     CheckEntity(data, entity, #(plyCoords - coords))
                 end
 
-                local hit, coords, entity = RayCastCamera()
+                local hit, coords, entity = RaycastCamera(-1)
                 if hit then
                     for _, zone in pairs(Zones) do
                         if zone:isPointInside(coords) then
@@ -380,7 +380,7 @@ local CheckZone = function(entity, zone, distance)
         SetEntityDrawOutline(entity, true)
         while success and targetActive do
             local playerCoords = GetEntityCoords(PlayerPedId())
-            local hit, coords, entity2 = RayCastCamera()
+            local hit, coords, entity2 = RaycastCamera(-1)
             local distance = #(playerCoords - zone.center)
 
             if not zone:isPointInside(coords) then
@@ -427,7 +427,7 @@ local CheckEntity = function(entity, data, distance)
         SetEntityDrawOutline(entity, true)
         while success and targetActive do
             local playerCoords = GetEntityCoords(PlayerPedId())
-            local hit, coords, entity2 = RayCastCamera(30)
+            local hit, coords, entity2 = RaycastCamera()
 			local distance = #(playerCoords - coords)
 
 			if entity ~= entity2 then
@@ -494,14 +494,14 @@ local CheckBones = function(coords, entity, min, max, bonelist, checkData)
     return false
 end
 
-local RayCastCamera = function(flag)
+local RaycastCamera = function(flag)
     local cam = GetGameplayCamCoord()
     local direction = GetGameplayCamRot()
     direction = vector2(direction.x * math.pi / 180.0, direction.z * math.pi / 180.0)
 	local num = math.abs(math.cos(direction.x))
 	direction = vector3((-math.sin(direction.y) * num), (math.cos(direction.y) * num), math.sin(direction.x))
     local destination = vector3(cam.x + direction.x * 30, cam.y + direction.y * 30, cam.z + direction.z * 30)
-    local rayHandle, result, hit, endCoords, surfaceNormal, entityHit = StartShapeTestLosProbe(cam, destination, flag or -1, PlayerPedId(), 0)
+    local rayHandle, result, hit, endCoords, surfaceNormal, entityHit = StartShapeTestLosProbe(cam, destination, flag or 30, PlayerPedId(), 0)
 	repeat
 		result, hit, endCoords, surfaceNormal, entityHit = GetShapeTestResult(rayHandle)
 		Citizen.Wait(0)
@@ -688,4 +688,4 @@ exports("RemoveObject", RemoveObject)
 
 exports("RemovePlayer", RemovePlayer)
 
-exports("Raycast", RayCastCamera)
+exports("Raycast", RaycastCamera)
