@@ -51,7 +51,6 @@ ConfigFunctions.ItemCount = function(item)
 			end
 		end
 	end
-    Wait(300)
 
 	return false
 end
