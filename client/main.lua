@@ -62,7 +62,7 @@ local CheckRange = function(range, distance)
 	return false
 end
 
-function CheckZone(entity, zone, distance)
+local CheckZone = function(entity, zone, distance)
     local send_options, send_distance = {}, {}
     for o, data in pairs(zone.targetoptions.options) do
         if CheckOptions(data, entity, distance) then
@@ -80,37 +80,15 @@ function CheckZone(entity, zone, distance)
         for k,v in pairs(send_options) do v.action = nil end
         success = true
         SendNUIMessage({response = "foundTarget"})
-
-        SetEntityDrawOutline(entity, true)
-        while success and targetActive do
-            local playerCoords = GetEntityCoords(PlayerPedId())
-            local hit, coords, entity2 = RaycastCamera(-1)
-            local distance = #(playerCoords - zone.center)
-
-            if not zone:isPointInside(coords) then
-                leftTarget()
-                SetEntityDrawOutline(entity, false)
-            end
-
-            if (IsControlJustPressed(0, 25) or IsDisabledControlJustPressed(0, 25)) then
-                validTarget(send_options)
-                SetEntityDrawOutline(entity, false)
-            elseif IsControlJustReleased(0, 19) and not hasFocus then
-                closeTarget()
-                SetEntityDrawOutline(entity, false)
-            elseif CheckRange(send_distance, distance) then
-                CheckZone(entity, zone, distance)
-		break
-            end
-
-            Citizen.Wait(5)
-        end
-        leftTarget()
-        SetEntityDrawOutline(entity, false)
+	SetEntityDrawOutline(entity, true)
+		
+	return true, send_options
     end
+
+    return false
 end
 
-function CheckEntity(entity, data, distance)
+local CheckEntity = function(entity, data, distance)
     local send_options, send_distance = {}, {}
     for o, data in pairs(data.options) do
         if CheckOptions(data, entity, distance) then 
@@ -441,7 +419,34 @@ function playerTargetEnable()
                 if hit then
                     for _, zone in pairs(Zones) do
                         if zone:isPointInside(coords) then
-                            CheckZone(entity, zone, #(plyCoords - zone.center))
+                            local check, sendoptions = CheckZone(entity, zone, #(plyCoords - zone.center))
+			    if check then
+				while success and targetActive do
+				local playerCoords = GetEntityCoords(PlayerPedId())
+				local hit, coords, entity2 = RaycastCamera(-1)
+				local distance = #(playerCoords - zone.center)
+
+				if not zone:isPointInside(coords) then
+				    leftTarget()
+				    SetEntityDrawOutline(entity, false)
+				end
+
+				if (IsControlJustPressed(0, 25) or IsDisabledControlJustPressed(0, 25)) then
+				    validTarget(sendoptions)
+				    SetEntityDrawOutline(entity, false)
+				elseif IsControlJustReleased(0, 19) and not hasFocus then
+				    closeTarget()
+				    SetEntityDrawOutline(entity, false)
+				elseif CheckRange(send_distance, distance) then
+				    CheckZone(entity, zone, distance)
+				    break
+				end
+
+				Citizen.Wait(5)
+				end
+				leftTarget()
+				SetEntityDrawOutline(entity, false)
+			    end
                         end
                     end
                 end
