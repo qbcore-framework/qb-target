@@ -62,6 +62,12 @@ local CheckRange = function(range, distance)
 	return false
 end
 
+local curFlag = 30
+local switch = function()
+	if curFlag == 30 then curFlag = -1 else curFlag = 30 end
+	return curFlag
+end
+
 local CheckZone = function(entity, zone, distance)
     local send_options, send_distance = {}, {}
     for o, data in pairs(zone.targetoptions.options) do
@@ -80,19 +86,19 @@ local CheckZone = function(entity, zone, distance)
         for k,v in pairs(send_options) do v.action = nil end
         success = true
         SendNUIMessage({response = "foundTarget"})
-	SetEntityDrawOutline(entity, true)
+	    SetEntityDrawOutline(entity, true)
 		
-	return true, send_options
+	    return true, send_options, send_distance
     end
 
     return false
 end
 
-local CheckEntity = function(entity, data, distance)
+local CheckEntity = function(hit, entity, data, distance)
     local send_options, send_distance = {}, {}
     for o, data in pairs(data.options) do
         if CheckOptions(data, entity, distance) then 
-            local slot = #send_options + 1 
+            local slot = #send_options + 1
             send_options[slot] = data
             send_options[slot].entity = entity
             send_distance[data.distance] = true
@@ -110,10 +116,10 @@ local CheckEntity = function(entity, data, distance)
         SetEntityDrawOutline(entity, true)
         while success and targetActive do
             local playerCoords = GetEntityCoords(PlayerPedId())
-            local hit, coords, entity2 = RaycastCamera()
-	    local distance = #(playerCoords - coords)
+            local _, coords, entity2 = RaycastCamera(hit)
+			local distance = #(playerCoords - coords)
 
-	    if entity ~= entity2 then
+			if entity ~= entity2 then
                 leftTarget()
                 SetEntityDrawOutline(entity, false)
             end
@@ -125,8 +131,8 @@ local CheckEntity = function(entity, data, distance)
                 closeTarget()
                 SetEntityDrawOutline(entity, false)
             elseif CheckRange(send_distance, distance) then
-		CheckEntity(entity, data, distance)
-		break
+				CheckEntity(hit, entity, data, distance)
+                break
             end
 
             Citizen.Wait(5)
@@ -190,18 +196,9 @@ local RaycastCamera = function(flag)
 		result, hit, endCoords, surfaceNormal, entityHit = GetShapeTestResult(rayHandle)
 		Citizen.Wait(0)
 	until result ~= 1
-	local entityType = GetEntityType(entityHit)
-	if hit == 0 or entityType == 0 then
-		rayHandle = StartShapeTestLosProbe(cam, destination, 30, PlayerPedId(), 0)
-		repeat
-			result, hit, endCoords, surfaceNormal, entityHit = GetShapeTestResult(rayHandle)
-			Citizen.Wait(0)
-		until result ~= 1
-		if hit == 0 then Citizen.Wait(20) else entityType = GetEntityType(entityHit) end
-		return hit, endCoords, entityHit, entityType
-	else
-		return hit, endCoords, entityHit, entityType
-	end
+	local entityType
+	if entityHit then entityType = GetEntityType(entityHit) end
+	return flag, endCoords, entityHit, entityType or 0
 end
 
 local CloneTable = function(t)
@@ -346,111 +343,98 @@ function playerTargetEnable()
     while targetActive do
         local sleep = 10
         local plyCoords = GetEntityCoords(PlayerPedId())
-        local hit, coords, entity, entityType = RaycastCamera()
+        local hit, coords, entity, entityType = RaycastCamera(switch())
 
-        if hit then
-            if entityType ~= 0 then
-                if NetworkGetEntityIsNetworked(entity) then
-                    local data = Entities[NetworkGetNetworkIdFromEntity(entity)]
-                    if data and not success then
-                        CheckEntity(entity, data, #(plyCoords - coords))
-                    end
-                end
-
-                if entityType == 1 then
-                    if IsPedAPlayer(entity) and not success then
-                        CheckEntity(entity, Players, #(plyCoords - coords))
-                    else
-                        local data = Models[GetEntityModel(entity)]
-                        if not success and data then
-                            CheckEntity(entity, data, #(plyCoords - coords))
-                        end
-                    end
-                elseif entityType == 2 then
-                    if not success then
-                        local min, max = GetModelDimensions(GetEntityModel(entity))
-                        local check, sendoptions, closestBone, closestPos, closestBoneName = CheckBones(coords, entity, min, max, Config.VehicleBones, true)
-                        if check then
-                            SetEntityDrawOutline(entity, true)
-                            while success and targetActive do
-                                local playerCoords = GetEntityCoords(PlayerPedId())
-                                local hit, coords, entity2 = RaycastCamera()
-                                local closestBone2, closestPos2, closestBoneName2, distance = CheckBones(coords, entity, min, max, Config.VehicleBones, false)
-                                
-                                if closestBone ~= closestBone2 or #(coords - closestPos2) > distance or #(playerCoords - coords) > 1.1 then
-                                    leftTarget()
-                                    SetEntityDrawOutline(entity, false)
-                                end
-
-                                if (IsControlJustPressed(0, 25) or IsDisabledControlJustPressed(0, 25)) then
-                                    validTarget(sendoptions)
-                                    SetEntityDrawOutline(entity, false)
-                                elseif IsControlJustReleased(0, 19) and not hasFocus then
-                                    closeTarget()
-                                    SetEntityDrawOutline(entity, false)
-                                end
-
-                                Citizen.Wait(5)
-                            end
-                            leftTarget()
-                            SetEntityDrawOutline(entity, false)
-                        end
-                    end
-
-                    local data = Models[GetEntityModel(entity)]
-                    if data and not success then
-                        CheckEntity(entity, data, #(plyCoords - coords))
-                    end
-                else
-                    local data = Models[GetEntityModel(entity)]
-                    if data and not success then
-                        CheckEntity(entity, data, #(plyCoords - coords))
-                    end
+        if entityType ~= 0 then
+            if NetworkGetEntityIsNetworked(entity) then
+                local data = Entities[NetworkGetNetworkIdFromEntity(entity)]
+                if data and not success then
+                    CheckEntity(entity, data, #(plyCoords - coords))
                 end
             end
 
-            if not success then
-                local data = Types[entityType]
-                if data then 
-                    CheckEntity(data, entity, #(plyCoords - coords))
+            if entityType == 1 and IsPedAPlayer(entity) then
+                if not success then
+                    CheckEntity(hit, entity, Players, #(plyCoords - coords))
                 end
+            elseif entityType == 2 and #(plyCoords - coords) <= 1.1 then
+                if not success then
+                    local min, max = GetModelDimensions(GetEntityModel(entity))
+                    local check, sendoptions, closestBone, closestPos, closestBoneName = CheckBones(coords, entity, min, max, Config.VehicleBones, true)
+                    if check then
+                        SetEntityDrawOutline(entity, true)
+                        while success and targetActive do
+                            local playerCoords = GetEntityCoords(PlayerPedId())
+                            local hit, coords, entity2 = RaycastCamera()
+                            local closestBone2, closestPos2, closestBoneName2, distance = CheckBones(coords, entity, min, max, Config.VehicleBones, false)
+                            
+                            if closestBone ~= closestBone2 or #(coords - closestPos2) > distance or #(playerCoords - coords) > 1.1 then
+                                leftTarget()
+                                SetEntityDrawOutline(entity, false)
+                            end
 
-                local hit, coords, entity = RaycastCamera(-1)
-                if hit then
-                    for _, zone in pairs(Zones) do
-                        if zone:isPointInside(coords) then
-                            local check, sendoptions = CheckZone(entity, zone, #(plyCoords - zone.center))
-			    if check then
-				while success and targetActive do
-				local playerCoords = GetEntityCoords(PlayerPedId())
-				local hit, coords, entity2 = RaycastCamera(-1)
-				local distance = #(playerCoords - zone.center)
+                            if (IsControlJustPressed(0, 25) or IsDisabledControlJustPressed(0, 25)) then
+                                validTarget(sendoptions)
+                                SetEntityDrawOutline(entity, false)
+                            elseif IsControlJustReleased(0, 19) and not hasFocus then
+                                closeTarget()
+                                SetEntityDrawOutline(entity, false)
+                            end
 
-				if not zone:isPointInside(coords) then
-				    leftTarget()
-				    SetEntityDrawOutline(entity, false)
-				end
-
-				if (IsControlJustPressed(0, 25) or IsDisabledControlJustPressed(0, 25)) then
-				    validTarget(sendoptions)
-				    SetEntityDrawOutline(entity, false)
-				elseif IsControlJustReleased(0, 19) and not hasFocus then
-				    closeTarget()
-				    SetEntityDrawOutline(entity, false)
-				elseif CheckRange(send_distance, distance) then
-				    CheckZone(entity, zone, distance)
-				    break
-				end
-
-				Citizen.Wait(5)
-				end
-				leftTarget()
-				SetEntityDrawOutline(entity, false)
-			    end
+                            Citizen.Wait(5)
                         end
+                        leftTarget()
+                        SetEntityDrawOutline(entity, false)
                     end
                 end
-            else sleep = sleep + 10 end
+
+                local data = Models[GetEntityModel(entity)]
+                if data and not success then
+                    CheckEntity(hit, entity, data, #(plyCoords - coords))
+                end
+            else
+                local data = Models[GetEntityModel(entity)]
+                if data and not success then
+                    CheckEntity(hit, entity, data, #(plyCoords - coords))
+                end
+            end
+        end
+
+        if not success then
+            for _, zone in pairs(Zones) do
+                if zone:isPointInside(coords) then
+                    local check, sendoptions, senddistance = CheckZone(entity, zone, #(plyCoords - zone.center))
+                    if check then
+                        while success and targetActive do
+                            local playerCoords = GetEntityCoords(PlayerPedId())
+                            local _, coords, entity2 = RaycastCamera(hit)
+                            local distance = #(playerCoords - zone.center)
+            
+                            if not zone:isPointInside(coords) then
+                                leftTarget()
+                                SetEntityDrawOutline(entity, false)
+                            end
+            
+                            if (IsControlJustPressed(0, 25) or IsDisabledControlJustPressed(0, 25)) then
+                                validTarget(sendoptions)
+                                SetEntityDrawOutline(entity, false)
+                            elseif IsControlJustReleased(0, 19) and not hasFocus then
+                                closeTarget()
+                                SetEntityDrawOutline(entity, false)
+                            elseif CheckRange(senddistance, distance) then
+                                CheckZone(entity, zone, distance)
+                            end
+            
+                            Citizen.Wait(5)
+                        end
+                        leftTarget()
+                        SetEntityDrawOutline(entity, false)
+                    end
+                end
+            end
+        else 
+            success = false
+            leftTarget()
         end
         Citizen.Wait(sleep)
     end
