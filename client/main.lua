@@ -338,6 +338,10 @@ function playerTargetEnable()
         DisableControlAction(0, 263, true)
         DisableControlAction(0, 264, true)
         DisableControlAction(0, 257, true)
+			
+	if Config.Debug then
+		DrawSphere(GetEntityCoords(PlayerPedId()), 7.0, 255, 255, 0, 0.15)
+	end
     end)
     
     while targetActive do
@@ -687,3 +691,63 @@ Citizen.CreateThread(function()
         AddPlayer({options = Config.PlayerOptions.options, distance = Config.PlayerOptions.distance})
     end
 end)
+
+if Config.Debug then
+	RegisterNetEvent('bt-target:debug')
+	AddEventHandler('bt-target:debug', function(data)
+		print( 'Flag: '..curFlag..'', 'Entity: '..data.entity..'', 'Type: '..GetEntityType(data.entity)..'' )
+
+		local objId = NetworkGetNetworkIdFromEntity(data.entity)
+
+		AddTargetEntity(NetworkGetNetworkIdFromEntity(data.entity), {
+			options = {
+				{
+					event = "dummy-event",
+					icon = "fas fa-box-circle-check",
+					label = "HelloWorld",
+					job = "unemployed"
+				},
+			},
+			distance = 3.0
+		})
+
+
+	end)
+
+	AddPed({
+		options = {
+			{
+				event = "bt-target:debug",
+				icon = "fas fa-male",
+				label = "(Debug) Ped",
+			},
+		},
+		distance = Config.MaxDistance
+	})
+
+	AddVehicle({
+		options = {
+			{
+				event = "bt-target:debug",
+				icon = "fas fa-car",
+				label = "(Debug) Vehicle",
+			},
+		},
+		distance = Config.MaxDistance
+	})
+
+	AddObject({
+		options = {
+			{
+				event = "bt-target:debug",
+				icon = "fas fa-cube",
+				label = "(Debug) Object",
+				job = 'police',
+				shouldShow = function(entity)
+					return IsEntityAnObject(entity)
+				end
+			},
+		},
+		distance = Config.MaxDistance
+	})
+end
