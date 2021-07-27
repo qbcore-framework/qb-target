@@ -2,7 +2,7 @@
 
 This repository was originally a fork and now it's own repository as it's a slight mix and change of qtarget and bt-target at once, most of the code comes from qtarget and some of the javascript and some functions are from bt-target.
 
-This version is for QBCore and ESX.
+This version is for QBCore and ESX but can be used by any framework but you will have to make your own changes then.
 
 The readme and wiki are a work in progress as I'm now on vacation and I can't do much, I am pushing updates from qtarget and bt-target into this if applicable just to keep it updated.
 
