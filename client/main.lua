@@ -47,11 +47,11 @@ end
 
 local CheckOptions = function(data, entity, distance)
     if (data.distance == nil or distance <= data.distance)
-	and (data.owner == nil or not data.owner or data.owner == NetworkGetNetworkIdFromEntity(PlayerPedId()))
-	and (data.job == nil or not data.job or data.job == PlayerData.job.name or (Config.UseGrades and (Config.ESX and (data.job[PlayerData.job.name] and data.job[PlayerData.job.name] <= PlayerData.job.grade)) or (Config.QBCore and (data.job[PlayerData.job.name] and data.job[PlayerData.job.name] <= PlayerData.job.grade.level))))
-	and (data.item == nil or not data.item or data.item and ConfigFunctions.ItemCount(data.item))
-    and (data.shouldShow == nil or not data.shouldShow or data.shouldShow(entity)) then return true
-	else return false end
+    and (data.owner == nil or not data.owner or data.owner == NetworkGetNetworkIdFromEntity(PlayerPedId()))
+    and (data.job == nil or not data.job or data.job == PlayerData.job.name or (Config.UseGrades and (Config.ESX and (data.job[PlayerData.job.name] and data.job[PlayerData.job.name] <= PlayerData.job.grade)) or (Config.QBCore and (data.job[PlayerData.job.name] and data.job[PlayerData.job.name] <= PlayerData.job.grade.level))))
+    and (data.item == nil or not data.item or data.item and ConfigFunctions.ItemCount(data.item))
+    and (data.shouldShow == nil or not data.shouldShow or data.shouldShow(entity)) then return true end
+    return false
 end
 
 local CheckRange = function(range, distance)
@@ -86,9 +86,9 @@ local CheckZone = function(entity, zone, distance)
         for k,v in pairs(send_options) do v.action = nil end
         success = true
         SendNUIMessage({response = "foundTarget"})
-	    SetEntityDrawOutline(entity, true)
+	SetEntityDrawOutline(entity, true)
 		
-	    return true, send_options, send_distance
+	return true, send_options, send_distance
     end
 
     return false
@@ -117,9 +117,9 @@ local CheckEntity = function(hit, entity, data, distance)
         while success and targetActive do
             local playerCoords = GetEntityCoords(PlayerPedId())
             local _, coords, entity2 = RaycastCamera(hit)
-			local distance = #(playerCoords - coords)
+	    local distance = #(playerCoords - coords)
 
-			if entity ~= entity2 then
+	    if entity ~= entity2 then
                 leftTarget()
                 SetEntityDrawOutline(entity, false)
             end
@@ -131,7 +131,7 @@ local CheckEntity = function(hit, entity, data, distance)
                 closeTarget()
                 SetEntityDrawOutline(entity, false)
             elseif CheckRange(send_distance, distance) then
-				CheckEntity(hit, entity, data, distance)
+		CheckEntity(hit, entity, data, distance)
                 break
             end
 
@@ -459,19 +459,24 @@ local AddPolyzone = function(name, points, options, targetoptions)
 end
 
 local AddTargetModel = function(models, parameters)
-	local distance, options = parameters.distance or 2, parameters.options
+	local distance, options = parameters.distance or Config.MaxDistance, parameters.options
 	for _, model in pairs(models) do
 		if type(model) == 'string' then model = GetHashKey(model) end
 		if not Models[model] then Models[model] = {} end
 		for k, v in pairs(options) do
-			if not v.distance then v.distance = distance end
+			if not v.distance or v.distance > distance then v.distance = distance end
 			Models[model][v.event] = v
 		end
 	end
 end
 
-local AddTargetEntity = function(entity, parameters)
-	Entities[entity] = parameters
+local AddTargetEntity = function(netid, parameters)
+	local distance, options = parameters.distance or Config.MaxDistance, parameters.options
+	if not Entities[netid] then Entities[netid] = {} end
+	for k, v in pairs(options) do
+		if not v.distance or v.distance > distance then v.distance = distance end
+		Entities[netid][v.event] = v
+	end
 end
 
 local AddTargetBone = function(bones, parameteres)
@@ -494,9 +499,9 @@ local RemoveZone = function(name)
 end
 
 local AddType = function(type, parameters)
-	local distance, options = parameters.distance or 2, parameters.options
+	local distance, options = parameters.distance or Config.MaxDistance, parameters.options
 	for k, v in pairs(options) do
-		if not v.distance then v.distance = distance end
+		if not v.distance or v.distance > distance then v.distance = distance end
 		Types[type][v.event] = v
 	end
 end
@@ -514,9 +519,9 @@ local RemovePlayer = function(type, events)
 end
 
 local AddPlayer = function(parameters)
-	local distance, options = parameters.distance or 2, parameters.options
+	local distance, options = parameters.distance or Config.MaxDistance, parameters.options
 	for k, v in pairs(options) do
-		if not v.distance then v.distance = distance end
+		if not v.distance or v.distance > distance then v.distance = distance end
 		Players[v.event] = v
 	end
 end
