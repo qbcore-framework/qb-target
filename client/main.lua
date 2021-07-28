@@ -31,8 +31,8 @@ local RaycastCamera = function(flag)
     local destination = vector3(cam.x + direction.x * 30, cam.y + direction.y * 30, cam.z + direction.z * 30)
     local rayHandle, result, hit, endCoords, surfaceNormal, entityHit = StartShapeTestLosProbe(cam, destination, flag or 30, PlayerPedId(), 0)
     repeat
-	result, hit, endCoords, surfaceNormal, entityHit = GetShapeTestResult(rayHandle)
-	Citizen.Wait(0)
+        result, hit, endCoords, surfaceNormal, entityHit = GetShapeTestResult(rayHandle)
+        Citizen.Wait(0)
     until result ~= 1
     local entityType
     if entityHit then entityType = GetEntityType(entityHit) end
@@ -404,158 +404,129 @@ local playerTargetEnable = function()
 end
 
 --Exports
+Exports = {
+    AddCircleZone = function(self, name, center, radius, options, targetoptions)
+        Zones[name] = CircleZone:Create(center, radius, options)
+        Zones[name].targetoptions = targetoptions
+    end,
 
-AddCircleZone = function(name, center, radius, options, targetoptions)
-    Zones[name] = CircleZone:Create(center, radius, options)
-    Zones[name].targetoptions = targetoptions
-end
+    AddBoxZone = function(self, name, center, length, width, options, targetoptions)
+        Zones[name] = BoxZone:Create(center, length, width, options)
+        Zones[name].targetoptions = targetoptions
+    end,
 
-AddBoxZone = function(name, center, length, width, options, targetoptions)
-    Zones[name] = BoxZone:Create(center, length, width, options)
-    Zones[name].targetoptions = targetoptions
-end
+    AddPolyzone = function(self, name, points, options, targetoptions)
+        Zones[name] = PolyZone:Create(points, options)
+        Zones[name].targetoptions = targetoptions
+    end,
 
-AddPolyzone = function(name, points, options, targetoptions)
-    Zones[name] = PolyZone:Create(points, options)
-    Zones[name].targetoptions = targetoptions
-end
+    AddTargetModel = function(self, models, parameters)
+        local distance, options = parameters.distance or Config.MaxDistance, parameters.options
+        for _, model in pairs(models) do
+            if type(model) == 'string' then model = GetHashKey(model) end
+            if not Models[model] then Models[model] = {} end
+            for k, v in pairs(options) do
+                if not v.distance or v.distance > distance then v.distance = distance end
+                Models[model][v.event] = v
+            end
+        end
+    end,
 
-AddTargetModel = function(models, parameters)
-	local distance, options = parameters.distance or Config.MaxDistance, parameters.options
-	for _, model in pairs(models) do
-		if type(model) == 'string' then model = GetHashKey(model) end
-		if not Models[model] then Models[model] = {} end
-		for k, v in pairs(options) do
-			if not v.distance or v.distance > distance then v.distance = distance end
-			Models[model][v.event] = v
-		end
-	end
-end
+    AddTargetEntity = function(self, netid, parameters)
+        local distance, options = parameters.distance or Config.MaxDistance, parameters.options
+        if not Entities[netid] then Entities[netid] = {} end
+        for k, v in pairs(options) do
+            if not v.distance or v.distance > distance then v.distance = distance end
+            Entities[netid][v.event] = v
+        end
+    end,
 
-AddTargetEntity = function(netid, parameters)
-	local distance, options = parameters.distance or Config.MaxDistance, parameters.options
-	if not Entities[netid] then Entities[netid] = {} end
-	for k, v in pairs(options) do
-		if not v.distance or v.distance > distance then v.distance = distance end
-		Entities[netid][v.event] = v
-	end
-end
+    AddTargetBone = function(self, bones, parameteres)
+        for _, bone in pairs(bones) do
+            Bones[bone] = parameteres
+        end
+    end,
 
-AddTargetBone = function(bones, parameteres)
-    for _, bone in pairs(bones) do
-        Bones[bone] = parameteres
-    end
-end
+    AddEntityZone = function(self, name, entity, options, targetoptions)
+        Zones[name] = EntityZone:Create(entity, options)
+        Zones[name].targetoptions = targetoptions
+    end,
 
-AddEntityZone = function(name, entity, options, targetoptions)
-	Zones[name] = EntityZone:Create(entity, options)
-	Zones[name].targetoptions = targetoptions
-end
+    RemoveZone = function(self, name)
+        if not Zones[name] then return end
+        if Zones[name].destroy then
+            Zones[name]:destroy()
+        end
+        Zones[name] = nil
+    end,
 
-RemoveZone = function(name)
-    if not Zones[name] then return end
-    if Zones[name].destroy then
-        Zones[name]:destroy()
-    end
-    Zones[name] = nil
-end
+    AddType = function(self, type, parameters)
+        local distance, options = parameters.distance or Config.MaxDistance, parameters.options
+        for k, v in pairs(options) do
+            if not v.distance or v.distance > distance then v.distance = distance end
+            Types[type][v.event] = v
+        end
+    end,
 
-AddType = function(type, parameters)
-	local distance, options = parameters.distance or Config.MaxDistance, parameters.options
-	for k, v in pairs(options) do
-		if not v.distance or v.distance > distance then v.distance = distance end
-		Types[type][v.event] = v
-	end
-end
+    RemoveType = function(self, type, events)
+        for k, v in pairs(events) do
+            Types[type][v] = nil
+        end
+    end,
 
-RemoveType = function(type, events)
-	for k, v in pairs(events) do
-		Types[type][v] = nil
-	end
-end
+    RemovePlayer = function(self, type, events)
+        for k, v in pairs(events) do
+            Players[v.event] = nil
+        end
+    end,
 
-RemovePlayer = function(type, events)
-	for k, v in pairs(events) do
-		Players[v.event] = nil
-	end
-end
+    AddPlayer = function(self, parameters)
+        local distance, options = parameters.distance or Config.MaxDistance, parameters.options
+        for k, v in pairs(options) do
+            if not v.distance or v.distance > distance then v.distance = distance end
+            Players[v.event] = v
+        end
+    end,
 
-AddPlayer = function(parameters)
-	local distance, options = parameters.distance or Config.MaxDistance, parameters.options
-	for k, v in pairs(options) do
-		if not v.distance or v.distance > distance then v.distance = distance end
-		Players[v.event] = v
-	end
-end
+    RemoveZone = function(self, name)
+        if not Zones[name] then return end
+        if Zones[name].destroy then
+            Zones[name]:destroy()
+        end
+        Zones[name] = nil
+    end,
 
-RemoveZone = function(name)
-	if not Zones[name] then return end
-	if Zones[name].destroy then
-		Zones[name]:destroy()
-	end
-	Zones[name] = nil
-end
+    RemoveTargetModel = function(self, models, events)
+        for _, model in pairs(models) do
+            if type(model) == 'string' then model = GetHashKey(model) end
+            for k, v in pairs(events) do
+                if Models[model] then
+                    Models[model][v] = nil
+                end
+            end
+        end
+    end,
 
-RemoveTargetModel = function(models, events)
-	for _, model in pairs(models) do
-		if type(model) == 'string' then model = GetHashKey(model) end
-		for k, v in pairs(events) do
-			if Models[model] then
-				Models[model][v] = nil
-			end
-		end
-	end
-end
+    AddPed = function(self, parameters) AddType(1, parameters) end,
 
-AddPed = function(parameters) AddType(1, parameters) end
+    AddVehicle = function(self, parameters) AddType(2, parameters) end,
 
-AddVehicle = function(parameters) AddType(2, parameters) end
+    AddObject = function(self, parameters) AddType(3, parameters) end,
 
-AddObject = function(parameters) AddType(3, parameters) end
+    AddPlayer = function(self, parameters) AddPlayer(parameters) end,
 
-AddPlayer = function(parameters) AddPlayer(parameters) end
+    RemovePed = function(self, events) RemoveType(1, events) end,
 
-RemovePed = function(events) RemoveType(1, events) end
+    RemoveVehicle = function(self, events) RemoveType(2, events) end,
 
-RemoveVehicle = function(events) RemoveType(2, events) end
+    RemoveObject = function(self, events) RemoveType(3, events) end,
 
-RemoveObject = function(events) RemoveType(3, events) end
+    RemovePlayer = function(self, events) RemoveType(1, events) end,
+}
 
-RemovePlayer = function(events) RemoveType(1, events) end
-
-exports("AddCircleZone", AddCircleZone)
-
-exports("AddBoxZone", AddBoxZone)
-
-exports("AddPolyzone", AddPolyzone)
-
-exports("AddTargetModel", AddTargetModel)
-
-exports("AddTargetEntity", AddTargetEntity)
-
-exports("AddTargetBone", AddTargetBone)
-
-exports("AddEntityZone", AddEntityZone)
-
-exports("AddPed", AddPed)
-
-exports("AddVehicle", AddVehicle)
-
-exports("AddObject", AddObject)
-
-exports("AddPlayer", AddPlayer)
-
-exports("RemovePed", RemovePed)
-
-exports("RemoveZone", RemoveZone)
-
-exports("RemoveTargetModel", RemoveTargetModel)
-
-exports("RemoveVehicle", RemoveVehicle)
-
-exports("RemoveObject", RemoveObject)
-
-exports("RemovePlayer", RemovePlayer)
+exports("FetchExports", function()
+    return Exports
+end)
 
 exports("Raycast", RaycastCamera)
 
@@ -608,7 +579,7 @@ Citizen.CreateThread(function()
 
     if next(Config.BoxZones) then
         for k, v in pairs(Config.BoxZones) do
-            AddBoxZone(v.name, v.coords, v.length, v.width, {
+            Exports:AddBoxZone(v.name, v.coords, v.length, v.width, {
                 name = v.name,
                 heading = v.heading,
                 debugPoly = v.debugPoly,
@@ -623,7 +594,7 @@ Citizen.CreateThread(function()
 
     if next(Config.CircleZones) then
         for k, v in pairs(Config.CircleZones) do
-            AddCircleZone(v.name, v.coords, v.radius, {
+            Exports:AddCircleZone(v.name, v.coords, v.radius, {
                 name = v.name,
                 debugPoly = v.debugPoly,
             }, {
@@ -635,7 +606,7 @@ Citizen.CreateThread(function()
 
     if next(Config.TargetModels) then
         for k, v in pairs(Config.TargetModels) do
-            AddTargetModel(v.models, {
+            Exports:AddTargetModel(v.models, {
                 options = v.options,
                 distance = v.distance
             })
@@ -644,7 +615,7 @@ Citizen.CreateThread(function()
 
     if next(Config.TargetEntities) then
         for k, v in pairs(Config.TargetEntities) do
-            AddTargetEntity(v.entity, {
+            Exports:AddTargetEntity(v.entity, {
                 options = v.options,
                 distance = v.distance
             })
@@ -653,7 +624,7 @@ Citizen.CreateThread(function()
 
     if next(Config.TargetBones) then
         for k, v in pairs(Config.TargetBones) do
-            AddTargetBone(v.bones, {
+            Exports:AddTargetBone(v.bones, {
                 options = v.options,
                 distance = v.distance
             })
@@ -662,7 +633,7 @@ Citizen.CreateThread(function()
 
     if next(Config.EntityZones) then
         for k, v in pairs(Config.EntityZones) do
-            AddEntityZone(v.name, v.entity, {
+            Exports:AddEntityZone(v.name, v.entity, {
                 name = v.name,
                 heading = v.heading,
                 debugPoly = v.debugPoly,
@@ -674,19 +645,19 @@ Citizen.CreateThread(function()
     end
 
     if next(Config.PedOptions) then
-        AddPed({options = Config.PedOptions.options, distance = Config.PedOptions.distance})
+        Exports:AddPed({options = Config.PedOptions.options, distance = Config.PedOptions.distance})
     end
 
     if next(Config.VehicleOptions) then
-        AddVehicle({options = Config.VehicleOptions.options, distance = Config.VehicleOptions.distance})
+        Exports:AddVehicle({options = Config.VehicleOptions.options, distance = Config.VehicleOptions.distance})
     end
 
     if next(Config.ObjectOptions) then
-        AddObject({options = Config.ObjectOptions.options, distance = Config.ObjectOptions.distance})
+        Exports:AddObject({options = Config.ObjectOptions.options, distance = Config.ObjectOptions.distance})
     end
 
     if next(Config.PlayerOptions) then
-        AddPlayer({options = Config.PlayerOptions.options, distance = Config.PlayerOptions.distance})
+        Exports:AddPlayer({options = Config.PlayerOptions.options, distance = Config.PlayerOptions.distance})
     end
 end)
 
@@ -697,7 +668,7 @@ if Config.Debug then
 
 		local objId = NetworkGetNetworkIdFromEntity(data.entity)
 
-		AddTargetEntity(NetworkGetNetworkIdFromEntity(data.entity), {
+        Exports:AddTargetEntity(NetworkGetNetworkIdFromEntity(data.entity), {
 			options = {
 				{
 					event = "dummy-event",
@@ -712,7 +683,7 @@ if Config.Debug then
 
 	end)
 
-	AddPed({
+    Exports:AddPed({
 		options = {
 			{
 				event = "bt-target:debug",
@@ -723,7 +694,7 @@ if Config.Debug then
 		distance = Config.MaxDistance
 	})
 
-	AddVehicle({
+    Exports:AddVehicle({
 		options = {
 			{
 				event = "bt-target:debug",
@@ -734,7 +705,7 @@ if Config.Debug then
 		distance = Config.MaxDistance
 	})
 
-	AddObject({
+    Exports:AddObject({
 		options = {
 			{
 				event = "bt-target:debug",
