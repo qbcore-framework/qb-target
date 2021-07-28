@@ -524,11 +524,27 @@ Exports = {
     RemovePlayer = function(self, events) RemoveType(1, events) end,
 }
 
+exports("AddCircleZone", Exports:AddCircleZone)
+exports("AddBoxZone", Exports:AddBoxZone)
+exports("AddPolyzone", Exports:AddPolyzone)
+exports("AddTargetModel", Exports:AddTargetModel)
+exports("AddTargetEntity", Exports:AddTargetEntity)
+exports("AddTargetBone", Exports:AddTargetBone)
+exports("AddEntityZone", Exports:AddEntityZone)
+exports("AddPed", Exports:AddPed)
+exports("AddVehicle", Exports:AddVehicle)
+exports("AddObject", Exports:AddObject)
+exports("AddPlayer", Exports:AddPlayer)
+exports("RemovePed", Exports:RemovePed)
+exports("RemoveVehicle", Exports:RemoveVehicle)
+exports("RemoveObject", Exports:RemoveObject)
+exports("RemovePlayer", Exports:RemovePlayer)
+exports("RemoveZone", Exports:RemoveZone)
+exports("RemoveTargetModel", Exports:RemoveTargetModel)
+exports("Raycast", RaycastCamera)
 exports("FetchExports", function()
     return Exports
 end)
-
-exports("Raycast", RaycastCamera)
 
 if Config.ESX then
     Citizen.CreateThread(function()
