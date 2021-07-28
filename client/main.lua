@@ -1,55 +1,49 @@
 local Config, Entities, Models, Zones, Bones, Players, Types, Intervals, ConfigFunctions, PlayerData = load(LoadResourceFile(GetCurrentResourceName(), 'config.lua'))()
 local hasFocus, success, targetActive, sendData = false, false, false
 
--- TODO: optimize, fix required item for qbcore
+-- Functions
 
-if Config.ESX then
-    Citizen.CreateThread(function()
-        while ESX == nil do
-            TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-            Citizen.Wait(0)
-        end
-			
-        PlayerData = ESX.GetPlayerData()
+local CloneTable = function(t)
+	if type(t) ~= 'table' then return t end
 
-        RegisterNetEvent('esx:playerLoaded')
-        AddEventHandler('esx:playerLoaded', function()
-            PlayerData = ESX.GetPlayerData()
-        end)
-                
-        RegisterNetEvent('esx:setJob')
-        AddEventHandler('esx:setJob', function(job)
-            PlayerData.job = job
-        end)
-    end)
-elseif Config.QBCore then
-    Citizen.CreateThread(function()
-        while QBCore == nil do
-            TriggerEvent('QBCore:GetObject', function(obj) QBCore = obj end)
-            Citizen.Wait(200)
-        end
-                
-        PlayerData = QBCore.Functions.GetPlayerData()
-        
-        RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
-        AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
-            PlayerData = QBCore.Functions.GetPlayerData()
-        end)			
+	local meta = getmetatable(t)
+	local target = {}
 
-        RegisterNetEvent('QBCore:Client:OnJobUpdate')
-        AddEventHandler('QBCore:Client:OnJobUpdate', function(JobInfo)
-            PlayerData.job = JobInfo
-        end)
-    end)
+	for k,v in pairs(t) do
+		if type(v) == 'table' then
+			target[k] = CloneTable(v)
+		else
+			target[k] = v
+		end
+	end
+
+	setmetatable(target, meta)
+
+	return target
 end
 
--- Functions
+local RaycastCamera = function(flag)
+    local cam = GetGameplayCamCoord()
+    local direction = GetGameplayCamRot()
+    direction = vector2(direction.x * math.pi / 180.0, direction.z * math.pi / 180.0)
+    local num = math.abs(math.cos(direction.x))
+    direction = vector3((-math.sin(direction.y) * num), (math.cos(direction.y) * num), math.sin(direction.x))
+    local destination = vector3(cam.x + direction.x * 30, cam.y + direction.y * 30, cam.z + direction.z * 30)
+    local rayHandle, result, hit, endCoords, surfaceNormal, entityHit = StartShapeTestLosProbe(cam, destination, flag or 30, PlayerPedId(), 0)
+    repeat
+	result, hit, endCoords, surfaceNormal, entityHit = GetShapeTestResult(rayHandle)
+	Citizen.Wait(0)
+    until result ~= 1
+    local entityType
+    if entityHit then entityType = GetEntityType(entityHit) end
+    return flag, endCoords, entityHit, entityType or 0
+end
 
 local CheckOptions = function(data, entity, distance)
     if (data.distance == nil or distance <= data.distance)
-    and (data.owner == nil or not data.owner or data.owner == NetworkGetNetworkIdFromEntity(PlayerPedId()))
-    and (data.job == nil or not data.job or data.job == PlayerData.job.name or (Config.UseGrades and (Config.ESX and (data.job[PlayerData.job.name] and data.job[PlayerData.job.name] <= PlayerData.job.grade)) or (Config.QBCore and (data.job[PlayerData.job.name] and data.job[PlayerData.job.name] <= PlayerData.job.grade.level))))
-    and (data.item == nil or not data.item or data.item and ConfigFunctions.ItemCount(data.item))
+    and (data.owner == nil or data.owner == NetworkGetNetworkIdFromEntity(PlayerPedId()))
+    and (data.job == nil or data.job == PlayerData.job.name or (Config.UseGrades and (Config.ESX and (data.job[PlayerData.job.name] and data.job[PlayerData.job.name] <= PlayerData.job.grade)) or (Config.QBCore and (data.job[PlayerData.job.name] and data.job[PlayerData.job.name] <= PlayerData.job.grade.level))))
+    and (data.item == nil or data.item and ConfigFunctions.ItemCount(data.item))
     and (data.shouldShow == nil or not data.shouldShow or data.shouldShow(entity)) then return true end
     return false
 end
@@ -102,14 +96,14 @@ local CheckEntity = function(hit, entity, data, distance)
             send_options[slot] = data
             send_options[slot].entity = entity
             send_distance[data.distance] = true
-		else 
+	else 
             send_distance[data.distance] = false
         end
     end
     sendData = send_options
     if next(send_options) then
         local send_options = CloneTable(sendData)
-		for k,v in pairs(send_options) do v.action = nil end
+	for k,v in pairs(send_options) do v.action = nil end
         success = true
         SendNUIMessage({response = "foundTarget"})
 
@@ -184,42 +178,6 @@ local CheckBones = function(coords, entity, min, max, bonelist, checkData)
     return false
 end
 
-local RaycastCamera = function(flag)
-    local cam = GetGameplayCamCoord()
-    local direction = GetGameplayCamRot()
-    direction = vector2(direction.x * math.pi / 180.0, direction.z * math.pi / 180.0)
-	local num = math.abs(math.cos(direction.x))
-	direction = vector3((-math.sin(direction.y) * num), (math.cos(direction.y) * num), math.sin(direction.x))
-    local destination = vector3(cam.x + direction.x * 30, cam.y + direction.y * 30, cam.z + direction.z * 30)
-    local rayHandle, result, hit, endCoords, surfaceNormal, entityHit = StartShapeTestLosProbe(cam, destination, flag or 30, PlayerPedId(), 0)
-	repeat
-		result, hit, endCoords, surfaceNormal, entityHit = GetShapeTestResult(rayHandle)
-		Citizen.Wait(0)
-	until result ~= 1
-	local entityType
-	if entityHit then entityType = GetEntityType(entityHit) end
-	return flag, endCoords, entityHit, entityType or 0
-end
-
-local CloneTable = function(t)
-	if type(t) ~= 'table' then return t end
-
-	local meta = getmetatable(t)
-	local target = {}
-
-	for k,v in pairs(t) do
-		if type(v) == 'table' then
-			target[k] = CloneTable(v)
-		else
-			target[k] = v
-		end
-	end
-
-	setmetatable(target, meta)
-
-	return target
-end
-
 local CreateInterval = function(name, interval, action, clear)
 	local self = {interval = interval}
 	CreateThread(function()
@@ -246,20 +204,20 @@ local ClearInterval = function(name)
 	Intervals[name].interval = -1
 end
 
-function closeTarget()
+local closeTarget = function()
     SendNUIMessage({response = "closeTarget"})
     SetNuiFocus(false, false)
     success, hasFocus, targetActive = false, false, false
     ClearInterval(1)
 end
 
-function leftTarget()
+local leftTarget = function()
     SendNUIMessage({response = "leftTarget"})
     SetNuiFocus(false, false)
     success, hasFocus = false, false
 end
 
-function validTarget(options)
+local validTarget = function(options)
     SetNuiFocus(true, true)
     SetCursorLocation(0.5, 0.5)
     hasFocus = true
@@ -314,7 +272,7 @@ end)
 
 -- Main function to open the target
 
-function playerTargetEnable()
+local playerTargetEnable = function()
     if success then return end
 
     targetActive = true
@@ -340,7 +298,7 @@ function playerTargetEnable()
         DisableControlAction(0, 257, true)
 			
 	if Config.Debug then
-		DrawSphere(GetEntityCoords(PlayerPedId()), 7.0, 255, 255, 0, 0.15)
+	    DrawSphere(GetEntityCoords(PlayerPedId()), 7.0, 255, 255, 0, 0.15)
 	end
     end)
     
@@ -600,6 +558,46 @@ exports("RemoveObject", RemoveObject)
 exports("RemovePlayer", RemovePlayer)
 
 exports("Raycast", RaycastCamera)
+
+if Config.ESX then
+    Citizen.CreateThread(function()
+        while ESX == nil do
+            TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+            Citizen.Wait(0)
+        end
+			
+        PlayerData = ESX.GetPlayerData()
+
+        RegisterNetEvent('esx:playerLoaded')
+        AddEventHandler('esx:playerLoaded', function()
+            PlayerData = ESX.GetPlayerData()
+        end)
+                
+        RegisterNetEvent('esx:setJob')
+        AddEventHandler('esx:setJob', function(job)
+            PlayerData.job = job
+        end)
+    end)
+elseif Config.QBCore then
+    Citizen.CreateThread(function()
+        while QBCore == nil do
+            TriggerEvent('QBCore:GetObject', function(obj) QBCore = obj end)
+            Citizen.Wait(200)
+        end
+                
+        PlayerData = QBCore.Functions.GetPlayerData()
+        
+        RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
+        AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
+            PlayerData = QBCore.Functions.GetPlayerData()
+        end)			
+
+        RegisterNetEvent('QBCore:Client:OnJobUpdate')
+        AddEventHandler('QBCore:Client:OnJobUpdate', function(JobInfo)
+            PlayerData.job = JobInfo
+        end)
+    end)
+end
 
 Citizen.CreateThread(function()
     RegisterKeyMapping("+playerTarget", "Player Targeting", "keyboard", "LMENU")
