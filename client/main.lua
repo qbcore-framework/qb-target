@@ -684,9 +684,7 @@ if Config.Debug then
 	AddEventHandler('bt-target:debug', function(data)
 		print( 'Flag: '..curFlag..'', 'Entity: '..data.entity..'', 'Type: '..GetEntityType(data.entity)..'' )
 
-		local objId = NetworkGetNetworkIdFromEntity(data.entity)
-
-        Exports:AddTargetEntity(NetworkGetNetworkIdFromEntity(data.entity), {
+        	Exports:AddTargetEntity(data.entity, {
 			options = {
 				{
 					event = "dummy-event",
