@@ -25,7 +25,7 @@ Exports = {
             if not Models[model] then Models[model] = {} end
             for k, v in pairs(options) do
                 if not v.distance or v.distance > distance then v.distance = distance end
-                Models[model][v.event] = v
+                Models[model][v.label] = v
             end
         end
     end,
@@ -37,7 +37,7 @@ Exports = {
 		if not Entities[entity] then Entities[entity] = {} end
 		for k, v in pairs(options) do
 		    if not v.distance or v.distance > distance then v.distance = distance end
-		    Entities[entity][v.event] = v
+		    Entities[entity][v.label] = v
 		end
 	end
     end,
@@ -65,19 +65,27 @@ Exports = {
         local distance, options = parameters.distance or Config.MaxDistance, parameters.options
         for k, v in pairs(options) do
             if not v.distance or v.distance > distance then v.distance = distance end
-            Types[type][v.event] = v
+            Types[type][v.label] = v
         end
     end,
 
-    RemoveType = function(self, type, events)
-        for k, v in pairs(events) do
-            Types[type][v] = nil
+    RemoveType = function(self, type, labels)
+        if type(labels) == 'string' then
+            Types[type][labels]
+        elseif type(labels) == 'table' then
+            for k, v in pairs(labels) do
+                Types[type][v] = nil
+            end
         end
     end,
 
-    RemovePlayer = function(self, type, events)
-        for k, v in pairs(events) do
-            Players[v.event] = nil
+    RemovePlayer = function(self, labels)
+        if type(labels) == 'string' then
+            Players[labels] = nil
+        elseif type(labels) == 'table' then
+            for k, v in pairs(labels) do
+                Players[v] = nil
+            end
         end
     end,
 
@@ -85,7 +93,7 @@ Exports = {
         local distance, options = parameters.distance or Config.MaxDistance, parameters.options
         for k, v in pairs(options) do
             if not v.distance or v.distance > distance then v.distance = distance end
-            Players[v.event] = v
+            Players[v.label] = v
         end
     end,
 
@@ -97,12 +105,35 @@ Exports = {
         Zones[name] = nil
     end,
 
-    RemoveTargetModel = function(self, models, events)
+    RemoveTargetModel = function(self, models, labels)
         for _, model in pairs(models) do
             if type(model) == 'string' then model = GetHashKey(model) end
-            for k, v in pairs(events) do
+            if type(labels) == 'string' then
                 if Models[model] then
-                    Models[model][v] = nil
+                    Models[model][labels] = nil
+                end
+            elseif type(labels) == 'table' then
+                for k, v in pairs(labels) do
+                    if Models[model] then
+                        Models[model][v] = nil
+                    end
+                end
+            end
+        end
+    end,
+
+    RemoveTargetEntity = function(self, entity, labels)
+        local entity = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity) or false
+        if entity then
+            if type(labels) == 'string' then
+                if Entities[entity] then
+                    Entities[entity][labels] = nil
+                end
+            elseif type(labels) == 'table' then
+                for k, v in pairs(labels) do
+                    if Entities[entity] then
+                        Entities[entity][v] = nil
+                    end
                 end
             end
         end
@@ -116,13 +147,11 @@ Exports = {
 
     AddPlayer = function(self, parameters) AddPlayer(parameters) end,
 
-    RemovePed = function(self, events) RemoveType(1, events) end,
+    RemovePed = function(self, labels) RemoveType(1, labels) end,
 
-    RemoveVehicle = function(self, events) RemoveType(2, events) end,
+    RemoveVehicle = function(self, labels) RemoveType(2, labels) end,
 
-    RemoveObject = function(self, events) RemoveType(3, events) end,
-
-    RemovePlayer = function(self, events) RemoveType(1, events) end,
+    RemoveObject = function(self, labels) RemoveType(3, labels) end,
 	
     RaycastCamera = function(self, flag)
         local cam = GetGameplayCamCoord()
@@ -318,7 +347,7 @@ end
 
 local SetInterval = function(name, interval, action, clear)
 	if Intervals[name] and interval then 
-        Intervals[name].interval = interval
+        	Intervals[name].interval = interval
 	else
 		Intervals[name] = CreateInterval(name, interval, action, clear)
 	end
@@ -546,6 +575,7 @@ exports("RemoveObject", Exports:RemoveObject)
 exports("RemovePlayer", Exports:RemovePlayer)
 exports("RemoveZone", Exports:RemoveZone)
 exports("RemoveTargetModel", Exports:RemoveTargetModel)
+exports("RemoveTargetEntity", Exports:RemoveTargetEntity)
 exports("Raycast", Exports:RaycastCamera)
 exports("FetchExports", function()
     return Exports
@@ -687,21 +717,23 @@ if Config.Debug then
 	AddEventHandler('bt-target:debug', function(data)
 		print( 'Flag: '..curFlag..'', 'Entity: '..data.entity..'', 'Type: '..GetEntityType(data.entity)..'' )
 
-        	Exports:AddTargetEntity(data.entity, {
+		if data.remove then
+		    Exports:RemoveTargetEntity(data.entity, 'HelloWorld')
+		else
+		    Exports:AddTargetEntity(data.entity, {
 			options = {
-				{
-					event = "dummy-event",
-					icon = "fas fa-box-circle-check",
-					label = "HelloWorld",
-				},
+			    {
+				event = "dummy-event",
+				icon = "fas fa-box-circle-check",
+				label = "HelloWorld",
+			    },
 			},
 			distance = 3.0
-		})
-
-
+		    })
+		end
 	end)
 
-    Exports:AddPed({
+    	Exports:AddPed({
 		options = {
 			{
 				event = "bt-target:debug",
@@ -712,7 +744,7 @@ if Config.Debug then
 		distance = Config.MaxDistance
 	})
 
-    Exports:AddVehicle({
+    	Exports:AddVehicle({
 		options = {
 			{
 				event = "bt-target:debug",
@@ -723,7 +755,7 @@ if Config.Debug then
 		distance = Config.MaxDistance
 	})
 
-    Exports:AddObject({
+    	Exports:AddObject({
 		options = {
 			{
 				event = "bt-target:debug",
