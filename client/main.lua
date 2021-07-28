@@ -690,7 +690,6 @@ if Config.Debug then
 					event = "dummy-event",
 					icon = "fas fa-box-circle-check",
 					label = "HelloWorld",
-					job = "unemployed"
 				},
 			},
 			distance = 3.0
