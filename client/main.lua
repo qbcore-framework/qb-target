@@ -761,10 +761,17 @@ if Config.Debug then
 				event = "bt-target:debug",
 				icon = "fas fa-cube",
 				label = "(Debug) Object",
-				job = 'police',
-				shouldShow = function(entity)
-					return IsEntityAnObject(entity)
-				end
+			},
+		},
+		distance = Config.MaxDistance
+	})
+
+    	Exports:AddPlayer({
+		options = {
+			{
+				event = "bt-target:debug",
+				icon = "fas fa-cube",
+				label = "(Debug) Player",
 			},
 		},
 		distance = Config.MaxDistance
