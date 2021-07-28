@@ -30,13 +30,16 @@ Exports = {
         end
     end,
 
-    AddTargetEntity = function(self, netid, parameters)
-        local distance, options = parameters.distance or Config.MaxDistance, parameters.options
-        if not Entities[netid] then Entities[netid] = {} end
-        for k, v in pairs(options) do
-            if not v.distance or v.distance > distance then v.distance = distance end
-            Entities[netid][v.event] = v
-        end
+    AddTargetEntity = function(self, entity, parameters)
+	local entity = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity) or false
+	if entity then
+		local distance, options = parameters.distance or Config.MaxDistance, parameters.options
+		if not Entities[entity] then Entities[entity] = {} end
+		for k, v in pairs(options) do
+		    if not v.distance or v.distance > distance then v.distance = distance end
+		    Entities[entity][v.event] = v
+		end
+	end
     end,
 
     AddTargetBone = function(self, bones, parameteres)
