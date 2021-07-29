@@ -42,9 +42,9 @@ Exports = {
 	end
     end,
 
-    AddTargetBone = function(self, bones, parameteres)
+    AddTargetBone = function(self, bones, parameters)
         for _, bone in pairs(bones) do
-            Bones[bone] = parameteres
+            Bones[bone] = parameters
         end
     end,
 
@@ -558,25 +558,82 @@ end
 
 -- Defining the exports
 
-exports("AddCircleZone", Exports:AddCircleZone)
-exports("AddBoxZone", Exports:AddBoxZone)
-exports("AddPolyzone", Exports:AddPolyzone)
-exports("AddTargetModel", Exports:AddTargetModel)
-exports("AddTargetEntity", Exports:AddTargetEntity)
-exports("AddTargetBone", Exports:AddTargetBone)
-exports("AddEntityZone", Exports:AddEntityZone)
-exports("AddPed", Exports:AddPed)
-exports("AddVehicle", Exports:AddVehicle)
-exports("AddObject", Exports:AddObject)
-exports("AddPlayer", Exports:AddPlayer)
-exports("RemovePed", Exports:RemovePed)
-exports("RemoveVehicle", Exports:RemoveVehicle)
-exports("RemoveObject", Exports:RemoveObject)
-exports("RemovePlayer", Exports:RemovePlayer)
-exports("RemoveZone", Exports:RemoveZone)
-exports("RemoveTargetModel", Exports:RemoveTargetModel)
-exports("RemoveTargetEntity", Exports:RemoveTargetEntity)
-exports("Raycast", Exports:RaycastCamera)
+exports("AddCircleZone", function(name, center, radius, options, targetoptions)
+    Exports:AddCircleZone(name, center, radius, options, targetoptions)
+end)
+
+exports("AddBoxZone", function(name, center, length, width, options, targetoptions)
+    Exports:AddBoxZone(name, center, length, width, options, targetoptions)
+end)
+
+exports("AddPolyzone", function(name, points, options, targetoptions)
+    Exports:AddPolyzone(name, points, options, targetoptions)
+end)
+
+exports("AddTargetModel", function(models, parameters)
+    Exports:AddTargetModel(models, parameters)
+end)
+
+exports("AddTargetEntity", function(entity, parameters)
+    Exports:AddTargetEntity(entity, parameters)
+end)
+
+exports("AddTargetBone", function(bones, parameters)
+    Exports:AddTargetBone(bones, parameters)
+end)
+
+exports("AddEntityZone", function(name, entity, options, targetoptions)
+    Exports:AddEntityZone(name, entity, options, targetoptions)
+end)
+
+exports("AddPed", function(parameters)
+    Exports:AddPed(parameters)
+end)
+
+exports("AddVehicle", function(parameters)
+    Exports:AddVehicle(parameters)
+end)
+
+exports("AddObject", function(parameters)
+    Exports:AddObject(parameters)
+end)
+
+exports("AddPlayer", function(parameters)
+    Exports:AddPlayer(parameters)
+end)
+
+exports("RemovePed", function(labels)
+    Exports:RemovePed(labels)
+end)
+
+exports("RemoveVehicle", function(labels)
+    Exports:RemoveVehicle(labels)
+end)
+
+exports("RemoveObject", function(labels)
+    Exports:RemoveObject(labels)
+end)
+
+exports("RemovePlayer", function(labels)
+    Exports:RemovePlayer(labels)
+end)
+
+exports("RemoveZone", function(name)
+    Exports:RemoveZone(name)
+end)
+
+exports("RemoveTargetModel", function(models, labels)
+    Exports:RemoveTargetModel(models, labels)
+end)
+
+exports("RemoveTargetEntity", function(entity, labels)
+    Exports:RemoveTargetEntity(entity, labels)
+end)
+
+exports("Raycast", function(flag)
+    Exports:RaycastCamera(flag)
+end)
+
 exports("FetchExports", function()
     return Exports
 end)
