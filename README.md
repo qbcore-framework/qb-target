@@ -1,6 +1,6 @@
 # bt-target
 
-This repository was originally a fork and now it's own repository as it's a slight mix and change of qtarget and bt-target at once, most of the code comes from qtarget and some of the javascript and some functions are from bt-target.
+This repository was originally a fork and now it's own repository as it's a slightly changed qtarget but still named bt-target, most of the code comes from qtarget as I find their work awesome on this and what they've achieved with it, mostly the optimization.
 
 This version is for QBCore and ESX but can be used by any framework but you will have to make your own changes then.
 
