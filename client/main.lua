@@ -71,7 +71,7 @@ Exports = {
 
     RemoveType = function(self, type, labels)
         if type(labels) == 'string' then
-            Types[type][labels]
+            Types[type][labels] = nil
         elseif type(labels) == 'table' then
             for k, v in pairs(labels) do
                 Types[type][v] = nil
