@@ -1,7 +1,7 @@
 fx_version 'cerulean'
 game 'gta5'
 
-version '2.1.4'
+version '2.1.5'
 
 dependency "PolyZone"
 
