@@ -60,14 +60,6 @@ Exports = {
             Types[type][v.label] = v
         end
     end,
-	
-    AddPlayer = function(self, parameters)
-        local distance, options = parameters.distance or Config.MaxDistance, parameters.options
-        for k, v in pairs(options) do
-            if not v.distance or v.distance > distance then v.distance = distance end
-            Players[v.label] = v
-        end
-    end,
 
     RemoveType = function(self, type, labels)
         if type(labels) == 'string' then
@@ -86,6 +78,14 @@ Exports = {
             for k, v in pairs(labels) do
                 Players[v] = nil
             end
+        end
+    end,
+
+    AddPlayer = function(self, parameters)
+        local distance, options = parameters.distance or Config.MaxDistance, parameters.options
+        for k, v in pairs(options) do
+            if not v.distance or v.distance > distance then v.distance = distance end
+            Players[v.label] = v
         end
     end,
 
@@ -191,14 +191,6 @@ local CheckOptions = function(data, entity, distance)
     return false
 end
 
-local CheckRange = function(range, distance)
-	for k, v in pairs(range) do
-		if v == false and distance < k then return true
-		elseif v == true and distance > k then return true end
-	end
-	return false
-end
-
 local curFlag = 30
 local switch = function()
 	if curFlag == 30 then curFlag = -1 else curFlag = 30 end
@@ -267,9 +259,6 @@ local CheckEntity = function(hit, entity, data, distance)
             elseif IsControlJustReleased(0, 19) and not hasFocus then
                 closeTarget()
                 SetEntityDrawOutline(entity, false)
-            elseif CheckRange(send_distance, distance) then
-		CheckEntity(hit, entity, data, distance)
-                break
             end
 
             Citizen.Wait(5)
@@ -526,8 +515,6 @@ local playerTargetEnable = function()
                             elseif IsControlJustReleased(0, 19) and not hasFocus then
                                 closeTarget()
                                 SetEntityDrawOutline(entity, false)
-                            elseif CheckRange(senddistance, distance) then
-                                CheckZone(entity, zone, distance)
                             end
             
                             Citizen.Wait(5)
