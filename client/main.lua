@@ -53,19 +53,19 @@ Exports = {
         Zones[name].targetoptions = targetoptions
     end,
 
-    RemoveZone = function(self, name)
-        if not Zones[name] then return end
-        if Zones[name].destroy then
-            Zones[name]:destroy()
-        end
-        Zones[name] = nil
-    end,
-
     AddType = function(self, type, parameters)
         local distance, options = parameters.distance or Config.MaxDistance, parameters.options
         for k, v in pairs(options) do
             if not v.distance or v.distance > distance then v.distance = distance end
             Types[type][v.label] = v
+        end
+    end,
+	
+    AddPlayer = function(self, parameters)
+        local distance, options = parameters.distance or Config.MaxDistance, parameters.options
+        for k, v in pairs(options) do
+            if not v.distance or v.distance > distance then v.distance = distance end
+            Players[v.label] = v
         end
     end,
 
@@ -86,14 +86,6 @@ Exports = {
             for k, v in pairs(labels) do
                 Players[v] = nil
             end
-        end
-    end,
-
-    AddPlayer = function(self, parameters)
-        local distance, options = parameters.distance or Config.MaxDistance, parameters.options
-        for k, v in pairs(options) do
-            if not v.distance or v.distance > distance then v.distance = distance end
-            Players[v.label] = v
         end
     end,
 
@@ -144,8 +136,6 @@ Exports = {
     AddVehicle = function(self, parameters) AddType(2, parameters) end,
 
     AddObject = function(self, parameters) AddType(3, parameters) end,
-
-    AddPlayer = function(self, parameters) AddPlayer(parameters) end,
 
     RemovePed = function(self, labels) RemoveType(1, labels) end,
 
