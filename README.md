@@ -6,7 +6,7 @@ This version is for QBCore and ESX but can be used by any framework but you will
 
 The readme and wiki are a work in progress as I'm now on vacation and I can't do much, I am pushing updates from qtarget and bt-target into this if applicable just to keep it updated.
 
-It is not advised to use this yet but if you want to test it for me and report what's not working through issues or helping via Pull Requests, feel free to, I love some help!
+You are free to help through Pull Requests, I love some help!
 
 # Dependencies
 
