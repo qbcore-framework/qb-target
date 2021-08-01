@@ -1,5 +1,5 @@
 local Config, Entities, Models, Zones, Bones, Players, Types, Intervals, ConfigFunctions, PlayerData = load(LoadResourceFile(GetCurrentResourceName(), 'config.lua'))()
-local hasFocus, success, targetActive, sendData = false, false, false
+local playerPed, hasFocus, success, targetActive, sendData = PlayerPedId(), false, false, false
 
 --Exports
 local Exports = {
@@ -131,184 +131,39 @@ local Exports = {
         end
     end,
 
-    AddPed = function(self, parameters) AddType(1, parameters) end,
+    AddPed = function(self, parameters) self:AddType(1, parameters) end,
 
-    AddVehicle = function(self, parameters) AddType(2, parameters) end,
+    AddVehicle = function(self, parameters) self:AddType(2, parameters) end,
 
-    AddObject = function(self, parameters) AddType(3, parameters) end,
+    AddObject = function(self, parameters) self:AddType(3, parameters) end,
 
-    RemovePed = function(self, labels) RemoveType(1, labels) end,
+    RemovePed = function(self, labels) self:RemoveType(1, labels) end,
 
-    RemoveVehicle = function(self, labels) RemoveType(2, labels) end,
+    RemoveVehicle = function(self, labels) self:RemoveType(2, labels) end,
 
-    RemoveObject = function(self, labels) RemoveType(3, labels) end,
+    RemoveObject = function(self, labels) self:RemoveType(3, labels) end,
 	
     RaycastCamera = function(self, flag)
         local cam = GetGameplayCamCoord()
         local direction = GetGameplayCamRot()
-        direction = vector2(direction.x * math.pi / 180.0, direction.z * math.pi / 180.0)
+        direction = vec2(math.rad(direction.x), math.rad(direction.z))
         local num = math.abs(math.cos(direction.x))
-        direction = vector3((-math.sin(direction.y) * num), (math.cos(direction.y) * num), math.sin(direction.x))
-        local destination = vector3(cam.x + direction.x * 30, cam.y + direction.y * 30, cam.z + direction.z * 30)
-        local rayHandle, result, hit, endCoords, surfaceNormal, entityHit = StartShapeTestLosProbe(cam, destination, flag or 30, PlayerPedId(), 0)
-        repeat
-            result, hit, endCoords, surfaceNormal, entityHit = GetShapeTestResult(rayHandle)
-            Citizen.Wait(0)
-        until result ~= 1
-        local entityType
-        if entityHit then entityType = GetEntityType(entityHit) end
-        return flag, endCoords, entityHit, entityType or 0
+        direction = vec3((-math.sin(direction.y) * num), (math.cos(direction.y) * num), math.sin(direction.x))
+        local destination = vec3(cam.x + direction.x * 30, cam.y + direction.y * 30, cam.z + direction.z * 30)
+        local rayHandle = StartShapeTestLosProbe(cam, destination, flag or -1, playerPed or PlayerPedId(), 0)
+        while true do
+            Wait(0)
+            local result, _, endCoords, _, materialHash, entityHit = GetShapeTestResultIncludingMaterial(rayHandle)
+            if result ~= 1 then
+                local entityType
+                if entityHit then entityType = GetEntityType(entityHit) end
+                return flag, endCoords, entityHit, entityType or 0
+            end
+        end
     end,
 }
 
 -- Functions
-
-local CloneTable = function(t)
-	if type(t) ~= 'table' then return t end
-
-	local meta = getmetatable(t)
-	local target = {}
-
-	for k,v in pairs(t) do
-		if type(v) == 'table' then
-			target[k] = CloneTable(v)
-		else
-			target[k] = v
-		end
-	end
-
-	setmetatable(target, meta)
-
-	return target
-end
-
-local CheckOptions = function(data, entity, distance)
-    if (data.distance == nil or distance <= data.distance)
-    and (data.owner == nil or data.owner == NetworkGetNetworkIdFromEntity(PlayerPedId()))
-    and (data.job == nil or data.job == PlayerData.job.name or (Config.UseGrades and (Config.ESX and (data.job[PlayerData.job.name] and data.job[PlayerData.job.name] <= PlayerData.job.grade)) or (Config.QBCore and (data.job[PlayerData.job.name] and data.job[PlayerData.job.name] <= PlayerData.job.grade.level))))
-    and (data.item == nil or data.item and ConfigFunctions.ItemCount(data.item))
-    and (data.shouldShow == nil or not data.shouldShow or data.shouldShow(entity)) then return true end
-    return false
-end
-
-local curFlag = 30
-local switch = function()
-	if curFlag == 30 then curFlag = -1 else curFlag = 30 end
-	return curFlag
-end
-
-local CheckZone = function(entity, zone, distance)
-    local send_options, send_distance = {}, {}
-    for o, data in pairs(zone.targetoptions.options) do
-        if CheckOptions(data, entity, distance) then
-            local slot = #send_options + 1 
-            send_options[slot] = data
-            send_options[slot].entity = entity
-            send_distance[data.distance] = true
-        else 
-            send_distance[data.distance] = false
-        end
-    end
-    sendData = send_options
-    if next(send_options) then
-        local send_options = CloneTable(sendData)
-        for k,v in pairs(send_options) do v.action = nil end
-        success = true
-        SendNUIMessage({response = "foundTarget"})
-	SetEntityDrawOutline(entity, true)
-		
-	return true, send_options, send_distance
-    end
-
-    return false
-end
-
-local CheckEntity = function(hit, entity, data, distance)
-    local send_options, send_distance = {}, {}
-    for o, data in pairs(data.options) do
-        if CheckOptions(data, entity, distance) then 
-            local slot = #send_options + 1
-            send_options[slot] = data
-            send_options[slot].entity = entity
-            send_distance[data.distance] = true
-	else 
-            send_distance[data.distance] = false
-        end
-    end
-    sendData = send_options
-    if next(send_options) then
-        local send_options = CloneTable(sendData)
-	for k,v in pairs(send_options) do v.action = nil end
-        success = true
-        SendNUIMessage({response = "foundTarget"})
-
-        SetEntityDrawOutline(entity, true)
-        while success and targetActive do
-            local playerCoords = GetEntityCoords(PlayerPedId())
-            local _, coords, entity2 = Exports:RaycastCamera(hit)
-	    local distance = #(playerCoords - coords)
-
-	    if entity ~= entity2 then
-                leftTarget()
-                SetEntityDrawOutline(entity, false)
-            end
-
-            if (IsControlJustPressed(0, 25) or IsDisabledControlJustPressed(0, 25)) then
-                validTarget(send_options)
-                SetEntityDrawOutline(entity, false)
-            elseif IsControlJustReleased(0, 19) and not hasFocus then
-                closeTarget()
-                SetEntityDrawOutline(entity, false)
-            end
-
-            Citizen.Wait(5)
-        end
-        leftTarget()
-        SetEntityDrawOutline(entity, false)
-    end
-end
-
-local CheckBones = function(coords, entity, min, max, bonelist, checkData)
-	local closestBone, closestDistance, closestPos, closestBoneName = -1, 20
-	for k, v in pairs(bonelist) do
-		local coords = coords
-		if Bones[v] then
-			local boneId = GetEntityBoneIndexByName(entity, v)
-			local bonePos = GetWorldPositionOfEntityBone(entity, boneId)
-			local distance = #(coords - bonePos)
-
-			if closestBone == -1 or distance < closestDistance then
-				closestBone, closestDistance, closestPos, closestBoneName = boneId, distance, bonePos, v
-			end
-		end
-	end
-
-    if closestBone == -1 then return false end
-
-    if checkData and #(coords - closestPos) <= Bones[closestBoneName].distance then
-        local data = Bones[closestBoneName]
-        local send_options = {}
-        for o, data in pairs(data.options) do
-            if CheckOptions(data, entity) then 
-                local slot = #send_options + 1 
-                send_options[slot] = data
-                send_options[slot].entity = entity
-            end
-        end
-        sendData = send_options
-        if next(send_options) then
-            local send_options = CloneTable(sendData)
-            for k,v in pairs(send_options) do v.action = nil end
-            success = true
-            SendNUIMessage({response = "foundTarget"})
-            return true, send_options, closestBone, closestPos, closestBoneName
-        end
-    else
-        return closestBone, closestPos, closestBoneName, Bones[closestBoneName].distance
-    end
-
-    return false
-end
 
 local CreateInterval = function(name, interval, action, clear)
 	local self = {interval = interval}
@@ -316,7 +171,7 @@ local CreateInterval = function(name, interval, action, clear)
 		local name, action, clear = name, action, clear
 		repeat
 			action()
-			Citizen.Wait(self.interval)
+			Wait(self.interval)
 		until self.interval == -1
 		if clear then clear() end
 		Intervals[name] = nil
@@ -356,6 +211,105 @@ local validTarget = function(options)
     SendNUIMessage({response = "validTarget", data = options})
 end
 
+local curFlag = 30
+local switch = function()
+	if curFlag == 30 then curFlag = -1 else curFlag = 30 end
+	return curFlag
+end
+
+local CheckRange = function(range, distance)
+	for k, v in pairs(range) do
+		if v == false and distance < k then return true
+		elseif v == true and distance > k then return true end
+	end
+	return false
+end
+
+local CheckEntity = function(hit, entity, data, distance)
+    local send_options, send_distance = {}, {}
+    for o, data in pairs(data) do
+        if ConfigFunctions.CheckOptions(data, entity, distance) then 
+            local slot = #send_options + 1
+            send_options[slot] = data
+            send_options[slot].entity = entity
+            send_distance[data.distance] = true
+	else 
+            send_distance[data.distance] = false
+        end
+    end
+    sendData = send_options
+    if next(send_options) then
+        success = true
+        SendNUIMessage({response = "foundTarget"})
+
+        SetEntityDrawOutline(entity, true)
+        while success and targetActive do
+            local playerCoords = GetEntityCoords(playerPed)
+            local _, coords, entity2 = Exports:RaycastCamera(hit)
+	    local distance = #(playerCoords - coords)
+
+	    if entity ~= entity2 then
+                leftTarget()
+                SetEntityDrawOutline(entity, false)
+            end
+
+            if (IsControlJustPressed(0, 25) or IsDisabledControlJustPressed(0, 25)) then
+                validTarget(ConfigFunctions.CloneTable(sendData))
+                SetEntityDrawOutline(entity, false)
+            elseif IsControlJustReleased(0, 19) and not hasFocus then
+                closeTarget()
+                SetEntityDrawOutline(entity, false)
+            --[[elseif CheckRange(send_distance, distance) then
+                CheckEntity(hit, entity, data, distance)]]
+            end
+
+            Wait(5)
+        end
+        leftTarget()
+        SetEntityDrawOutline(entity, false)
+    end
+end
+
+local CheckBones = function(coords, entity, min, max, bonelist, checkData)
+	local closestBone, closestDistance, closestPos, closestBoneName = -1, 20
+	for k, v in pairs(bonelist) do
+		local coords = coords
+		if Bones[v] then
+			local boneId = GetEntityBoneIndexByName(entity, v)
+			local bonePos = GetWorldPositionOfEntityBone(entity, boneId)
+			local distance = #(coords - bonePos)
+
+			if closestBone == -1 or distance < closestDistance then
+				closestBone, closestDistance, closestPos, closestBoneName = boneId, distance, bonePos, v
+			end
+		end
+	end
+
+    if closestBone == -1 then return false end
+
+    if checkData and #(coords - closestPos) <= Bones[closestBoneName].distance then
+        local data = Bones[closestBoneName]
+        local send_options = {}
+        for o, data in pairs(data.options) do
+            if ConfigFunctions.CheckOptions(data, entity) then 
+                local slot = #send_options + 1 
+                send_options[slot] = data
+                send_options[slot].entity = entity
+            end
+        end
+        sendData = send_options
+        if next(send_options) then
+            success = true
+            SendNUIMessage({response = "foundTarget"})
+            return true, ConfigFunctions.CloneTable(sendData), closestBone, closestPos, closestBoneName
+        end
+    else
+        return closestBone, closestPos, closestBoneName, Bones[closestBoneName].distance
+    end
+
+    return false
+end
+
 --NUI CALL BACKS
 
 RegisterNUICallback('selectTarget', function(option, cb)
@@ -367,15 +321,13 @@ RegisterNUICallback('selectTarget', function(option, cb)
 	
     local data = sendData[option]
     
-    Citizen.CreateThread(function()
-        Citizen.Wait(50)
+    CreateThread(function()
+        Wait(50)
         if data.type ~= nil then
             if data.type == "client" then
                 TriggerEvent(data.event, data)
             elseif data.type == "server" then
                 TriggerServerEvent(data.event, data)
-            elseif data.type == "function" then
-                _G[data.event](data)
             elseif data.type == "action" then
                 data.action(data.entity)
             end
@@ -425,18 +377,20 @@ local playerTargetEnable = function()
         DisableControlAction(0, 141, true)
         DisableControlAction(0, 142, true)
         DisableControlAction(0, 143, true)
-        DisableControlAction(0, 263, true)
-        DisableControlAction(0, 264, true)
         DisableControlAction(0, 257, true)
-			
+        DisableControlAction(0, 263, true)
+        DisableControlAction(0, 264, true)	
+
 	if Config.Debug then
-	    DrawSphere(GetEntityCoords(PlayerPedId()), 7.0, 255, 255, 0, 0.15)
+	    DrawSphere(GetEntityCoords(playerPed), 7.0, 255, 255, 0, 0.15)
 	end
     end)
+
+    playerPed = PlayerPedId()
     
     while targetActive do
         local sleep = 10
-        local plyCoords = GetEntityCoords(PlayerPedId())
+        local plyCoords = GetEntityCoords(playerPed)
         local hit, coords, entity, entityType = Exports:RaycastCamera(switch())
 
         if entityType ~= 0 then
@@ -458,7 +412,7 @@ local playerTargetEnable = function()
                     if check then
                         SetEntityDrawOutline(entity, true)
                         while success and targetActive do
-                            local playerCoords = GetEntityCoords(PlayerPedId())
+                            local playerCoords = GetEntityCoords(playerPed)
                             local hit, coords, entity2 = Exports:RaycastCamera()
                             local closestBone2, closestPos2, closestBoneName2, distance = CheckBones(coords, entity, min, max, Config.VehicleBones, false)
                             
@@ -475,7 +429,7 @@ local playerTargetEnable = function()
                                 SetEntityDrawOutline(entity, false)
                             end
 
-                            Citizen.Wait(5)
+                            Wait(5)
                         end
                         leftTarget()
                         SetEntityDrawOutline(entity, false)
@@ -492,43 +446,58 @@ local playerTargetEnable = function()
                     CheckEntity(hit, entity, data, #(plyCoords - coords))
                 end
             end
-        end
 
-        if not success then
-            for _, zone in pairs(Zones) do
-                if zone:isPointInside(coords) then
-                    local check, sendoptions, senddistance = CheckZone(entity, zone, #(plyCoords - zone.center))
-                    if check then
-                        while success and targetActive do
-                            local playerCoords = GetEntityCoords(PlayerPedId())
-                            local _, coords, entity2 = Exports:RaycastCamera(hit)
-                            local distance = #(playerCoords - zone.center)
-            
-                            if not zone:isPointInside(coords) then
-                                leftTarget()
-                                SetEntityDrawOutline(entity, false)
-                            end
-            
-                            if (IsControlJustPressed(0, 25) or IsDisabledControlJustPressed(0, 25)) then
-                                validTarget(sendoptions)
-                                SetEntityDrawOutline(entity, false)
-                            elseif IsControlJustReleased(0, 19) and not hasFocus then
-                                closeTarget()
-                                SetEntityDrawOutline(entity, false)
-                            end
-            
-                            Citizen.Wait(5)
-                        end
-                        leftTarget()
-                        SetEntityDrawOutline(entity, false)
-                    end
+            if not success then
+                local data = Types[entityType]
+                if data then 
+                    CheckEntity(hit, entity, data, #(plyCoords - coords))
                 end
             end
-        else 
-            success = false
-            leftTarget()
+        else
+            sleep = sleep + 10
         end
-        Citizen.Wait(sleep)
+
+        for _, zone in pairs(Zones) do
+            local distance = #(plyCoords - zone.center)
+            if zone:isPointInside(plyCoords) and distance <= zone.targetoptions.distance and not success then
+                local send_options = {}
+                for o, data in pairs(zone.targetoptions.options) do
+                    if ConfigFunctions.CheckOptions(data, entity, distance) then
+                        local slot = #send_options + 1 
+                        send_options[slot] = data
+                        send_options[slot].entity = entity
+                    end
+                end
+                sendData = send_options
+                if next(send_options) then
+                    success = true
+                    SendNUIMessage({response = "foundTarget"})
+                SetEntityDrawOutline(entity, true)
+                    while success and targetActive do
+                        local playerCoords = GetEntityCoords(playerPed)
+                        local _, coords, entity2 = Exports:RaycastCamera(hit)
+        
+                        if not zone:isPointInside(playerCoords) or #(playerCoords - zone.center) > zone.targetoptions.distance then
+                            leftTarget()
+                            SetEntityDrawOutline(entity, false)
+                        end
+        
+                        if (IsControlJustPressed(0, 25) or IsDisabledControlJustPressed(0, 25)) then
+                            validTarget(ConfigFunctions.CloneTable(sendData))
+                            SetEntityDrawOutline(entity, false)
+                        elseif IsControlJustReleased(0, 19) and not hasFocus then
+                            closeTarget()
+                            SetEntityDrawOutline(entity, false)
+                        end
+        
+                        Wait(5)
+                    end
+                    leftTarget()
+                    SetEntityDrawOutline(entity, false)
+                end
+            end
+        end
+        Wait(sleep)
     end
     closeTarget()
 end
@@ -616,10 +585,10 @@ exports("FetchExports", function()
 end)
 
 if Config.ESX then
-    Citizen.CreateThread(function()
+    CreateThread(function()
         while ESX == nil do
             TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-            Citizen.Wait(0)
+            Wait(0)
         end
 			
         PlayerData = ESX.GetPlayerData()
@@ -635,10 +604,10 @@ if Config.ESX then
         end)
     end)
 elseif Config.QBCore then
-    Citizen.CreateThread(function()
+    CreateThread(function()
         while QBCore == nil do
             TriggerEvent('QBCore:GetObject', function(obj) QBCore = obj end)
-            Citizen.Wait(200)
+            Wait(200)
         end
                 
         PlayerData = QBCore.Functions.GetPlayerData()
@@ -655,7 +624,7 @@ elseif Config.QBCore then
     end)
 end
 
-Citizen.CreateThread(function()
+CreateThread(function()
     RegisterKeyMapping("+playerTarget", "Player Targeting", "keyboard", "LMENU")
     RegisterCommand('+playerTarget', playerTargetEnable, false)
     RegisterCommand('-playerTarget', closeTarget, false)
@@ -747,9 +716,8 @@ Citizen.CreateThread(function()
 end)
 
 if Config.Debug then
-	RegisterNetEvent('bt-target:debug')
 	AddEventHandler('bt-target:debug', function(data)
-		print( 'Flag: '..curFlag..'', 'Entity: '..data.entity..'', 'Type: '..GetEntityType(data.entity)..'' )
+		print('Flag: '..curFlag..'', 'Entity: '..data.entity..'', 'Type: '..GetEntityType(data.entity)..'')
 
 		if data.remove then
 		    Exports:RemoveTargetEntity(data.entity, 'HelloWorld')
