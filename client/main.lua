@@ -2,7 +2,7 @@ local Config, Entities, Models, Zones, Bones, Players, Types, Intervals, ConfigF
 local hasFocus, success, targetActive, sendData = false, false, false
 
 --Exports
-Exports = {
+local Exports = {
     AddCircleZone = function(self, name, center, radius, options, targetoptions)
         Zones[name] = CircleZone:Create(center, radius, options)
         Zones[name].targetoptions = targetoptions
