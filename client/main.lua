@@ -232,8 +232,8 @@ local CheckEntity = function(hit, entity, data, distance)
             elseif IsControlJustReleased(0, 19) and not hasFocus then
                 closeTarget()
                 SetEntityDrawOutline(entity, false)
-            --[[elseif CheckRange(send_distance, distance) then
-                CheckEntity(hit, entity, data, distance)]]
+            elseif CheckRange(send_distance, distance) then
+                CheckEntity(hit, entity, data, distance)
             end
 
             Wait(5)
@@ -303,6 +303,10 @@ RegisterNUICallback('selectTarget', function(option, cb)
                 TriggerServerEvent(data.event, data)
             elseif data.type == "action" then
                 data.action(data.entity)
+            elseif data.type == "command" then
+                ExecuteCommand(data.event)
+            elseif data.type == "qbcommand" then
+                TriggerServerEvent('QBCore:CallCommand', data.event, data)
             end
         else
             TriggerEvent(data.event, data)
@@ -357,9 +361,9 @@ local playerTargetEnable = function()
 		DrawSphere(GetEntityCoords(playerPed), 7.0, 255, 255, 0, 0.15)
 		end
 
-		Wait(5)
+		Wait(0)
 	    until targetActive == false
-    end)
+	end)
     
     while targetActive do
         local sleep = 10
@@ -430,45 +434,50 @@ local playerTargetEnable = function()
             sleep = sleep + 10
         end
 
-        for _, zone in pairs(Zones) do
-            local distance = #(plyCoords - zone.center)
-            if zone:isPointInside(plyCoords) and distance <= zone.targetoptions.distance and not success then
-                local send_options = {}
-                for o, data in pairs(zone.targetoptions.options) do
-                    if ConfigFunctions.CheckOptions(data, entity, distance) then
-                        local slot = #send_options + 1 
-                        send_options[slot] = data
-                        send_options[slot].entity = entity
-                    end
-                end
-                sendData = send_options
-                if next(send_options) then
-                    success = true
-                    SendNUIMessage({response = "foundTarget"})
-                SetEntityDrawOutline(entity, true)
-                    while success and targetActive do
-                        local playerCoords = GetEntityCoords(playerPed)
-                        local _, coords, entity2 = Exports:RaycastCamera(hit)
-        
-                        if not zone:isPointInside(playerCoords) or #(playerCoords - zone.center) > zone.targetoptions.distance then
-                            leftTarget()
-                            SetEntityDrawOutline(entity, false)
+        if not success then
+            for _, zone in pairs(Zones) do
+                local distance = #(plyCoords - zone.center)
+                if zone:isPointInside(plyCoords) and distance <= zone.targetoptions.distance and not success then
+                    local send_options = {}
+                    for o, data in pairs(zone.targetoptions.options) do
+                        if ConfigFunctions.CheckOptions(data, entity, distance) then
+                            local slot = #send_options + 1 
+                            send_options[slot] = data
+                            send_options[slot].entity = entity
                         end
-        
-                        if (IsControlJustPressed(0, 25) or IsDisabledControlJustPressed(0, 25)) then
-                            validTarget(ConfigFunctions.CloneTable(sendData))
-                            SetEntityDrawOutline(entity, false)
-                        elseif IsControlJustReleased(0, 19) and not hasFocus then
-                            closeTarget()
-                            SetEntityDrawOutline(entity, false)
-                        end
-        
-                        Wait(5)
                     end
-                    leftTarget()
-                    SetEntityDrawOutline(entity, false)
+                    sendData = send_options
+                    if next(send_options) then
+                        success = true
+                        SendNUIMessage({response = "foundTarget"})
+                    SetEntityDrawOutline(entity, true)
+                        while success and targetActive do
+                            local playerCoords = GetEntityCoords(playerPed)
+                            local _, coords, entity2 = Exports:RaycastCamera(hit)
+            
+                            if not zone:isPointInside(playerCoords) or #(playerCoords - zone.center) > zone.targetoptions.distance then
+                                leftTarget()
+                                SetEntityDrawOutline(entity, false)
+                            end
+            
+                            if (IsControlJustPressed(0, 25) or IsDisabledControlJustPressed(0, 25)) then
+                                validTarget(ConfigFunctions.CloneTable(sendData))
+                                SetEntityDrawOutline(entity, false)
+                            elseif IsControlJustReleased(0, 19) and not hasFocus then
+                                closeTarget()
+                                SetEntityDrawOutline(entity, false)
+                            end
+            
+                            Wait(5)
+                        end
+                        leftTarget()
+                        SetEntityDrawOutline(entity, false)
+                    end
                 end
             end
+        else
+            leftTarget()
+            SetEntityDrawOutline(entity, false)
         end
         Wait(sleep)
     end
