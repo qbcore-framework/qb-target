@@ -165,37 +165,10 @@ local Exports = {
 
 -- Functions
 
-local CreateInterval = function(name, interval, action, clear)
-	local self = {interval = interval}
-	CreateThread(function()
-		local name, action, clear = name, action, clear
-		repeat
-			action()
-			Wait(self.interval)
-		until self.interval == -1
-		if clear then clear() end
-		Intervals[name] = nil
-	end)
-	return self
-end
-
-local SetInterval = function(name, interval, action, clear)
-	if Intervals[name] and interval then 
-        	Intervals[name].interval = interval
-	else
-		Intervals[name] = CreateInterval(name, interval, action, clear)
-	end
-end
-
-local ClearInterval = function(name)
-	Intervals[name].interval = -1
-end
-
 local closeTarget = function()
     SendNUIMessage({response = "closeTarget"})
     SetNuiFocus(false, false)
     success, hasFocus, targetActive = false, false, false
-    ClearInterval(1)
 end
 
 local leftTarget = function()
@@ -342,10 +315,6 @@ RegisterNUICallback('closeTarget', function(data, cb)
     success = false
     hasFocus = false
     targetActive = false
-
-    if data == 'nonMessage' then
-        ClearInterval(1)
-    end
 end)
 
 RegisterNUICallback('leftTarget', function(data, cb)
@@ -363,28 +332,28 @@ local playerTargetEnable = function()
 
     SendNUIMessage({response = "openTarget"})
 
-    SetInterval(1, 5, function()
-        if hasFocus then
-            DisableControlAction(0, 1, true)
-            DisableControlAction(0, 2, true)
-        end
-        DisablePlayerFiring(PlayerId(), true)
-        DisableControlAction(0, 24, true)
-        DisableControlAction(0, 25, true)
-        DisableControlAction(0, 47, true)
-        DisableControlAction(0, 58, true)
-        DisableControlAction(0, 140, true)
-        DisableControlAction(0, 141, true)
-        DisableControlAction(0, 142, true)
-        DisableControlAction(0, 143, true)
-        DisableControlAction(0, 257, true)
-        DisableControlAction(0, 263, true)
-        DisableControlAction(0, 264, true)	
-
-	if Config.Debug then
-	    DrawSphere(GetEntityCoords(playerPed), 7.0, 255, 255, 0, 0.15)
-	end
-    end)
+    	Citizen.CreateThread(function()
+		repeat
+			if hasFocus then
+				DisableControlAction(0, 1, true)
+				DisableControlAction(0, 2, true)
+			end
+                        DisablePlayerFiring(PlayerId(), true)
+                        DisableControlAction(0, 24, true)
+                        DisableControlAction(0, 25, true)
+                        DisableControlAction(0, 47, true)
+                        DisableControlAction(0, 58, true)
+                        DisableControlAction(0, 140, true)
+                        DisableControlAction(0, 141, true)
+                        DisableControlAction(0, 142, true)
+                        DisableControlAction(0, 143, true)
+                        DisableControlAction(0, 257, true)
+                        DisableControlAction(0, 263, true)
+                        DisableControlAction(0, 264, true)
+				
+			Wait(5)
+		until targetActive == false
+	end)
 
     playerPed = PlayerPedId()
     
