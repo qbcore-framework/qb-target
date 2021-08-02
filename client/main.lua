@@ -332,6 +332,8 @@ local playerTargetEnable = function()
 
     SendNUIMessage({response = "openTarget"})
 
+    playerPed = PlayerPedId()
+
     Citizen.CreateThread(function()
 	    repeat
 		if hasFocus then
@@ -357,9 +359,7 @@ local playerTargetEnable = function()
 
 		Wait(5)
 	    until targetActive == false
-	end)
-
-    playerPed = PlayerPedId()
+    end)
     
     while targetActive do
         local sleep = 10
