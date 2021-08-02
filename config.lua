@@ -107,7 +107,7 @@ end
 
 ConfigFunctions.CloneTable = function(t)
 	local copy = {}
-	for k,v in pairs(table) do
+	for k,v in pairs(t) do
 		if type(v) == 'table' then
 			copy[k] = ConfigFunctions.CloneTable(v)
 		else
