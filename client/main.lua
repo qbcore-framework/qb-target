@@ -332,27 +332,31 @@ local playerTargetEnable = function()
 
     SendNUIMessage({response = "openTarget"})
 
-    	Citizen.CreateThread(function()
-		repeat
-			if hasFocus then
-				DisableControlAction(0, 1, true)
-				DisableControlAction(0, 2, true)
-			end
-                        DisablePlayerFiring(PlayerId(), true)
-                        DisableControlAction(0, 24, true)
-                        DisableControlAction(0, 25, true)
-                        DisableControlAction(0, 47, true)
-                        DisableControlAction(0, 58, true)
-                        DisableControlAction(0, 140, true)
-                        DisableControlAction(0, 141, true)
-                        DisableControlAction(0, 142, true)
-                        DisableControlAction(0, 143, true)
-                        DisableControlAction(0, 257, true)
-                        DisableControlAction(0, 263, true)
-                        DisableControlAction(0, 264, true)
-				
-			Wait(5)
-		until targetActive == false
+    Citizen.CreateThread(function()
+	    repeat
+		if hasFocus then
+			DisableControlAction(0, 1, true)
+			DisableControlAction(0, 2, true)
+		end
+		DisablePlayerFiring(PlayerId(), true)
+		DisableControlAction(0, 24, true)
+		DisableControlAction(0, 25, true)
+		DisableControlAction(0, 47, true)
+		DisableControlAction(0, 58, true)
+		DisableControlAction(0, 140, true)
+		DisableControlAction(0, 141, true)
+		DisableControlAction(0, 142, true)
+		DisableControlAction(0, 143, true)
+		DisableControlAction(0, 257, true)
+		DisableControlAction(0, 263, true)
+		DisableControlAction(0, 264, true)
+
+		if Config.Debug then
+		DrawSphere(GetEntityCoords(playerPed), 7.0, 255, 255, 0, 0.15)
+		end
+
+		Wait(5)
+	    until targetActive == false
 	end)
 
     playerPed = PlayerPedId()
