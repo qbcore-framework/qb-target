@@ -1,4 +1,5 @@
 # bt-target
+## This is broken right now, don't use it, a fix is being worked on!
 
 This repository was originally a fork and now it's own repository as it's a slightly changed qtarget but still named bt-target, most of the code comes from qtarget as I find their work awesome on this and what they've achieved with it, mostly the optimization.
 
