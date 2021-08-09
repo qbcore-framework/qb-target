@@ -25,48 +25,7 @@ Config.CircleZones = {
 }
 
 Config.BoxZones = {
-	["testt"] = {
-		name = "testt",
-		coords = vector3(-262.872, -368.548, 30.132),
-		length = 1.8,
-		width = 1.8,
-		heading = 70.0,
-		debugPoly = true,
-		minZ = 29.1,
-		maxZ = 32.9,
-		options = {
-			{
-				trigger = {
-					type = "client",
-					event = "bt-target:debug",
-				},
-				icon = "fas fa-car",
-				label = "labnels"
-			},
-		},
-		distance = 2.8,
-	},
-	["testtt"] = {
-		name = "testtt",
-		coords = vector3(-265.872, -368.548, 30.132),
-		length = 1.8,
-		width = 1.8,
-		heading = 70.0,
-		debugPoly = true,
-		minZ = 29.1,
-		maxZ = 32.9,
-		options = {
-			{
-				trigger = {
-					type = "client",
-					event = "bt-target:debug",
-				},
-				icon = "fas fa-car",
-				label = "labnels"
-			},
-		},
-		distance = 2.8,
-	}
+	
 }
 
 Config.PolyZones = {
