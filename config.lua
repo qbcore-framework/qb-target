@@ -14,6 +14,9 @@ Config.Debug = true
 -- Support when not using QBCore
 Config.Standalone = false
 
+-- Enable outlines around the entity you're looking at
+Config.EnableOutline = false
+
 -------------------------------------------------------------------------------
 -- Target Configs
 -------------------------------------------------------------------------------
