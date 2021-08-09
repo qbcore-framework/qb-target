@@ -269,6 +269,12 @@ local EnableNUI = function(options)
 	end
 end
 
+local DrawOutlineEntity = function(entity, bool)
+	if Config.EnableOutline then
+		SetEntityDrawOutline(entity, bool)
+	end
+end
+
 CheckEntity = function(hit, data, entity, distance)
 	local send_options = {}
 	local send_distance = {}
@@ -284,21 +290,21 @@ CheckEntity = function(hit, data, entity, distance)
 	if next(send_options) then
 		success = true
 		SendNUIMessage({response = "foundTarget"})
-		SetEntityDrawOutline(entity, true)
+		DrawOutlineEntity(entity, true)
 		while targetActive and success do
 			local playerCoords = GetEntityCoords(playerPed)
 			local _, coords, entity2 = Exports:RaycastCamera(hit)
 			local distance = #(playerCoords - coords)
 			if entity ~= entity2 then 
 				if hasFocus then DisableNUI() end
-				SetEntityDrawOutline(entity, false)
+				DrawOutlineEntity(entity, false)
 				break
 			elseif not hasFocus and IsControlPressed(0, 238) then
 				EnableNUI(M.CloneTable(sendData))
-				SetEntityDrawOutline(entity, false)
+				DrawOutlineEntity(entity, false)
 			elseif not hasFocus and IsControlReleased(0, 19) then
 				DisableNUI()
-				SetEntityDrawOutline(entity, false)
+				DrawOutlineEntity(entity, false)
 				break
 			else
 				for k, v in pairs(send_distance) do
@@ -311,7 +317,7 @@ CheckEntity = function(hit, data, entity, distance)
 			Wait(5)
 		end
 		LeftTarget()
-		SetEntityDrawOutline(entity, false)
+		DrawOutlineEntity(entity, false)
 	end
 end
 
@@ -369,9 +375,9 @@ function EnableTarget()
 			if entityType > 0 then
 
 				-- Owned entity targets
-				if NetworkGetEntityIsNetworked(entity) then 
+				if NetworkGetEntityIsNetworked(entity) then
 					local data = Entities[NetworkGetNetworkIdFromEntity(entity)]
-					if data then CheckEntity(hit, data, entity, #(plyCoords - coords)) end
+					if next(data) then CheckEntity(hit, data, entity, #(plyCoords - coords)) end
 				end
 				
 
@@ -397,7 +403,7 @@ function EnableTarget()
 						if next(send_options) then
 							success = true
 							SendNUIMessage({response = "foundTarget"})
-							SetEntityDrawOutline(entity, true)
+							DrawOutlineEntity(entity, true)
 							while targetActive and success do
 								local playerCoords = GetEntityCoords(playerPed)
 								local _, coords, entity2 = Exports:RaycastCamera(hit)
@@ -406,31 +412,31 @@ function EnableTarget()
 								
 									if closestBone ~= closestBone2 or #(coords - closestPos2) > data.distance or #(playerCoords - coords) > 1.1 then
 										if hasFocus then DisableNUI() end
-										SetEntityDrawOutline(entity, false)
+										DrawOutlineEntity(entity, false)
 										break
-									elseif not hasFocus and IsControlPressed(0, 238) then EnableNUI(M.CloneTable(sendData)) SetEntityDrawOutline(entity, false) end
+									elseif not hasFocus and IsControlPressed(0, 238) then EnableNUI(M.CloneTable(sendData)) DrawOutlineEntity(entity, false) end
 								else
 									if hasFocus then DisableNUI() end
-									SetEntityDrawOutline(entity, false)
+									DrawOutlineEntity(entity, false)
 									break
 								end
 								Wait(5)
 							end
 							LeftTarget()
-							SetEntityDrawOutline(entity, false)
+							DrawOutlineEntity(entity, false)
 						end
 					end
 
 				-- Entity targets
 				else
 					local data = Models[GetEntityModel(entity)]
-					if data then CheckEntity(hit, data, entity, #(plyCoords - coords)) end
+					if next(data) then CheckEntity(hit, data, entity, #(plyCoords - coords)) end
 				end
 
 				-- Generic targets
 				if not success then
 					local data = Types[entityType]
-					if data then CheckEntity(hit, data, entity, #(plyCoords - coords)) end
+					if next(data) then CheckEntity(hit, data, entity, #(plyCoords - coords)) end
 				end
 			end
 			if not success then
@@ -450,26 +456,26 @@ function EnableTarget()
 						if next(send_options) then
 							success = true
 							SendNUIMessage({response = "foundTarget"})
-							SetEntityDrawOutline(entity, true)
+							DrawOutlineEntity(entity, true)
 							while targetActive and success do
 								local playerCoords = GetEntityCoords(playerPed)
 								local _, coords, entity2 = Exports:RaycastCamera(hit)
 								if not zone:isPointInside(playerCoords) or #(playerCoords - zone.center) > zone.targetoptions.distance then
 									if hasFocus then DisableNUI() end
-									SetEntityDrawOutline(entity, false)
+									DrawOutlineEntity(entity, false)
 									break
 								elseif not hasFocus and IsControlPressed(0, 238) then
 									EnableNUI(M.CloneTable(sendData))
-									SetEntityDrawOutline(entity, false)
+									DrawOutlineEntity(entity, false)
 								end
 								Wait(5)
 							end
 							LeftTarget()
-							SetEntityDrawOutline(entity, false)
+							DrawOutlineEntity(entity, false)
 						end
 					end
 				end
-			else LeftTarget() SetEntityDrawOutline(entity, false) end
+			else LeftTarget() DrawOutlineEntity(entity, false) end
 			Wait(sleep)
 		end
 		DisableTarget()
@@ -637,15 +643,13 @@ CreateThread(function()
 end)
 
 -- This is to make sure you can restart the resource manually without having to log-out.
-if Config.Debug then
-	AddEventHandler('onResourceStart', function(resource)
-		if resource == GetCurrentResourceName() then
-			Wait(200)
-			PlayerData = QBCore.Functions.GetPlayerData()
-			isLoggedIn = true
-		end
-	end)
-end
+AddEventHandler('onResourceStart', function(resource)
+	if resource == GetCurrentResourceName() then
+		Wait(200)
+		PlayerData = QBCore.Functions.GetPlayerData()
+		isLoggedIn = true
+	end
+end)
 
 if Config.Debug then
 	AddEventHandler('bt-target:debug', function(data)
