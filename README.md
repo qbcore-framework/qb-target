@@ -22,7 +22,7 @@ You are free to help through Pull Requests, I love some help!
 - Support checking for job, items, or specific entities
 - Utilise the `canInteract` function for advanced checks to show or hide an option based on any trigger
 
-# Dependencies
+# Optional Dependencies
 
 * [QBCore](https://github.com/qbcore-framework/qb-core)
 
