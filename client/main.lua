@@ -357,7 +357,10 @@ function EnableTarget()
 			until not targetActive
 		end)
 		playerPed = PlayerPedId()
-		PlayerData = QBCore.Functions.GetPlayerData()
+		
+		if not Config.Standalone then
+			PlayerData = QBCore.Functions.GetPlayerData()
+		end
 
 		while targetActive do
 			local sleep = 10
