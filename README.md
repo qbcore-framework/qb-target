@@ -10,6 +10,8 @@ This version is for QBCore but can be used by any framework but you will have to
 
 You are free to help through Pull Requests, I love some help!
 
+The wiki and examples.md are always being improved and new examples can be made on request, just let me know!
+
 ## Features 
 - Maintains compatibility with bt-target while providing improved utility and performance
 - Optimised and improved raycasting function allows interaction with a wider range of entities
