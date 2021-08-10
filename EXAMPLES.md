@@ -1,5 +1,7 @@
 # Examples
 
+### All the exports have to be on the client-side to work!
+
 ## AddBoxZone / Job Check
 This is an example setup for a police job. The resource defines a BoxZone around a clipboard in the `gabz_mrpd` MLO. 
 It's a simple set-up, we provide a **unique** name, define its center point with the vector3, define a length and a width, and then we define some options; the unique name again, the heading of the box, a bool to display a debug poly, and the height of the zone. 
