@@ -22,6 +22,33 @@ if not Config.Standalone then
 	end)
 end
 
+if not Config.Standalone then
+	M.ItemCount = function(item)
+		for k, v in pairs(PlayerData.items) do
+			if v.name == item then
+				return v.amount
+			end
+		end
+		return 0
+	end
+
+	M.CheckOptions = function(data, entity, distance)
+		if (data.distance == nil or distance <= data.distance)
+		and (data.job == nil or (data.job == PlayerData.job.name) or (data.job[PlayerData.job.name] and data.job[PlayerData.job.name] <= PlayerData.job.grade.level))
+		and (data.item == nil or data.item and M.ItemCount(data.item) > 0)
+		and (data.canInteract == nil or data.canInteract(entity)) then return true
+		end
+		return false
+	end
+else
+	M.CheckOptions = function(data, entity, distance)
+		if (data.distance == nil or distance <= data.distance)
+		and (data.canInteract == nil or data.canInteract(entity)) then return true
+		end
+		return false
+	end
+end
+
 --Exports
 
 local Exports = {
@@ -443,7 +470,7 @@ function EnableTarget()
 				-- Zone targets
 				for _,zone in pairs(Zones) do
 					local distance = #(plyCoords - zone.center)
-					if zone:isPointInside(plyCoords) and distance <= zone.targetoptions.distance then
+					if zone:isPointInside(coords) and distance <= zone.targetoptions.distance then
 						local send_options = {}
 						for o, data in pairs(zone.targetoptions.options) do
 							if M.CheckOptions(data, entity, distance) then
@@ -460,7 +487,7 @@ function EnableTarget()
 							while targetActive and success do
 								local playerCoords = GetEntityCoords(playerPed)
 								local _, coords, entity2 = Exports:RaycastCamera(hit)
-								if not zone:isPointInside(playerCoords) or #(playerCoords - zone.center) > zone.targetoptions.distance then
+								if not zone:isPointInside(coords) or #(playerCoords - zone.center) > zone.targetoptions.distance then
 									if hasFocus then DisableNUI() end
 									DrawOutlineEntity(entity, false)
 									break
