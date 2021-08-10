@@ -27,6 +27,21 @@ exports['bt-target']:AddBoxZone("MissionRowDutyClipboard", vector3(441.7989, -98
 		},
 		distance = 3.5
 })
+
+-- This event is only for the QBCore resource qb-policejob
+RegisterNetEvent('Toggle:Duty')
+AddEventHandler('Toggle:Duty', function()
+    onDuty = not onDuty
+    TriggerServerEvent("police:server:UpdateCurrentCops")
+    TriggerServerEvent("QBCore:ToggleDuty")
+    TriggerServerEvent("police:server:UpdateBlips")
+    TriggerEvent('qb-policealerts:ToggleDuty', onDuty)
+    if onDuty then
+        exports["rp-radio"]:GivePlayerAccessToFrequencies(1, 2)
+    else
+        exports["rp-radio"]:RemovePlayerAccessToFrequencies(1, 2)
+    end
+end)
 ```
 
 This is an example using the provided **config**
@@ -54,6 +69,21 @@ Config.BoxZones = {
         distance = 3.5
     },
 }
+
+-- This event is only for the QBCore resource qb-policejob
+RegisterNetEvent('Toggle:Duty')
+AddEventHandler('Toggle:Duty', function()
+    onDuty = not onDuty
+    TriggerServerEvent("police:server:UpdateCurrentCops")
+    TriggerServerEvent("QBCore:ToggleDuty")
+    TriggerServerEvent("police:server:UpdateBlips")
+    TriggerEvent('qb-policealerts:ToggleDuty', onDuty)
+    if onDuty then
+        exports["rp-radio"]:GivePlayerAccessToFrequencies(1, 2)
+    else
+        exports["rp-radio"]:RemovePlayerAccessToFrequencies(1, 2)
+    end
+end)
 ```
 
 There is only one way you can define the job though, but you can also provide a `[key] = value` table instead to enable checking for more jobs:
