@@ -18,10 +18,8 @@ exports['bt-target']:AddBoxZone("MissionRowDutyClipboard", vector3(441.7989, -98
 	}, {
 		options = {
 			{
-				trigger = {
-            type = "client"
-            event = "Toggle:Duty",
-        }
+            			type = "client"
+            			event = "Toggle:Duty",
 				icon = "fas fa-sign-in-alt",
 				label = "Sign In",
 				job = "police",
@@ -46,10 +44,8 @@ Config.BoxZones = {
         maxZ = 30.87834,
         options = {
             {
-              trigger = {
-                  type = "client"
-                  event = "Toggle:Duty",
-              }
+              type = "client"
+              event = "Toggle:Duty",
               icon = "fas fa-sign-in-alt",
               label = "Sign In",
               job = "police",
@@ -114,27 +110,23 @@ Config.TargetModels = {
         },
         options = {
             {
-                trigger = {
-                    type = "client",
-                    event = "request:CuffPed",
-                },
+                type = "client",
+                event = "request:CuffPed",
                 icon = "fas fa-hands",
                 label = "Cuff / Uncuff",
                 item = 'handcuffs',
                 job = "police",
             },
             {
-                trigger = {
-                    type = "client",
-                    event = "Rob:"Player",
-                },
+                type = "client",
+                event = "Rob:"Player",
                 icon = "fas fa-sack-dollar",
                 label = "Rob",
                 canInteract = function(entity)
-				            if IsPedAPlayer(entity) then 
-					              return IsEntityDead(entity)
-				            end
-			          end, 
+			if IsPedAPlayer(entity) then 
+				return IsEntityDead(entity)
+			end
+		end, 
             },
         },
         distance = 2.5,
@@ -151,10 +143,8 @@ This is an example using **exports**
 exports['bt-target']:AddTargetEntity('mule2', {
     options = {
         {
-            trigger = {
-                type = "client",
-                event = "postop:getPackage",
-            },
+            type = "client",
+            event = "postop:getPackage",
             icon = "fas fa-box-circle-check",
             label = "Get Package",
             job = "postop",
@@ -172,10 +162,8 @@ Config.TargetEntities = {
         entity = 'mule2',
         options = {
             {
-                trigger = {
-                    type = "client",
-                    event = "postop:getPackage",
-                },
+                type = "client",
+                event = "postop:getPackage",
                 icon = "fas fa-box-circle-check",
                 label = "Get Package",
                 job = "postop",
@@ -199,10 +187,8 @@ local coffee = {
 exports['bt-target']:AddTargetModel(coffee, {
     options = {
         {
-            trigger = {
-                type = "client",
-                event = "coffee:buy",
-            },
+            type = "client",
+            event = "coffee:buy",
             icon = "fas fa-coffee",
             label = "Coffee",
             item = "coffee",
@@ -241,31 +227,29 @@ AddEventHandler('plantpotato',function()
 
 	-- Logic to handle growth, create a thread and loop, or do something else. Up to you.
 
-  exports['bt-target']:AddEntityZone("potato-growing-"..plant, plant, {
+	exports['bt-target']:AddEntityZone("potato-growing-"..plant, plant, {
 		name = "potato-growing-"..plant,
 		heading=GetEntityHeading(plant),
 		debugPoly=false,
 	}, {
 		options = {
-		    {
-			      trigger = {
-                type = "client",
-                event = "farming:harvestPlant",
-            },
-			      icon = "fa-solid fa-scythe",
-			      label = "Harvest potato",
-			      plant = plant,
-			      job = "farmer",
-			      canInteract = function(entity)
-				        if Entity(entity).state.growth >= 100 then 
-					          return true
-				        else 
-					          return false
-				        end 
-			      end,
-		      },
-	    },
-		  distance = 3.5
-  })
+			{
+				type = "client",
+				event = "farming:harvestPlant",
+				icon = "fa-solid fa-scythe",
+				label = "Harvest potato",
+				plant = plant,
+				job = "farmer",
+				canInteract = function(entity)
+					if Entity(entity).state.growth >= 100 then 
+						  return true
+					else 
+						  return false
+					end 
+				end,
+			},
+		},
+		distance = 3.5
+  	})
 end)
 ```
