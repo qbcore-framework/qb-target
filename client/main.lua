@@ -505,26 +505,22 @@ RegisterNUICallback('selectTarget', function(option, cb)
     local data = sendData[option]
     CreateThread(function()
         Wait(50)
-	if data.action ~= nil then
-	    data.action(data.entity)
-        elseif data.trigger ~= nil and type(data.trigger) == 'table' then
-	    if data.trigger.type == "client" then
-                TriggerEvent(data.trigger.event, data)
-            elseif data.trigger.type == "server" then
-                TriggerServerEvent(data.trigger.event, data)
-            elseif data.trigger.type == "command" then
-                ExecuteCommand(data.trigger.event)
-            elseif data.trigger.type == "qbcommand" then
-                TriggerServerEvent('QBCore:CallCommand', data.trigger.event, data)
+        if data.action ~= nil then
+            data.action(data.entity)
+        elseif data.event ~= nil then
+            if data.type == "client" then
+                TriggerEvent(data.event, data)
+            elseif data.type == "server" then
+                TriggerServerEvent(data.event, data)
+            elseif data.type == "command" then
+                ExecuteCommand(data.event)
+            elseif data.type == "qbcommand" then
+                TriggerServerEvent('QBCore:CallCommand', data.event, data)
+            else
+                TriggerEvent(data.event, data)
             end
         else
-	    if data.trigger == nil then
-		print("[bt-target] ERROR: COULDN'T TRIGGER AN EVENT BECAUSE THE 'trigger' PARAMETER IS NOT SET")
-	    elseif data.action == nil then
-		print("[bt-target] ERROR: COULDN'T TRIGGER AN EVENT BECAUSE THE 'action' PARAMETER IS NOT SET")
-	    elseif type(data.trigger) ~= 'table' then
-		print("[bt-target] ERROR: COULDN'T TRIGGER AN EVENT BECAUSE THE 'trigger' PARAMETER IS NOT SET TO A TABLE")
-	    end
+            print("[bt-target]: ERROR NO EVENT SETUP")
         end
     end)
 
