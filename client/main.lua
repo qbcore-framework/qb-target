@@ -401,16 +401,26 @@ function EnableTarget()
 			local hit, coords, entity, entityType = Exports:RaycastCamera(switch())
 			if entityType > 0 then
 
+				-- Generic targets
+				if not success then
+					local data = Types[entityType]
+					if next(data) then CheckEntity(hit, data, entity, #(plyCoords - coords)) end
+				end
+
 				-- Owned entity targets
 				if NetworkGetEntityIsNetworked(entity) then
 					local data = Entities[NetworkGetNetworkIdFromEntity(entity)]
 					if next(data) then CheckEntity(hit, data, entity, #(plyCoords - coords)) end
 				end
-				
-
 				-- Player targets
-				if entityType == 1 and IsPedAPlayer(entity) then
-					CheckEntity(hit, Players, entity, #(plyCoords - coords))
+				if entityType == 1 then
+					if IsPedAPlayer(entity) then
+						CheckEntity(hit, Players, entity, #(plyCoords - coords))
+					else
+						-- Model targets
+						local data = Models[GetEntityModel(entity)]
+						if next(data) then CheckEntity(hit, data, entity, #(plyCoords - coords)) end
+					end
 
 				-- Vehicle bones
 				elseif entityType == 2 and #(plyCoords - coords) <= 1.1 then
@@ -457,12 +467,6 @@ function EnableTarget()
 				-- Entity targets
 				else
 					local data = Models[GetEntityModel(entity)]
-					if next(data) then CheckEntity(hit, data, entity, #(plyCoords - coords)) end
-				end
-
-				-- Generic targets
-				if not success then
-					local data = Types[entityType]
 					if next(data) then CheckEntity(hit, data, entity, #(plyCoords - coords)) end
 				end
 			end
@@ -685,10 +689,8 @@ if Config.Debug then
 			Exports:AddTargetEntity(data.entity, {
 				options = {
 					{
-						trigger = {
-							type = "client",
-							event = "bt-target:debug",
-						},
+						type = "client",
+						event = "bt-target:debug",
 						icon = "fas fa-box-circle-check",
 						label = "HelloWorld",
 						remove = true
@@ -704,10 +706,8 @@ if Config.Debug then
 	Exports:AddPed({
 		options = {
 			{
-				trigger = {
-					type = "client",
-					event = "bt-target:debug",
-				},
+				type = "client",
+				event = "bt-target:debug",
 				icon = "fas fa-male",
 				label = "(Debug) Ped",
 			},
@@ -718,10 +718,8 @@ if Config.Debug then
 	Exports:AddVehicle({
 		options = {
 			{
-				trigger = {
-					type = "client",
-					event = "bt-target:debug",
-				},
+				type = "client",
+				event = "bt-target:debug",
 				icon = "fas fa-car",
 				label = "(Debug) Vehicle",
 			},
@@ -732,10 +730,8 @@ if Config.Debug then
 	Exports:AddObject({
 		options = {
 			{
-				trigger = {
-					type = "client",
-					event = "bt-target:debug",
-				},
+				type = "client",
+				event = "bt-target:debug",
 				icon = "fas fa-cube",
 				label = "(Debug) Object",
 			},
@@ -746,10 +742,8 @@ if Config.Debug then
 	Exports:AddPlayer({
 		options = {
 			{
-				trigger = {
-					type = "client",
-					event = "bt-target:debug",
-				},
+				type = "client",
+				event = "bt-target:debug",
 				icon = "fas fa-cube",
 				label = "(Debug) Player",
 			},
