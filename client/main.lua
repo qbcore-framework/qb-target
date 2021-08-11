@@ -395,7 +395,7 @@ function EnableTarget()
 				DisablePlayerFiring(PlayerId(), true)
 				DisableControlAction(0, 25, true)
 				DisableControlAction(0, 37, true)
-				Wait(5)
+				Wait(1)
 			until not targetActive
 		end)
 		playerPed = PlayerPedId()
@@ -405,7 +405,7 @@ function EnableTarget()
 		end
 
 		while targetActive do
-			local sleep = 10
+			local sleep = 1
 			local plyCoords = GetEntityCoords(playerPed)
 			local hit, coords, entity, entityType = Exports:RaycastCamera(switch())
 			if entityType > 0 then
