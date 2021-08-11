@@ -179,10 +179,17 @@ local Exports = {
 		local num = math.abs(math.cos(direction.x))
 		direction = vec3((-math.sin(direction.y) * num), (math.cos(direction.y) * num), math.sin(direction.x))
 		local destination = vec3(cam.x + direction.x * 30, cam.y + direction.y * 30, cam.z + direction.z * 30)
+		if Config.Debug then
+			local entCoords = GetEntityCoords(PlayerPedId())
+			DrawLine(entCoords.x, entCoords.y, entCoords.z, destination.x, destination.y, destination.z, 255, 0, 255, 255)
+		end
 		local rayHandle = StartShapeTestLosProbe(cam, destination, flag or -1, playerPed or PlayerPedId(), 0)
 		while true do
 			Wait(5)
 			local result, _, endCoords, _, materialHash, entityHit = GetShapeTestResultIncludingMaterial(rayHandle)
+			if Config.Debug then
+				DrawLine(destination.x, destination.y, destination.z, endCoords.x, endCoords.y, endCoords.z, 255, 0, 255, 255)
+			end
 			if result ~= 1 then
 				local entityType
 				if entityHit then entityType = GetEntityType(entityHit) end
@@ -298,7 +305,9 @@ end
 
 local DrawOutlineEntity = function(entity, bool)
 	if Config.EnableOutline then
-		SetEntityDrawOutline(entity, bool)
+		if not IsEntityAPed(entity) then
+			SetEntityDrawOutline(entity, bool)
+		end
 	end
 end
 
