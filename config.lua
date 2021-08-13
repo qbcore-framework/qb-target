@@ -9,7 +9,7 @@ Config.VehicleBones = {'chassis', 'windscreen', 'seat_pside_r', 'seat_dside_r', 
 Config.MaxDistance = 3.0
 
 -- Enable debug options and distance preview
-Config.Debug = true
+Config.Debug = false
 
 -- Support when not using QBCore
 Config.Standalone = false
