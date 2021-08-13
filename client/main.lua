@@ -682,7 +682,9 @@ end)
 AddEventHandler('onResourceStart', function(resource)
 	if resource == GetCurrentResourceName() then
 		Wait(200)
-		PlayerData = QBCore.Functions.GetPlayerData()
+		if not Config.Standalone then
+			PlayerData = QBCore.Functions.GetPlayerData()
+		end
 		isLoggedIn = true
 	end
 end)
