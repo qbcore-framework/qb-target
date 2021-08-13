@@ -580,7 +580,7 @@ CreateThread(function()
     TriggerEvent("chat:removeSuggestion", "/+playerTarget")
     TriggerEvent("chat:removeSuggestion", "/-playerTarget")
 
-    if next(Config.CircleZones) then
+    if (Config.CircleZones) then
         for k, v in pairs(Config.CircleZones) do
             Exports:AddCircleZone(v.name, v.coords, v.radius, {
                 name = v.name,
