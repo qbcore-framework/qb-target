@@ -34,7 +34,7 @@ if not Config.Standalone then
 
 	M.CheckOptions = function(data, entity, distance)
 		if (data.distance == nil or distance <= data.distance)
-		and (data.job == nil or (data.job == PlayerData.job.name) or (data.job[PlayerData.job.name] and data.job[PlayerData.job.name] <= PlayerData.job.grade.level))
+		and (data.job == nil or data.job == PlayerData.job.name or (data.job[PlayerData.job.name] and data.job[PlayerData.job.name] <= PlayerData.job.grade.level))
 		and (data.item == nil or data.item and M.ItemCount(data.item) > 0)
 		and (data.canInteract == nil or data.canInteract(entity)) then return true
 		end
@@ -68,8 +68,12 @@ local Exports = {
 	end,
 
 	AddTargetBone = function(self, bones, parameters)
-		for _, bone in pairs(bones) do
-			Bones[bone] = parameters
+		if type(bones) == 'table' then
+			for _, bone in pairs(bones) do
+				Bones[bone] = parameters
+			end
+		elseif type(bones) == 'string' then
+			Bones[bones] = parameters
 		end
 	end,
 
@@ -92,8 +96,17 @@ local Exports = {
 
 	AddTargetModel = function(self, models, parameters)
 		local distance, options = parameters.distance or Config.MaxDistance, parameters.options
-		for _, model in pairs(models) do
-			if type(model) == 'string' then model = GetHashKey(model) end
+		if type(models) == 'table' then
+			for _, model in pairs(models) do
+				if type(model) == 'string' then model = GetHashKey(model) end
+				if not Models[model] then Models[model] = {} end
+				for k, v in pairs(options) do
+					if not v.distance or v.distance > distance then v.distance = distance end
+					Models[model][v.label] = v
+				end
+			end
+		elseif type(models) == 'string' then
+			local model = GetHashKey(models)
 			if not Models[model] then Models[model] = {} end
 			for k, v in pairs(options) do
 				if not v.distance or v.distance > distance then v.distance = distance end
@@ -111,11 +124,32 @@ local Exports = {
 	end,
 
 	RemoveTargetModel = function(self, models, labels)
-		for _, model in pairs(models) do
-			if type(model) == 'string' then model = GetHashKey(model) end
-			for k, v in pairs(labels) do
+		if type(models) == 'table' then
+			for _, model in pairs(models) do
+				if type(model) == 'string' then model = GetHashKey(model) end
+				if type(labels) == 'table' then
+					for k, v in pairs(labels) do
+						if Models[model] then
+							Models[model][v] = nil
+						end
+					end
+				elseif type(labels) == 'string' then
+					if Models[model] then
+						Models[model][labels] = nil
+					end
+				end
+			end
+		elseif type(models) == 'string' then
+			local model = GetHashKey(model)
+			if type(labels) == 'table' then
+				for k, v in pairs(labels) do
+					if Models[model] then
+						Models[model][v] = nil
+					end
+				end
+			elseif type(labels) == 'string' then
 				if Models[model] then
-					Models[model][v] = nil
+					Models[model][labels] = nil
 				end
 			end
 		end
@@ -124,9 +158,15 @@ local Exports = {
 	RemoveTargetEntity = function(self, entity, labels)
 		local entity = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity) or false
 		if entity then
-			for k, v in pairs(labels) do
+			if type(labels) == 'table' then
+				for k, v in pairs(labels) do
+					if Entities[entity] then
+						Entities[entity][v] = nil
+					end
+				end
+			elseif type(labels) == 'string' then
 				if Entities[entity] then
-					Entities[entity][v] = nil
+					Entities[entity][labels] = nil
 				end
 			end
 		end
@@ -166,9 +206,13 @@ local Exports = {
 
 	RemoveObject = function(self, labels) self:RemoveType(3, labels) end,
 
-	RemovePlayer = function(self, type, labels)
-		for k, v in pairs(labels) do
-			Players[v.label] = nil
+	RemovePlayer = function(self, labels)
+		if type(labels) == 'table' then
+			for k, v in pairs(labels) do
+				Players[v.label] = nil
+			end
+		elseif type(labels) == 'string' then
+			Players[labels] = nil
 		end
 	end,
 
@@ -197,11 +241,38 @@ local Exports = {
 			end
 		end
 	end,
-	isTargetActive = function(self)
+	IsTargetActive = function(self)
 		return targetActive
 	end,
-	isTargetSuccess = function(self)
+	IsTargetSuccess = function(self)
 		return success
+	end,
+	GetTargetTypeData = function(self, type, label)
+		return Types[type][label]
+	end,
+	GetTargetZoneData = function(self, name)
+		return Zones[name]
+	end,
+	GetTargetBoneData = function(self, bone)
+		return Bones[bone]
+	end,
+	GetTargetEntityData = function(self, entity, label)
+		return Entities[entity][label]
+	end,
+	GetTargetModelData = function(self, model, label)
+		return Models[model][label]
+	end,
+	GetTargetPedData = function(self, label)
+		return Types[1][label]
+	end,
+	GetTargetVehicleData = function(self, label)
+		return Types[2][label]
+	end,
+	GetTargetObjectData = function(self, label)
+		return Types[3][label]
+	end,
+	GetTargetPlayerData = function(self, label)
+		return Players[label]
 	end,
 }
 
@@ -289,12 +360,48 @@ exports("Raycast", function(flag)
     Exports:RaycastCamera(flag)
 end)
 
-exports("isTargetActive", function()
-	return Exports:isTargetActive()
+exports("IsTargetActive", function()
+	return Exports:IsTargetActive()
 end)
 
-exports("isTargetSuccess", function()
-	return Exports:isTargetSuccess()
+exports("IsTargetSuccess", function()
+	return Exports:IsTargetSuccess()
+end)
+
+exports("GetTargetTypeData", function(type, label)
+	return Exports:GetTargetTypeData(type, label)
+end)
+
+exports("GetTargetZoneData", function(name)
+	return Exports:GetTargetZoneData(name)
+end)
+
+exports("GetTargetBoneData", function(bone)
+	return Exports:GetTargetBoneData(bone)
+end)
+
+exports("GetTargetEntityData", function(entity, label)
+	Exports:GetTargetEntityData(entity, label)
+end)
+
+exports("GetTargetModelData", function(model, label)
+	return Exports:GetTargetModelData(model, label)
+end)
+
+exports("GetTargetPedData", function(label)
+	return Exports:GetTargetPedData(label)
+end)
+
+exports("GetTargetVehicleData", function(label)
+	return Exports:GetTargetVehicleData(label)
+end)
+
+exports("GetTargetObjectData", function(label)
+	return Exports:GetTargetObjectData(label)
+end)
+
+exports("GetTargetPlayerData", function(label)
+	return Exports:GetTargetPlayerData(label)
 end)
 
 exports("FetchExports", function()
@@ -305,6 +412,22 @@ local DisableNUI = function()
 	SetNuiFocus(false, false)
 	SetNuiFocusKeepInput(false)
 	hasFocus = false
+end
+
+local DisableTarget = function()
+	if targetActive then
+		SetNuiFocus(false, false)
+		SetNuiFocusKeepInput(false)
+		targetActive, hasFocus, success = false, false, false
+		SendNUIMessage({response = "closeTarget"})
+	end
+end
+
+local LeftTarget = function()
+	SetNuiFocus(false, false)
+	SetNuiFocusKeepInput(false)
+	success, hasFocus = false, false
+	SendNUIMessage({response = "leftTarget"})
 end
 
 local EnableNUI = function(options)
@@ -394,7 +517,7 @@ local switch = function()
 	return curFlag
 end
 
-function EnableTarget()
+local EnableTarget = function()
 	if success or not isLoggedIn then return end
 	if not targetActive then
 		targetActive = true
@@ -424,29 +547,20 @@ function EnableTarget()
 			local hit, coords, entity, entityType = Exports:RaycastCamera(switch())
 			if entityType > 0 then
 
-				-- Generic targets
-				if not success then
-					local data = Types[entityType]
-					if next(data) then CheckEntity(hit, data, entity, #(plyCoords - coords)) end
-				end
-
 				-- Owned entity targets
 				if NetworkGetEntityIsNetworked(entity) then
 					local data = Entities[NetworkGetNetworkIdFromEntity(entity)]
-					if next(data) then CheckEntity(hit, data, entity, #(plyCoords - coords)) end
-				end
-				-- Player targets
-				if entityType == 1 then
-					if IsPedAPlayer(entity) then
-						CheckEntity(hit, Players, entity, #(plyCoords - coords))
-					else
-						-- Model targets
-						local data = Models[GetEntityModel(entity)]
-						if next(data) then CheckEntity(hit, data, entity, #(plyCoords - coords)) end
+					if data ~= nil then
+						CheckEntity(hit, data, entity, #(plyCoords - coords))
 					end
+				end
+
+				-- Player targets
+				if entityType == 1 and IsPedAPlayer(entity) then
+					CheckEntity(hit, Players, entity, #(plyCoords - coords))
 
 				-- Vehicle bones
-				elseif entityType == 2 and #(plyCoords - coords) <= 1.1 then
+				elseif entityType == 2 then
 					local min, max = GetModelDimensions(GetEntityModel(entity))
 					local closestBone, closestPos, closestBoneName = CheckBones(coords, entity, min, max, Config.VehicleBones)
 					local data = Bones[closestBoneName]
@@ -488,9 +602,19 @@ function EnableTarget()
 					end
 
 				-- Entity targets
-				else
+				elseif entityType > 2 then
 					local data = Models[GetEntityModel(entity)]
-					if next(data) then CheckEntity(hit, data, entity, #(plyCoords - coords)) end
+					if data ~= nil then 
+						CheckEntity(hit, data, entity, #(plyCoords - coords)) 
+					end
+				end
+
+				-- Generic targets
+				if not success then
+					local data = Types[entityType]
+					if data ~= nil then 
+						CheckEntity(hit, data, entity, #(plyCoords - coords)) 
+					end
 				end
 			end
 			if not success then
@@ -534,22 +658,6 @@ function EnableTarget()
 		end
 		DisableTarget()
 	end
-end
-
-function DisableTarget()
-	if targetActive then
-		SetNuiFocus(false, false)
-		SetNuiFocusKeepInput(false)
-		targetActive, hasFocus, success = false, false, false
-		SendNUIMessage({response = "closeTarget"})
-	end
-end
-
-function LeftTarget()
-	SetNuiFocus(false, false)
-	SetNuiFocusKeepInput(false)
-	success, hasFocus = false, false
-	SendNUIMessage({response = "leftTarget"})
 end
 
 RegisterNUICallback('selectTarget', function(option, cb)
