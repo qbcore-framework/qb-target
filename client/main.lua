@@ -197,6 +197,12 @@ local Exports = {
 			end
 		end
 	end,
+	isTargetActive = function(self)
+		return targetActive
+	end,
+	isTargetSuccess = function(self)
+		return success
+	end,
 }
 
 exports("AddCircleZone", function(name, center, radius, options, targetoptions)
@@ -281,6 +287,14 @@ end)
 
 exports("Raycast", function(flag)
     Exports:RaycastCamera(flag)
+end)
+
+exports("isTargetActive", function()
+	return Exports:isTargetActive()
+end)
+
+exports("isTargetSuccess", function()
+	return Exports:isTargetSuccess()
 end)
 
 exports("FetchExports", function()
