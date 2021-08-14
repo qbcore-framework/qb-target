@@ -61,7 +61,7 @@ Config.BoxZones = {
         maxZ = 30.87834,
         options = {
             {
-              type = "client"
+              type = "client",
               event = "Toggle:Duty",
               icon = "fas fa-sign-in-alt",
               label = "Sign In",
