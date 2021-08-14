@@ -449,8 +449,7 @@ local DrawOutlineEntity = function(entity, bool)
 end
 
 CheckEntity = function(hit, data, entity, distance)
-	local send_options = {}
-	local send_distance = {}
+	local send_options, send_distance = {}, {}
 	for o, data in pairs(data) do
 		if M.CheckOptions(data, entity, distance) then
 			local slot = #send_options + 1
@@ -482,8 +481,9 @@ CheckEntity = function(hit, data, entity, distance)
 			else
 				for k, v in pairs(send_distance) do
 					if (not v and distance < k) or (v and distance > k) then
-						SetEntityDrawOutline(entity, false)
-						return CheckEntity(hit, data, entity, distance)
+						LeftTarget()
+						DrawOutlineEntity(entity, false)
+						break
 					end
 				end
 			end
