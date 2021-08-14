@@ -555,9 +555,13 @@ local EnableTarget = function()
 					end
 				end
 
-				-- Player targets
-				if entityType == 1 and IsPedAPlayer(entity) then
-					CheckEntity(hit, Players, entity, #(plyCoords - coords))
+				-- Player and Ped targets
+				if entityType == 1 then
+					local data = Models[GetEntityModel(entity)]
+					if IsPedAPlayer(entity) then data = Players end
+					if data ~= nil then
+						CheckEntity(hit, data, entity, #(plyCoords - coords))
+					end
 
 				-- Vehicle bones
 				elseif entityType == 2 then
@@ -599,6 +603,12 @@ local EnableTarget = function()
 							LeftTarget()
 							DrawOutlineEntity(entity, false)
 						end
+					end
+
+					-- Specific Vehicle targets
+					local data = Models[GetEntityModel(entity)]
+					if data ~= nil then
+						CheckEntity(hit, data, entity, #(plyCoords - coords))
 					end
 
 				-- Entity targets
