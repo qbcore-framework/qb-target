@@ -4,7 +4,7 @@ qb-target is a targeting solution that allows interaction with any predefined en
 
 ## Information
 
-This repository was originally a fork and now it's own repository as it's a slightly changed qtarget but still named bt-target, most of the code comes from qtarget as I find their work awesome on this and what they've achieved with it, mostly the optimization.
+This repository was originally a fork and now it's own repository as it's basically qtarget but with lots of changes to it to make it better, most of the code comes from qtarget as I find their work awesome on this and what they've achieved with it, mostly the optimization.
 
 This version is for QBCore but can be used by any framework if you make your own changes to it.
 
