@@ -1,14 +1,14 @@
-# bt-target
+# qb-target
 
-#### bt-target is a targeting solution that allows interaction with any predefined entity, model, entity type, or polyzone. While activated you can easily and safely replace markers and distance checking, instead relying on intuitive design to improve player experiences and optimize interaction.
+qb-target is a targeting solution that allows interaction with any predefined entity, model, entity type, or polyzone. While activated you can easily and safely replace markers and distance checking, instead relying on intuitive design to improve player experiences and optimize interaction.
 
 ## Information
 
 This repository was originally a fork and now it's own repository as it's a slightly changed qtarget but still named bt-target, most of the code comes from qtarget as I find their work awesome on this and what they've achieved with it, mostly the optimization.
 
-This version is for QBCore but can be used by any framework but you will have to make your own changes then or just enable the standalone config option.
+This version is for QBCore but can be used by any framework if you make your own changes to it.
 
-You are free to help through Pull Requests, I love some help!
+You are free to help through Pull Requests and leave as much suggestions or issues, I love some help and want I'm always up for new challenges!
 
 The wiki and examples.md are always being improved and new examples can be made on request, just let me know!
 
