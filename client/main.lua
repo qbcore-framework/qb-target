@@ -718,7 +718,7 @@ RegisterNUICallback('selectTarget', function(option, cb)
                 TriggerEvent(data.event, data)
             end
         else
-            print("[bt-target]: ERROR NO EVENT SETUP")
+            print("[qb-target]: ERROR NO EVENT SETUP")
         end
     end)
 
@@ -849,7 +849,7 @@ AddEventHandler('onResourceStart', function(resource)
 end)
 
 if Config.Debug then
-	AddEventHandler('bt-target:debug', function(data)
+	AddEventHandler('qb-target:debug', function(data)
 		print( 'Flag: '..curFlag..'', 'Entity: '..data.entity..'', 'Type: '..GetEntityType(data.entity)..'' )
 		if data.remove then
 			Exports:RemoveTargetEntity(data.entity, {
@@ -860,7 +860,7 @@ if Config.Debug then
 				options = {
 					{
 						type = "client",
-						event = "bt-target:debug",
+						event = "qb-target:debug",
 						icon = "fas fa-box-circle-check",
 						label = "HelloWorld",
 						remove = true
@@ -877,7 +877,7 @@ if Config.Debug then
 		options = {
 			{
 				type = "client",
-				event = "bt-target:debug",
+				event = "qb-target:debug",
 				icon = "fas fa-male",
 				label = "(Debug) Ped",
 			},
@@ -889,7 +889,7 @@ if Config.Debug then
 		options = {
 			{
 				type = "client",
-				event = "bt-target:debug",
+				event = "qb-target:debug",
 				icon = "fas fa-car",
 				label = "(Debug) Vehicle",
 			},
@@ -901,7 +901,7 @@ if Config.Debug then
 		options = {
 			{
 				type = "client",
-				event = "bt-target:debug",
+				event = "qb-target:debug",
 				icon = "fas fa-cube",
 				label = "(Debug) Object",
 			},
@@ -913,7 +913,7 @@ if Config.Debug then
 		options = {
 			{
 				type = "client",
-				event = "bt-target:debug",
+				event = "qb-target:debug",
 				icon = "fas fa-cube",
 				label = "(Debug) Player",
 			},
