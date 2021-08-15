@@ -57,21 +57,21 @@ $(document).on('mousedown', (event) => {
     let split = element.id.split("-");
 
     if (split[0] === 'target') {
+        $.post(`https://${GetParentResourceName()}/selectTarget`, JSON.stringify(Number(split[1]) + 1));
+
         $(".target-label").html("");
         $('.target-wrapper').hide();
-        switch (event.which) {
-            case 1:
-                $.post(`https://${GetParentResourceName()}/selectTarget`, JSON.stringify(Number(split[1]) + 1));
-            case 3:
-                $.post(`https://${GetParentResourceName()}/closeTarget`)
-                break;
-        }
+    }
+
+    if (event.button == 2) {
+        CloseTarget()
+        $.post(`https://${GetParentResourceName()}/closeTarget`);
     }
 });
 
 $(document).on('keydown', function(event) {
-    if (event.key == 'Alt' || event.key == 'Escape') {
-        CloseTarget()
-        $.post(`https://${GetParentResourceName()}/closeTarget`)
+    if (event.key == 'Escape' || event.key == 'Backspace') {
+        CloseTarget();
+        $.post(`https://${GetParentResourceName()}/closeTarget`);
     }
 });
