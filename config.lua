@@ -17,6 +17,9 @@ Config.Standalone = false
 -- Enable outlines around the entity you're looking at
 Config.EnableOutline = false
 
+-- Enable default options (Toggling vehicle doors)
+Config.EnableDefaultOptions = false
+
 -------------------------------------------------------------------------------
 -- Target Configs
 -------------------------------------------------------------------------------
@@ -28,7 +31,7 @@ Config.CircleZones = {
 }
 
 Config.BoxZones = {
-	
+
 }
 
 Config.PolyZones = {
@@ -70,48 +73,8 @@ Config.PlayerOptions = {
 -------------------------------------------------------------------------------
 -- Functions
 -------------------------------------------------------------------------------
-local M = {}
-if not Config.Standalone then
-	M.ItemCount = function(item)
-		for k, v in pairs(PlayerData.items) do
-			if v.name == item then
-				return v.amount
-			end
-		end
-		return 0
-	end
 
-	M.CheckOptions = function(data, entity, distance)
-		if (data.distance == nil or distance <= data.distance)
-		and (data.job == nil or (data.job == PlayerData.job.name or data.job[PlayerData.job.name] and data.job[PlayerData.job.name] <= PlayerData.job.grade.level))
-		and (data.item == nil or data.item and M.ItemCount(data.item) > 0)
-		and (data.canInteract == nil or data.canInteract(entity)) then return true
-		end
-		return false
-	end
-else
-	M.CheckOptions = function(data, entity, distance)
-		if (data.distance == nil or distance <= data.distance)
-		and (data.canInteract == nil or data.canInteract(entity)) then return true
-		end
-		return false
-	end
-end
-
-M.CloneTable = function(table)
-	local copy = {}
-	for k,v in pairs(table) do
-		if type(v) == 'table' then
-			copy[k] = M.CloneTable(v)
-		else
-			if type(v) == 'function' then v = nil end
-			copy[k] = v
-		end
-	end
-	return copy
-end
-
-M.ToggleDoor = function(vehicle, door)
+Config.ToggleDoor = function(vehicle, door)
 	if GetVehicleDoorLockStatus(vehicle) ~= 2 then 
 		if GetVehicleDoorAngleRatio(vehicle, door) > 0.0 then
 			SetVehicleDoorShut(vehicle, door, false)
@@ -124,83 +87,86 @@ end
 -------------------------------------------------------------------------------
 -- Default options
 -------------------------------------------------------------------------------
-Bones['seat_dside_f'] = {
-	options = {
-		{
-			icon = "fas fa-door-open",
-			label = "Toggle front Door",
-			canInteract = function(entity)
-				return GetEntityBoneIndexByName(entity, 'door_dside_f') ~= -1
-			end,
-			action = function(entity)
-				M.ToggleDoor(entity, 0)
-			end
-		},
-	},
-	distance = 1.2
-}
 
-Bones['seat_pside_f'] = {
-	options = {
-		{
-			icon = "fas fa-door-open",
-			label = "Toggle front Door",
-			canInteract = function(entity)
-				return GetEntityBoneIndexByName(entity, 'door_pside_f') ~= -1
-			end,
-			action = function(entity)
-				M.ToggleDoor(entity, 1)
-			end
+if Config.EnableDefaultOptions then
+	Bones['seat_dside_f'] = {
+		options = {
+			{
+				icon = "fas fa-door-open",
+				label = "Toggle front Door",
+				canInteract = function(entity)
+					return GetEntityBoneIndexByName(entity, 'door_dside_f') ~= -1
+				end,
+				action = function(entity)
+					Config.ToggleDoor(entity, 0)
+				end
+			},
 		},
-	},
-	distance = 1.2
-}
+		distance = 1.2
+	}
 
-Bones['seat_dside_r'] = {
-	options = {
-		{
-			icon = "fas fa-door-open",
-			label = "Toggle rear Door",
-			canInteract = function(entity)
-				return GetEntityBoneIndexByName(entity, 'door_dside_r') ~= -1
-			end,
-			action = function(entity)
-				M.ToggleDoor(entity, 2)
-			end
+	Bones['seat_pside_f'] = {
+		options = {
+			{
+				icon = "fas fa-door-open",
+				label = "Toggle front Door",
+				canInteract = function(entity)
+					return GetEntityBoneIndexByName(entity, 'door_pside_f') ~= -1
+				end,
+				action = function(entity)
+					Config.ToggleDoor(entity, 1)
+				end
+			},
 		},
-	},
-	distance = 1.2
-}
+		distance = 1.2
+	}
 
-Bones['seat_pside_r'] = {
-	options = {
-		{
-			icon = "fas fa-door-open",
-			label = "Toggle rear Door",
-			canInteract = function(entity)
-				return GetEntityBoneIndexByName(entity, 'door_pside_r') ~= -1
-			end,
-			action = function(entity)
-				M.ToggleDoor(entity, 3)
-			end
+	Bones['seat_dside_r'] = {
+		options = {
+			{
+				icon = "fas fa-door-open",
+				label = "Toggle rear Door",
+				canInteract = function(entity)
+					return GetEntityBoneIndexByName(entity, 'door_dside_r') ~= -1
+				end,
+				action = function(entity)
+					Config.ToggleDoor(entity, 2)
+				end
+			},
 		},
-	},
-	distance = 1.2
-}
+		distance = 1.2
+	}
 
-Bones['bonnet'] = {
-	options = {
-		{
-			icon = "fa-duotone fa-engine",
-			label = "Toggle Hood",
-			action = function(entity)
-				M.ToggleDoor(entity, 4)
-			end
+	Bones['seat_pside_r'] = {
+		options = {
+			{
+				icon = "fas fa-door-open",
+				label = "Toggle rear Door",
+				canInteract = function(entity)
+					return GetEntityBoneIndexByName(entity, 'door_pside_r') ~= -1
+				end,
+				action = function(entity)
+					Config.ToggleDoor(entity, 3)
+				end
+			},
 		},
-	},
-	distance = 0.9
-}
+		distance = 1.2
+	}
+
+	Bones['bonnet'] = {
+		options = {
+			{
+				icon = "fa-duotone fa-engine",
+				label = "Toggle Hood",
+				action = function(entity)
+					Config.ToggleDoor(entity, 4)
+				end
+			},
+		},
+		distance = 0.9
+	}
+end
 
 -------------------------------------------------------------------------------
-return Config, Players, Types, Entities, Models, Zones, Bones, M, PlayerData
+return Config, Players, Types, Entities, Models, Zones, Bones, PlayerData
 -------------------------------------------------------------------------------
