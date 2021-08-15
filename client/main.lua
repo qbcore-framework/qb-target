@@ -1,52 +1,44 @@
-local Config, Players, Types, Entities, Models, Zones, Bones, M, PlayerData = load(LoadResourceFile(GetCurrentResourceName(), 'config.lua'))()
+local Config, Players, Types, Entities, Models, Zones, Bones, PlayerData = load(LoadResourceFile(GetCurrentResourceName(), 'config.lua'))()
 local playerPed, isLoggedIn, targetActive, hasFocus, success, sendData = PlayerPedId(), false, false, false, false
-
-if not Config.Standalone then
-	QBCore = exports['qb-core']:GetSharedObject()
 	
-	RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
-	AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
-		PlayerData = QBCore.Functions.GetPlayerData()
-		isLoggedIn = true
-	end)
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
+AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
+	PlayerData = QBCore.Functions.GetPlayerData()
+	isLoggedIn = true
+end)
 
-	RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
-	AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
-		isLoggedIn = true
-		PlayerData = {}
-	end)
+RegisterNetEvent('QBCore:Client:OnPlayerUnload')
+AddEventHandler('QBCore:Client:OnPlayerUnload', function()
+	isLoggedIn = false
+	PlayerData = {}
+end)
 
-	RegisterNetEvent('QBCore:Client:OnJobUpdate')
-	AddEventHandler('QBCore:Client:OnJobUpdate', function(JobInfo)
-		PlayerData.job = JobInfo
-	end)
+RegisterNetEvent('QBCore:Client:OnJobUpdate')
+AddEventHandler('QBCore:Client:OnJobUpdate', function(JobInfo)
+	PlayerData.job = JobInfo
+end)
+
+RegisterNetEvent('QBCore:Client:SetPlayerData')
+AddEventHandler('QBCore:Client:SetPlayerData', function(val)
+	PlayerData = val
+end)
+
+local ItemCount = function(item)
+	for k, v in pairs(PlayerData.items) do
+		if v.name == item then
+			return v.amount
+		end
+	end
+	return 0
 end
 
-if not Config.Standalone then
-	M.ItemCount = function(item)
-		for k, v in pairs(PlayerData.items) do
-			if v.name == item then
-				return v.amount
-			end
-		end
-		return 0
+local CheckOptions = function(data, entity, distance)
+	if (data.distance == nil or distance <= data.distance)
+	and (data.job == nil or data.job == PlayerData.job.name or (data.job[PlayerData.job.name] and data.job[PlayerData.job.name] <= PlayerData.job.grade.level))
+	and (data.item == nil or data.item and ItemCount(data.item) > 0)
+	and (data.canInteract == nil or data.canInteract(entity)) then return true
 	end
-
-	M.CheckOptions = function(data, entity, distance)
-		if (data.distance == nil or distance <= data.distance)
-		and (data.job == nil or data.job == PlayerData.job.name or (data.job[PlayerData.job.name] and data.job[PlayerData.job.name] <= PlayerData.job.grade.level))
-		and (data.item == nil or data.item and M.ItemCount(data.item) > 0)
-		and (data.canInteract == nil or data.canInteract(entity)) then return true
-		end
-		return false
-	end
-else
-	M.CheckOptions = function(data, entity, distance)
-		if (data.distance == nil or distance <= data.distance)
-		and (data.canInteract == nil or data.canInteract(entity)) then return true
-		end
-		return false
-	end
+	return false
 end
 
 --Exports
@@ -274,6 +266,18 @@ local Exports = {
 	GetTargetPlayerData = function(self, label)
 		return Players[label]
 	end,
+	CloneTable = function(self, table)
+		local copy = {}
+		for k,v in pairs(table) do
+			if type(v) == 'table' then
+				copy[k] = self:CloneTable(v)
+			else
+				if type(v) == 'function' then v = nil end
+				copy[k] = v
+			end
+		end
+		return copy
+	end,
 }
 
 exports("AddCircleZone", function(name, center, radius, options, targetoptions)
@@ -404,6 +408,10 @@ exports("GetTargetPlayerData", function(label)
 	return Exports:GetTargetPlayerData(label)
 end)
 
+exports("CloneTable", function(table)
+	return Exports:CloneTable(table)
+end)
+
 exports("FetchExports", function()
     return Exports
 end)
@@ -415,7 +423,7 @@ local DisableNUI = function()
 end
 
 local DisableTarget = function()
-	if targetActive then
+	if targetActive and not hasFocus then
 		SetNuiFocus(false, false)
 		SetNuiFocusKeepInput(false)
 		targetActive, hasFocus, success = false, false, false
@@ -451,7 +459,7 @@ end
 CheckEntity = function(hit, data, entity, distance)
 	local send_options, send_distance = {}, {}
 	for o, data in pairs(data) do
-		if M.CheckOptions(data, entity, distance) then
+		if CheckOptions(data, entity, distance) then
 			local slot = #send_options + 1
 			send_options[slot] = data
 			send_options[slot].entity = entity
@@ -472,15 +480,15 @@ CheckEntity = function(hit, data, entity, distance)
 				DrawOutlineEntity(entity, false)
 				break
 			elseif not hasFocus and IsControlPressed(0, 238) then
-				EnableNUI(M.CloneTable(sendData))
+				EnableNUI(Exports:CloneTable(sendData))
 				DrawOutlineEntity(entity, false)
 			elseif not hasFocus and IsControlReleased(0, 19) then
-				DisableNUI()
+				DisableTarget()
 				DrawOutlineEntity(entity, false)
 				break
 			else
 				for k, v in pairs(send_distance) do
-					if (not v and distance < k) or (v and distance > k) then
+					if v and distance > k then
 						LeftTarget()
 						DrawOutlineEntity(entity, false)
 						break
@@ -525,6 +533,7 @@ local EnableTarget = function()
 		
 		CreateThread(function()
 			repeat
+				SetPauseMenuActive(false)
 				if hasFocus then
 					DisableControlAction(0, 1, true)
 					DisableControlAction(0, 2, true)
@@ -571,7 +580,7 @@ local EnableTarget = function()
 					if closestBone and #(coords - closestPos) <= data.distance then
 						local send_options = {}
 						for o, data in pairs(data.options) do
-							if M.CheckOptions(data, entity) then 
+							if CheckOptions(data, entity) then 
 								local slot = #send_options + 1 
 								send_options[slot] = data
 								send_options[slot].entity = entity
@@ -588,11 +597,21 @@ local EnableTarget = function()
 								if hit and entity == entity2 then
 									local closestBone2, closestPos2, closestBoneName2 = CheckBones(coords, entity, min, max, Config.VehicleBones)
 								
-									if closestBone ~= closestBone2 or #(coords - closestPos2) > data.distance or #(playerCoords - coords) > 1.1 then
+									if closestBone ~= closestBone2 then
 										if hasFocus then DisableNUI() end
 										DrawOutlineEntity(entity, false)
 										break
-									elseif not hasFocus and IsControlPressed(0, 238) then EnableNUI(M.CloneTable(sendData)) DrawOutlineEntity(entity, false) end
+									elseif not hasFocus and IsControlPressed(0, 238) then 
+										EnableNUI(Exports:CloneTable(sendData)) 
+										DrawOutlineEntity(entity, false)
+									elseif not hasFocus and IsControlReleased(0, 19) then
+										DisableTarget()
+										DrawOutlineEntity(entity, false)
+										break
+									elseif #(playerCoords - coords) > data.distance then
+										LeftTarget()
+										DrawOutlineEntity(entity, false)
+									end
 								else
 									if hasFocus then DisableNUI() end
 									DrawOutlineEntity(entity, false)
@@ -634,7 +653,7 @@ local EnableTarget = function()
 					if zone:isPointInside(coords) and distance <= zone.targetoptions.distance then
 						local send_options = {}
 						for o, data in pairs(zone.targetoptions.options) do
-							if M.CheckOptions(data, entity, distance) then
+							if CheckOptions(data, entity, distance) then
 								local slot = #send_options + 1
 								send_options[slot] = data
 								send_options[slot].entity = entity
@@ -648,12 +667,19 @@ local EnableTarget = function()
 							while targetActive and success do
 								local playerCoords = GetEntityCoords(playerPed)
 								local _, coords, entity2 = Exports:RaycastCamera(hit)
-								if not zone:isPointInside(coords) or #(playerCoords - zone.center) > zone.targetoptions.distance then
+								if not zone:isPointInside(coords) then
 									if hasFocus then DisableNUI() end
 									DrawOutlineEntity(entity, false)
 									break
 								elseif not hasFocus and IsControlPressed(0, 238) then
-									EnableNUI(M.CloneTable(sendData))
+									EnableNUI(Exports:CloneTable(sendData))
+									DrawOutlineEntity(entity, false)
+								elseif not hasFocus and IsControlReleased(0, 19) then
+									DisableTarget()
+									DrawOutlineEntity(entity, false)
+									break
+								elseif #(playerCoords - zone.center) > zone.targetoptions.distance then
+									LeftTarget()
 									DrawOutlineEntity(entity, false)
 								end
 								Wait(5)
@@ -692,7 +718,7 @@ RegisterNUICallback('selectTarget', function(option, cb)
                 TriggerEvent(data.event, data)
             end
         else
-            print("[bt-target]: ERROR NO EVENT SETUP")
+            print("[qb-target]: ERROR NO EVENT SETUP")
         end
     end)
 
@@ -700,6 +726,7 @@ RegisterNUICallback('selectTarget', function(option, cb)
 end)
 
 RegisterNUICallback('closeTarget', function(data, cb)
+	Wait(100)
 	SetNuiFocus(false, false)
 	SetNuiFocusKeepInput(false)
 	targetActive, hasFocus, success = false, false, false
@@ -822,7 +849,7 @@ AddEventHandler('onResourceStart', function(resource)
 end)
 
 if Config.Debug then
-	AddEventHandler('bt-target:debug', function(data)
+	AddEventHandler('qb-target:debug', function(data)
 		print( 'Flag: '..curFlag..'', 'Entity: '..data.entity..'', 'Type: '..GetEntityType(data.entity)..'' )
 		if data.remove then
 			Exports:RemoveTargetEntity(data.entity, {
@@ -833,7 +860,7 @@ if Config.Debug then
 				options = {
 					{
 						type = "client",
-						event = "bt-target:debug",
+						event = "qb-target:debug",
 						icon = "fas fa-box-circle-check",
 						label = "HelloWorld",
 						remove = true
@@ -850,7 +877,7 @@ if Config.Debug then
 		options = {
 			{
 				type = "client",
-				event = "bt-target:debug",
+				event = "qb-target:debug",
 				icon = "fas fa-male",
 				label = "(Debug) Ped",
 			},
@@ -862,7 +889,7 @@ if Config.Debug then
 		options = {
 			{
 				type = "client",
-				event = "bt-target:debug",
+				event = "qb-target:debug",
 				icon = "fas fa-car",
 				label = "(Debug) Vehicle",
 			},
@@ -874,7 +901,7 @@ if Config.Debug then
 		options = {
 			{
 				type = "client",
-				event = "bt-target:debug",
+				event = "qb-target:debug",
 				icon = "fas fa-cube",
 				label = "(Debug) Object",
 			},
@@ -886,7 +913,7 @@ if Config.Debug then
 		options = {
 			{
 				type = "client",
-				event = "bt-target:debug",
+				event = "qb-target:debug",
 				icon = "fas fa-cube",
 				label = "(Debug) Player",
 			},

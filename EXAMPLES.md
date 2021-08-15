@@ -11,7 +11,7 @@ Then, in the actual options themselves, we define 'police' as our required job.
 This is an example using **exports**
 
 ```lua
-exports['bt-target']:AddBoxZone("MissionRowDutyClipboard", vector3(441.7989, -982.0529, 30.67834), 0.45, 0.35, {
+exports['qb-target']:AddBoxZone("MissionRowDutyClipboard", vector3(441.7989, -982.0529, 30.67834), 0.45, 0.35, {
 	name="MissionRowDutyClipboard",
 	heading=11.0,
 	debugPoly=false,
@@ -107,7 +107,7 @@ This is an example for player interaction. It utilizes both the `item` parameter
 This is an example using **exports**
 
 ```lua
-exports['bt-target']:AddTargetModel(Config.Peds, {
+exports['qb-target']:AddTargetModel(Config.Peds, {
 	options = {
 		{
 			event = "request:CuffPed",
@@ -172,7 +172,7 @@ This is an example from a postop resource. Players can rent delivery vehicles in
 This is an example using **exports**
 
 ```lua
-exports['bt-target']:AddTargetEntity('mule2', {
+exports['qb-target']:AddTargetEntity('mule2', {
     options = {
         {
             type = "client",
@@ -207,7 +207,7 @@ Config.TargetEntities = {
 ```
 
 ## Passing Item Data
-In this example, we define the model of the coffee machines you see around the map, and allow players to purchase a coffee. You'll have to provide your own logic for the purchase, but this is how you would handle bt-target, and how you would pass data through to an event for future use. 
+In this example, we define the model of the coffee machines you see around the map, and allow players to purchase a coffee. You'll have to provide your own logic for the purchase, but this is how you would handle it with qb-target, and how you would pass data through to an event for future use. 
 
 This is an example using **exports**
 This example is **not** advised to use with the provided config
@@ -216,7 +216,7 @@ This example is **not** advised to use with the provided config
 local coffee = {
     690372739,
 }
-exports['bt-target']:AddTargetModel(coffee, {
+exports['qb-target']:AddTargetModel(coffee, {
     options = {
         {
             type = "client",
@@ -259,7 +259,7 @@ AddEventHandler('plantpotato',function()
 
 	-- Logic to handle growth, create a thread and loop, or do something else. Up to you.
 
-	exports['bt-target']:AddEntityZone("potato-growing-"..plant, plant, {
+	exports['qb-target']:AddEntityZone("potato-growing-"..plant, plant, {
 		name = "potato-growing-"..plant,
 		heading=GetEntityHeading(plant),
 		debugPoly=false,
