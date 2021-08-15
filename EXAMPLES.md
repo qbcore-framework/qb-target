@@ -151,7 +151,7 @@ Config.TargetModels = {
             },
             {
                 type = "client",
-                event = "Rob:"Player",
+                event = "Rob:Player",
                 icon = "fas fa-sack-dollar",
                 label = "Rob",
                 canInteract = function(entity)
