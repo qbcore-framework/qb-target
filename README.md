@@ -28,6 +28,8 @@ The wiki and examples.md are always being improved and new examples can be made 
 
 * [QBCore](https://github.com/qbcore-framework/qb-core)
 
+* [PolyZone](https://github.com/mkafrin/PolyZone)
+
 # Credits
 
 * [qtarget](https://github.com/QuantusRP/qtarget)
