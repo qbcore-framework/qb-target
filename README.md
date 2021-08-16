@@ -24,7 +24,7 @@ The wiki and examples.md are always being improved and new examples can be made 
 - Support checking for job, items, or specific entities
 - Utilise the `canInteract` function for advanced checks to show or hide an option based on any trigger
 
-# Optional Dependencies
+# Dependencies
 
 * [QBCore](https://github.com/qbcore-framework/qb-core)
 
