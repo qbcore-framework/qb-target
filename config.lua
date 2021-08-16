@@ -11,9 +11,6 @@ Config.MaxDistance = 3.0
 -- Enable debug options and distance preview
 Config.Debug = false
 
--- Support when not using QBCore
-Config.Standalone = false
-
 -- Enable outlines around the entity you're looking at
 Config.EnableOutline = false
 
@@ -74,12 +71,14 @@ Config.PlayerOptions = {
 -- Functions
 -------------------------------------------------------------------------------
 
-Config.ToggleDoor = function(vehicle, door)
-	if GetVehicleDoorLockStatus(vehicle) ~= 2 then 
-		if GetVehicleDoorAngleRatio(vehicle, door) > 0.0 then
-			SetVehicleDoorShut(vehicle, door, false)
-		else
-			SetVehicleDoorOpen(vehicle, door, false)
+if Config.EnableDefaultOptions then
+	Config.ToggleDoor = function(vehicle, door)
+		if GetVehicleDoorLockStatus(vehicle) ~= 2 then 
+			if GetVehicleDoorAngleRatio(vehicle, door) > 0.0 then
+				SetVehicleDoorShut(vehicle, door, false)
+			else
+				SetVehicleDoorOpen(vehicle, door, false)
+			end
 		end
 	end
 end
