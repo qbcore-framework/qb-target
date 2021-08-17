@@ -6,7 +6,7 @@ window.addEventListener('message', function(event) {
     } else if (item.response == 'closeTarget') {
         CloseTarget()
     } else if (item.response == 'foundTarget') {
-        FoundTarget()
+        FoundTarget(item)
     } else if (item.response == 'validTarget') {
         ValidTarget(item)
     } else if (item.response == 'leftTarget') {
@@ -14,8 +14,13 @@ window.addEventListener('message', function(event) {
     }
 });
 
-function FoundTarget() {
-    $(".target-eye").css("color", "rgb(30,144,255)");
+function FoundTarget(item) {
+    if (item.data) {
+        $("#target-eye").attr("class", item.data);
+    } else {
+        $("#target-eye").attr("class", "far fa-eye");  
+    }
+    $("#target-eye").css("color", "rgb(30,144,255)");
 }
 
 function OpenTarget() {
@@ -23,19 +28,22 @@ function OpenTarget() {
 
     $('.target-wrapper').show();
 
-    $(".target-eye").css("color", "white");
+    $("#target-eye").css("color", "white");
 }
 
 function LeftTarget() {
     $(".target-label").html("");
 
-    $(".target-eye").css("color", "white");
+    $("#target-eye").attr("class", "far fa-eye");
+
+    $("#target-eye").css("color", "white");
 }
 
 function CloseTarget() {
     $(".target-label").html("");
-    $(".target-eye").css("color", "white");
+    $("#target-eye").css("color", "white");
     $('.target-wrapper').hide();
+    $("#target-eye").attr("class", "far fa-eye");
 }
 
 function ValidTarget(item) {
@@ -55,8 +63,7 @@ function ValidTarget(item) {
 $(document).on('mousedown', (event) => {
     let element = event.target;
     let split = element.id.split("-");
-
-    if (split[0] === 'target') {
+    if (split[0] === 'target' && split[1] !== 'eye') {
         $.post(`https://${GetParentResourceName()}/selectTarget`, JSON.stringify(Number(split[1]) + 1));
 
         $(".target-label").html("");
@@ -64,7 +71,7 @@ $(document).on('mousedown', (event) => {
     }
 
     if (event.button == 2) {
-        CloseTarget()
+        CloseTarget();
         $.post(`https://${GetParentResourceName()}/closeTarget`);
     }
 });
