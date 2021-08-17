@@ -325,10 +325,10 @@ local Functions = {
 						local closestBone, closestPos, closestBoneName = self:CheckBones(coords, entity, min, max, Config.VehicleBones)
 						local data = Bones[closestBoneName]
 						if closestBone and #(plyCoords - coords) <= data.distance then
-							local send_options = {}
+							local send_options, slot = {}, 0
 							for o, data in pairs(data.options) do
 								if self:CheckOptions(data, entity) then 
-									local slot = #send_options + 1 
+									slot = #send_options + 1 
 									send_options[slot] = data
 									send_options[slot].entity = entity
 								end
@@ -336,7 +336,7 @@ local Functions = {
 							sendData = send_options
 							if next(send_options) then
 								success = true
-								SendNUIMessage({response = "foundTarget"})
+								SendNUIMessage({response = "foundTarget", data = sendData[slot].targeticon})
 								self:DrawOutlineEntity(entity, true)
 								while targetActive and success do
 									local playerCoords = GetEntityCoords(playerPed)
@@ -410,10 +410,10 @@ local Functions = {
 					for _,zone in pairs(Zones) do
 						local distance = #(plyCoords - zone.center)
 						if zone:isPointInside(coords) and distance <= zone.targetoptions.distance then
-							local send_options = {}
+							local send_options, slot = {}, 0
 							for o, data in pairs(zone.targetoptions.options) do
 								if self:CheckOptions(data, entity, distance) then
-									local slot = #send_options + 1
+									slot = #send_options + 1
 									send_options[slot] = data
 									send_options[slot].entity = entity
 								end
@@ -421,7 +421,7 @@ local Functions = {
 							sendData = send_options
 							if next(send_options) then
 								success = true
-								SendNUIMessage({response = "foundTarget"})
+								SendNUIMessage({response = "foundTarget", data = sendData[slot].targeticon})
 								self:DrawOutlineEntity(entity, true)
 								while targetActive and success do
 									local playerCoords = GetEntityCoords(playerPed)
@@ -452,7 +452,8 @@ local Functions = {
 							end
 						end
 					end
-				else self:LeftTarget() 
+				else 
+					self:LeftTarget() 
 					self:DrawOutlineEntity(entity, false) 
 				end
 				Wait(sleep)
@@ -504,10 +505,10 @@ local Functions = {
 		end
 	end,
 	CheckEntity = function(self, hit, data, entity, distance)
-		local send_options, send_distance = {}, {}
+		local send_options, send_distance, slot = {}, {}, 0
 		for o, data in pairs(data) do
 			if self:CheckOptions(data, entity, distance) then
-				local slot = #send_options + 1
+				slot = #send_options + 1
 				send_options[slot] = data
 				send_options[slot].entity = entity
 				send_distance[data.distance] = true
@@ -516,7 +517,7 @@ local Functions = {
 		sendData = send_options
 		if next(send_options) then
 			success = true
-			SendNUIMessage({response = "foundTarget"})
+			SendNUIMessage({response = "foundTarget", data = sendData[slot].targeticon})
 			self:DrawOutlineEntity(entity, true)
 			while targetActive and success do
 				local playerCoords = GetEntityCoords(playerPed)
