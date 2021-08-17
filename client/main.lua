@@ -199,9 +199,6 @@ local Functions = {
 		local num = math.abs(math.cos(direction.x))
 		direction = vec3((-math.sin(direction.y) * num), (math.cos(direction.y) * num), math.sin(direction.x))
 		local destination = vec3(cam.x + direction.x * 30, cam.y + direction.y * 30, cam.z + direction.z * 30)
-		if Config.Debug then
-
-		end
 		local rayHandle = StartShapeTestLosProbe(cam, destination, flag or -1, playerPed or PlayerPedId(), 0)
 		while true do
 			Wait(5)
