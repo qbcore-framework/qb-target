@@ -199,21 +199,19 @@ local Functions = {
 		local num = math.abs(math.cos(direction.x))
 		direction = vec3((-math.sin(direction.y) * num), (math.cos(direction.y) * num), math.sin(direction.x))
 		local destination = vec3(cam.x + direction.x * 30, cam.y + direction.y * 30, cam.z + direction.z * 30)
-		if Config.Debug then
-			local entCoords = GetEntityCoords(playerPed or PlayerPedId())
-			DrawLine(entCoords.x, entCoords.y, entCoords.z, destination.x, destination.y, destination.z, 255, 0, 255, 255)
-		end
 		local rayHandle = StartShapeTestLosProbe(cam, destination, flag or -1, playerPed or PlayerPedId(), 0)
 		while true do
 			Wait(5)
-			local result, _, endCoords, _, materialHash, entityHit = GetShapeTestResultIncludingMaterial(rayHandle)
+			local result, _, endCoords, _, entityHit = GetShapeTestResult(rayHandle)
 			if Config.Debug then
+				local entCoords = GetEntityCoords(playerPed or PlayerPedId())
+				DrawLine(entCoords.x, entCoords.y, entCoords.z, destination.x, destination.y, destination.z, 255, 0, 255, 255)
 				DrawLine(destination.x, destination.y, destination.z, endCoords.x, endCoords.y, endCoords.z, 255, 0, 255, 255)
 			end
 			if result ~= 1 then
-				local entityType
+				local entityType = 0
 				if entityHit then entityType = GetEntityType(entityHit) end
-				return flag, endCoords, entityHit, entityType or 0
+				return flag, endCoords, entityHit, entityType
 			end
 		end
 	end,
@@ -300,7 +298,7 @@ local Functions = {
 					DisableControlAction(0, 257, true)
 					DisableControlAction(0, 263, true)
 					DisableControlAction(0, 264, true)
-					Wait(1)
+					Wait(5)
 				until not targetActive
 			end)
 			playerPed = PlayerPedId()
@@ -308,7 +306,7 @@ local Functions = {
 			PlayerData = QBCore.Functions.GetPlayerData()
 	
 			while targetActive do
-				local sleep = 1
+				local sleep = 10
 				local plyCoords = GetEntityCoords(playerPed)
 				local hit, coords, entity, entityType = self:RaycastCamera(self:switch())
 				if entityType > 0 then
@@ -437,9 +435,12 @@ local Functions = {
 									local playerCoords = GetEntityCoords(playerPed)
 									local _, coords, entity2 = self:RaycastCamera(hit)
 									if not zone:isPointInside(coords) then
-										if hasFocus then self:DisableNUI() end
+										if IsControlReleased(0, 19) then
+											self:DisableTarget(true)
+										else
+											self:LeftTarget()
+										end
 										self:DrawOutlineEntity(entity, false)
-										break
 									elseif not hasFocus and IsControlPressed(0, 238) then
 										self:EnableNUI(self:CloneTable(sendData))
 										self:DrawOutlineEntity(entity, false)
@@ -462,9 +463,6 @@ local Functions = {
 							end
 						end
 					end
-				else 
-					self:LeftTarget() 
-					self:DrawOutlineEntity(entity, false) 
 				end
 				Wait(sleep)
 			end
