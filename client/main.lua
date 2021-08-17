@@ -288,8 +288,18 @@ local Functions = {
 						DisableControlAction(0, 2, true)
 					end
 					DisablePlayerFiring(PlayerId(), true)
+					DisableControlAction(0, 24, true)
 					DisableControlAction(0, 25, true)
 					DisableControlAction(0, 37, true)
+					DisableControlAction(0, 47, true)
+					DisableControlAction(0, 58, true)
+					DisableControlAction(0, 140, true)
+					DisableControlAction(0, 141, true)
+					DisableControlAction(0, 142, true)
+					DisableControlAction(0, 143, true)
+					DisableControlAction(0, 257, true)
+					DisableControlAction(0, 263, true)
+					DisableControlAction(0, 264, true)
 					Wait(1)
 				until not targetActive
 			end)
