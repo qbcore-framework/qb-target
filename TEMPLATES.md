@@ -1106,7 +1106,7 @@ Functions:RemovePed(labels: table or string)
 
 ```lua
 Citizen.CreateThread(function()
-  exports['qb-target']:RemovePed('Test') -- 1 is for peds
+  exports['qb-target']:RemovePed('Test')
 end)
 ```
 
@@ -1122,7 +1122,7 @@ Functions:RemoveVehicle(labels: table or string)
 
 ```lua
 Citizen.CreateThread(function()
-  exports['qb-target']:RemoveVehicle('Test') -- 1 is for peds
+  exports['qb-target']:RemoveVehicle('Test')
 end)
 ```
 
@@ -1138,6 +1138,22 @@ Functions:RemoveObject(labels: table or string)
 
 ```lua
 Citizen.CreateThread(function()
-  exports['qb-target']:RemoveObject('Test') -- 1 is for peds
+  exports['qb-target']:RemoveObject('Test')
+end)
+```
+
+## RemovePlayer
+
+### Function Format
+
+```lua
+Functions:RemovePlayer(labels: table or string)
+```
+
+### Export option, this will go into any client side resource file aside from qb-target's one
+
+```lua
+Citizen.CreateThread(function()
+  exports['qb-target']:RemovePlayer('Test')
 end)
 ```
