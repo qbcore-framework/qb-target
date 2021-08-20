@@ -14,19 +14,21 @@ options = {
 }
 
 targetoptions = {
-  {
-    type: string,
-    event: string,
-    icon: string,
-    label: string,
-    targeticon: string,
-    item: string,
-    action: function,
-    canInteract: function,
-    job: string
-  }
-},
-distance: float
+  options = {
+    {
+      type: string,
+      event: string,
+      icon: string,
+      label: string,
+      targeticon: string,
+      item: string,
+      action: function,
+      canInteract: function,
+      job: string
+    }
+  },
+  distance: float
+}
 ```
 
 ### Config option, this will go into the Config.CircleZones table
@@ -109,19 +111,21 @@ options = {
 }
 
 targetoptions = {
-  {
-    type: string,
-    event: string,
-    icon: string,
-    label: string,
-    targeticon: string,
-    item: string,
-    action: function,
-    canInteract: function,
-    job: string
-  }
-},
-distance: float
+  options = {
+    {
+      type: string,
+      event: string,
+      icon: string,
+      label: string,
+      targeticon: string,
+      item: string,
+      action: function,
+      canInteract: function,
+      job: string
+    }
+  },
+  distance: float
+}
 ```
 
 ### Config option, this will go into the Config.BoxZones table
@@ -191,5 +195,56 @@ exports['qb-target']:AddBoxZone("name", vector3(x, y, z), 1.5, 1.6, { -- The nam
     }
   },
   distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
+})
+```
+
+## AddPolyZone
+
+### Function Format
+
+```lua
+-- This is the function from how you would use it inside qb-target/client/main.lua
+Function:AddPolyZone(name: string, points: table, options: table, targetoptions: table)
+
+points = {
+  vector2(x, y), vector2(x, y), -- Add a minimum of 3 points for this to work and they have to be in order of drawing
+}
+
+options = {
+  name: string (UNIQUE),
+  debugPoly: boolean,
+  minZ: float,
+  maxZ: float
+}
+
+targetoptions = {
+  options = {
+    {
+      type: string,
+      event: string,
+      icon: string,
+      label: string,
+      targeticon: string,
+      item: string,
+      action: function,
+      canInteract: function,
+      job: string
+    }
+  },
+  distance: float
+}
+```
+
+### Export option, this will go into any client side resource file aside from qb-target's one
+
+```lua
+local points = {
+  vector2(x, y, z), vector2(x, y, z), vector2(x, y, z)
+}
+exports['qb-target']:AddPolyZone("name", points, {
+  name = "name", -- This is the name of the zone recognized by PolyZone, this has to be unique so it doesn't mess up with other zones
+  debugPoly = false, -- This is for enabling/disabling the drawing of the box, it accepts only a boolean value (true or false), when true it will draw the polyzone in green
+  minZ = 36.7, -- This is the bottom of the polyzone, this can be different from the Z value in the coords, this has to be a float value
+  maxZ = 38.9, -- This is the top of the polyzone, this can be different from the Z value in the coords, this has to be a float value
 })
 ```
