@@ -1125,3 +1125,19 @@ Citizen.CreateThread(function()
   exports['qb-target']:RemoveVehicle('Test') -- 1 is for peds
 end)
 ```
+
+## RemoveObject
+
+### Function Format
+
+```lua
+Functions:RemoveObject(labels: table or string)
+```
+
+### Export option, this will go into any client side resource file aside from qb-target's one
+
+```lua
+Citizen.CreateThread(function()
+  exports['qb-target']:RemoveObject('Test') -- 1 is for peds
+end)
+```
