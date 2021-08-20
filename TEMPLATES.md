@@ -1093,3 +1093,19 @@ Citizen.CreateThread(function()
   exports['qb-target']:RemoveType(1, 'Test') -- 1 is for peds
 end)
 ```
+
+## RemovePed
+
+### Function Format
+
+```lua
+Functions:RemovePed(labels: table or string)
+```
+
+### Export option, this will go into any client side resource file aside from qb-target's one
+
+```lua
+Citizen.CreateThread(function()
+  exports['qb-target']:RemovePed('Test') -- 1 is for peds
+end)
+```
