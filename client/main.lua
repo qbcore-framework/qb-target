@@ -57,7 +57,7 @@ local Functions = {
 			local distance, options = parameters.distance or Config.MaxDistance, parameters.options
 			if not Entities[entity] then Entities[entity] = {} end
 			for k, v in pairs(options) do
-				if not v.distance or v.distance > distance then v.distance = distance end
+				if v.distance == nil or not v.distance or v.distance > distance then v.distance = distance end
 				Entities[entity][v.label] = v
 			end
 		end
@@ -76,7 +76,7 @@ local Functions = {
 				if type(model) == 'string' then model = GetHashKey(model) end
 				if not Models[model] then Models[model] = {} end
 				for k, v in pairs(options) do
-					if not v.distance or v.distance > distance then v.distance = distance end
+					if v.distance == nil or not v.distance or v.distance > distance then v.distance = distance end
 					Models[model][v.label] = v
 				end
 			end
@@ -84,7 +84,7 @@ local Functions = {
 			if type(models) == 'string' then model = GetHashKey(models) else model = models end
 			if not Models[model] then Models[model] = {} end
 			for k, v in pairs(options) do
-				if not v.distance or v.distance > distance then v.distance = distance end
+				if v.distance == nil or not v.distance or v.distance > distance then v.distance = distance end
 				Models[model][v.label] = v
 			end
 		end
@@ -151,7 +151,7 @@ local Functions = {
 	AddType = function(self, type, parameters)
 		local distance, options = parameters.distance or Config.MaxDistance, parameters.options
 		for k, v in pairs(options) do
-			if not v.distance or v.distance > distance then v.distance = distance end
+			if v.distance == nil or not v.distance or v.distance > distance then v.distance = distance end
 			Types[type][v.label] = v
 		end
 	end,
@@ -165,7 +165,7 @@ local Functions = {
 	AddPlayer = function(self, parameters)
 		local distance, options = parameters.distance or Config.MaxDistance, parameters.options
 		for k, v in pairs(options) do
-			if not v.distance or v.distance > distance then v.distance = distance end
+			if v.distance == nil or not v.distance or v.distance > distance then v.distance = distance end
 			Players[v.label] = v
 		end
 	end,
