@@ -1169,11 +1169,35 @@ Functions:RaycastCamera(flag: integer) -- Preferably 30 or -1, -1 will not inter
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
+local Targeting = exports['qb-target']:FetchFunctions()
 Citizen.CreateThread(function()
   local curFlag = 30
   function switch()
     if curFlag == 30 then curFlag = -1 else curFlag = 30 end
   end
-  local hit, coords, entity, entityType = exports['qb-target']:RaycastCamera(switch())
+  local hit, coords, entity, entityType = Targeting:RaycastCamera(switch())
+end)
+```
+
+## CloneTable
+
+### Function Format
+
+```lua
+Functions:CloneTable(table: table)
+```
+
+### Export option, this will go into any client side resource file aside from qb-target's one
+
+```lua
+local Targeting = exports['qb-target']:FetchFunctions()
+Citizen.CreateThread(function
+  local table = {
+    [1] = "something eh",
+    [2] = function()
+      print('test')
+    end,
+  }
+  local copy = Targeting:CloneTable()
 end)
 ```
