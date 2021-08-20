@@ -636,3 +636,17 @@ exports['qb-target']:AddTargetModel(models { -- This defines the models, can be 
   }
 })
 ```
+
+## RemoveZone
+
+### Function Format
+
+```lua
+Functions:RemoveZone(name: string)
+```
+
+### Export option, this will go into any client side resource file aside from qb-target's one
+
+```lua
+exports['qb-target']:RemoveZone("name")
+```
