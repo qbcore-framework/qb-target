@@ -1157,3 +1157,23 @@ Citizen.CreateThread(function()
   exports['qb-target']:RemovePlayer('Test')
 end)
 ```
+
+## RaycastCamera
+
+### Function Format
+
+```lua
+Functions:RaycastCamera(flag: integer) -- Preferably 30 or -1, -1 will not interact with any hashes higher than 32 bit and 30 will not interact with polyzones
+```
+
+### Export option, this will go into any client side resource file aside from qb-target's one
+
+```lua
+Citizen.CreateThread(function()
+  local curFlag = 30
+  function switch()
+    if curFlag == 30 then curFlag = -1 else curFlag = 30 end
+  end
+  local hit, coords, entity, entityType = exports['qb-target']:RaycastCamera(switch())
+end)
+```
