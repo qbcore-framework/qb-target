@@ -664,3 +664,17 @@ Functions:RemoveTargetModel(models: table or string, labels: table or string)
 ```lua
 exports['qb-target']:RemoveTargetModel('a_m_m_indian_01', 'Test')
 ```
+
+## RemoveTargetEntity
+
+## Function Format
+
+```lua
+Functions:RemoveTargetEntity(entity: integer, labels: table or string)
+```
+
+### Export option, this will go into any client side resource file aside from qb-target's one
+
+```lua
+exports['qb-target']:RemoveTargetEntity(entity, 'Test')
+```
