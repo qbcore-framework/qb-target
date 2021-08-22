@@ -1,6 +1,6 @@
 local Config, Players, Types, Entities, Models, Zones, Bones, PlayerData = load(LoadResourceFile(GetCurrentResourceName(), 'config.lua'))()
 local playerPed, isLoggedIn, targetActive, hasFocus, success, curFlag, sendData = PlayerPedId(), false, false, false, false, 30
-	
+
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
 AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
 	PlayerData = QBCore.Functions.GetPlayerData()
@@ -277,7 +277,7 @@ local Functions = {
 		if not targetActive then
 			targetActive = true
 			SendNUIMessage({response = "openTarget"})
-			
+
 			CreateThread(function()
 				repeat
 					SetPauseMenuActive(false)
@@ -302,15 +302,15 @@ local Functions = {
 				until not targetActive
 			end)
 			playerPed = PlayerPedId()
-			
+
 			PlayerData = QBCore.Functions.GetPlayerData()
-	
+
 			while targetActive do
 				local sleep = 10
 				local plyCoords = GetEntityCoords(playerPed)
 				local hit, coords, entity, entityType = self:RaycastCamera(self:switch())
 				if entityType > 0 then
-	
+
 					-- Owned entity targets
 					if NetworkGetEntityIsNetworked(entity) then
 						local data = Entities[NetworkGetNetworkIdFromEntity(entity)]
@@ -318,7 +318,7 @@ local Functions = {
 							self:CheckEntity(hit, data, entity, #(plyCoords - coords))
 						end
 					end
-	
+
 					-- Player and Ped targets
 					if entityType == 1 then
 						local data = Models[GetEntityModel(entity)]
@@ -326,7 +326,7 @@ local Functions = {
 						if data ~= nil then
 							self:CheckEntity(hit, data, entity, #(plyCoords - coords))
 						end
-	
+
 					-- Vehicle bones
 					elseif entityType == 2 then
 						local min, max = GetModelDimensions(GetEntityModel(entity))
@@ -335,8 +335,8 @@ local Functions = {
 						if closestBone and #(plyCoords - coords) <= data.distance then
 							local send_options, slot = {}, 0
 							for o, data in pairs(data.options) do
-								if self:CheckOptions(data, entity) then 
-									slot = #send_options + 1 
+								if self:CheckOptions(data, entity) then
+									slot = #send_options + 1
 									send_options[slot] = data
 									send_options[slot].entity = entity
 								end
@@ -351,7 +351,7 @@ local Functions = {
 									local _, coords, entity2 = self:RaycastCamera(hit)
 									if hit and entity == entity2 then
 										local closestBone2, closestPos2, closestBoneName2 = self:CheckBones(coords, entity, min, max, Config.VehicleBones)
-									
+
 										if closestBone ~= closestBone2 then
 											if IsControlReleased(0, 19) then
 												self:DisableTarget(true)
@@ -360,8 +360,8 @@ local Functions = {
 											end
 											self:DrawOutlineEntity(entity, false)
 											break
-										elseif not hasFocus and IsControlPressed(0, 238) then 
-											self:EnableNUI(self:CloneTable(sendData)) 
+										elseif not hasFocus and IsControlPressed(0, 238) then
+											self:EnableNUI(self:CloneTable(sendData))
 											self:DrawOutlineEntity(entity, false)
 										elseif #(playerCoords - coords) > data.distance then
 											if IsControlReleased(0, 19) then
@@ -390,26 +390,26 @@ local Functions = {
 								self:DrawOutlineEntity(entity, false)
 							end
 						end
-	
+
 						-- Specific Vehicle targets
 						local data = Models[GetEntityModel(entity)]
 						if data ~= nil then
 							self:CheckEntity(hit, data, entity, #(plyCoords - coords))
 						end
-	
+
 					-- Entity targets
 					elseif entityType > 2 then
 						local data = Models[GetEntityModel(entity)]
-						if data ~= nil then 
-							self:CheckEntity(hit, data, entity, #(plyCoords - coords)) 
+						if data ~= nil then
+							self:CheckEntity(hit, data, entity, #(plyCoords - coords))
 						end
 					end
-	
+
 					-- Generic targets
 					if not success then
 						local data = Types[entityType]
-						if data ~= nil then 
-							self:CheckEntity(hit, data, entity, #(plyCoords - coords)) 
+						if data ~= nil then
+							self:CheckEntity(hit, data, entity, #(plyCoords - coords))
 						end
 					end
 				end
@@ -470,7 +470,7 @@ local Functions = {
 		end
 	end,
 	EnableNUI = function(self, options)
-		if targetActive and not hasFocus then 
+		if targetActive and not hasFocus then
 			SetCursorLocation(0.5, 0.5)
 			SetNuiFocus(true, true)
 			SetNuiFocusKeepInput(true)
@@ -493,7 +493,9 @@ local Functions = {
 		if (targetActive and not hasFocus) or disablenui then
 			SetNuiFocus(false, false)
 			SetNuiFocusKeepInput(false)
-			targetActive, hasFocus, success = false, false, false
+			SetTimeout(Config.TimeoutLength, function()
+				targetActive, success, hasFocus = false, false, false
+			end)
 			SendNUIMessage({response = "closeTarget"})
 		end
 	end,
@@ -712,9 +714,11 @@ exports("FetchFunctions", function()
 end)
 
 RegisterNUICallback('selectTarget', function(option, cb)
-    targetActive, success, hasFocus = false, false, false
     SetNuiFocus(false, false)
     SetNuiFocusKeepInput(false)
+	SetTimeout(Config.TimeoutLength, function()
+		targetActive, success, hasFocus = false, false, false
+	end)
     local data = sendData[option]
     CreateThread(function()
         Wait(50)
@@ -744,7 +748,9 @@ RegisterNUICallback('closeTarget', function(data, cb)
 	Wait(100)
 	SetNuiFocus(false, false)
 	SetNuiFocusKeepInput(false)
-	targetActive, hasFocus, success = false, false, false
+	SetTimeout(Config.TimeoutLength, function()
+		targetActive, success, hasFocus = false, false, false
+	end)
 end)
 
 CreateThread(function()

@@ -17,6 +17,9 @@ Config.EnableOutline = false
 -- Enable default options (Toggling vehicle doors)
 Config.EnableDefaultOptions = false
 
+-- Doesn't need to be changed unless people can shoot after selecting an item
+Config.TimeoutLength = 100
+
 -------------------------------------------------------------------------------
 -- Target Configs
 -------------------------------------------------------------------------------
@@ -73,7 +76,7 @@ Config.PlayerOptions = {
 
 if Config.EnableDefaultOptions then
 	Config.ToggleDoor = function(vehicle, door)
-		if GetVehicleDoorLockStatus(vehicle) ~= 2 then 
+		if GetVehicleDoorLockStatus(vehicle) ~= 2 then
 			if GetVehicleDoorAngleRatio(vehicle, door) > 0.0 then
 				SetVehicleDoorShut(vehicle, door, false)
 			else
