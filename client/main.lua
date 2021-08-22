@@ -1,5 +1,6 @@
 local Config, Players, Types, Entities, Models, Zones, Bones, PlayerData = load(LoadResourceFile(GetCurrentResourceName(), 'config.lua'))()
 local playerPed, isLoggedIn, targetActive, hasFocus, success, curFlag, sendData = PlayerPedId(), false, false, false, false, 30
+local timeoutLength = Config.TimeoutLength
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
 AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
@@ -493,7 +494,7 @@ local Functions = {
 		if (targetActive and not hasFocus) or disablenui then
 			SetNuiFocus(false, false)
 			SetNuiFocusKeepInput(false)
-			SetTimeout(1000, function()
+			SetTimeout(timeoutLength, function()
 				targetActive, success, hasFocus = false, false, false
 			end)
 			SendNUIMessage({response = "closeTarget"})
@@ -716,7 +717,7 @@ end)
 RegisterNUICallback('selectTarget', function(option, cb)
     SetNuiFocus(false, false)
     SetNuiFocusKeepInput(false)
-	SetTimeout(1000, function()
+	SetTimeout(timeoutLength, function()
 		targetActive, success, hasFocus = false, false, false
 	end)
     local data = sendData[option]
@@ -748,7 +749,7 @@ RegisterNUICallback('closeTarget', function(data, cb)
 	Wait(100)
 	SetNuiFocus(false, false)
 	SetNuiFocusKeepInput(false)
-	SetTimeout(1000, function()
+	SetTimeout(timeoutLength, function()
 		targetActive, success, hasFocus = false, false, false
 	end)
 end)
