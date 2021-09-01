@@ -1,16 +1,18 @@
 local Config, Players, Types, Entities, Models, Zones, Bones, PlayerData = load(LoadResourceFile(GetCurrentResourceName(), 'config.lua'))()
-local playerPed, isLoggedIn, targetActive, hasFocus, success, curFlag, sendData = PlayerPedId(), false, false, false, false, 30
+local playerPed, isLoggedIn, targetActive, hasFocus, success, curFlag, PedsReady, sendData = PlayerPedId(), false, false, false, false, false, 30
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
 AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
 	PlayerData = QBCore.Functions.GetPlayerData()
 	isLoggedIn = true
+	Functions:SpawnPeds()
 end)
 
 RegisterNetEvent('QBCore:Client:OnPlayerUnload')
 AddEventHandler('QBCore:Client:OnPlayerUnload', function()
 	isLoggedIn = false
 	PlayerData = {}
+	Functions:DeletePeds()
 end)
 
 RegisterNetEvent('QBCore:Client:OnJobUpdate')
@@ -493,9 +495,8 @@ local Functions = {
 		if (targetActive and not hasFocus) or disablenui then
 			SetNuiFocus(false, false)
 			SetNuiFocusKeepInput(false)
-			SetTimeout(Config.TimeoutLength, function()
-				targetActive, success, hasFocus = false, false, false
-			end)
+			Wait(100)
+			targetActive, success, hasFocus = false, false, false
 			SendNUIMessage({response = "closeTarget"})
 		end
 	end,
@@ -582,6 +583,73 @@ local Functions = {
 		end
 		if closestBone ~= -1 then return closestBone, closestPos, closestBoneName
 		else return false end
+	end,
+	SpawnPeds = function(self)
+		if not PedsReady then
+			if next(Config.Peds) then
+				for k, v in pairs(Config.Peds) do
+					local spawnedped = 0
+					RequestModel(v.model)
+					while not HasModelLoaded(v.model) do
+						Wait(1)
+					end
+
+					if type(v.model) == 'string' then v.model = GetHashKey(v.model) end
+
+					if v.minusOne then
+						spawnedped = CreatePed(0, v.model, v.coords.x, v.coords.y, v.coords.z - 1.0, v.coords.w, false, true)
+					else
+						spawnedped = CreatePed(0, v.model, v.coords.x, v.coords.y, v.coords.z, v.coords.w, false, true)
+					end
+
+					if v.freeze then
+						FreezeEntityPosition(spawnedped, true)
+					end
+
+					if v.invincible then
+						SetEntityInvincible(spawnedped, true)
+					end
+
+					if v.blockevents then
+						SetBlockingOfNonTemporaryEvents(spawnedped, true)
+					end
+
+					if v.animDict and v.anim then
+						RequestAnimDict(v.animDict)
+						while not HasAnimDictLoaded(v.animDict) do
+							Wait(1)
+						end
+
+						TaskPlayAnim(spawnedped, v.animDict, v.anim, 8.0, 0, -1, v.flag, 0, 0, 0, 0)
+					end
+
+					if v.scenario then
+						TaskStartScenarioInPlace(spawnedped, v.scenario, 0, true)
+					end
+
+					if v.target then
+						self:AddTargetModel(v.model, {
+							options = v.target.options,
+							distance = v.target.distance
+						})
+					end
+
+					Config.Peds[k].currentpednumber = spawnedped
+				end
+				PedsReady = true
+			end
+		end
+	end,
+	DeletePeds = function(self)
+		if PedsReady then
+			if next(Config.Peds) then
+				for k, v in pairs(Config.Peds) do
+					DeletePed(v.currentpednumber)
+					Config.Peds[k].currentpednumber = 0
+				end
+				PedsReady = false
+			end
+		end
 	end,
 }
 
@@ -716,9 +784,8 @@ end)
 RegisterNUICallback('selectTarget', function(option, cb)
     SetNuiFocus(false, false)
     SetNuiFocusKeepInput(false)
-	SetTimeout(Config.TimeoutLength, function()
-		targetActive, success, hasFocus = false, false, false
-	end)
+	Wait(100)
+	targetActive, success, hasFocus = false, false, false
     local data = sendData[option]
     CreateThread(function()
         Wait(50)
@@ -737,7 +804,7 @@ RegisterNUICallback('selectTarget', function(option, cb)
                 TriggerEvent(data.event, data)
             end
         else
-            print("[qb-target]: ERROR NO EVENT SETUP")
+            print("["..GetCurrentResourceName().."]: ERROR NO EVENT SETUP")
         end
     end)
 
@@ -745,12 +812,10 @@ RegisterNUICallback('selectTarget', function(option, cb)
 end)
 
 RegisterNUICallback('closeTarget', function(data, cb)
-	Wait(100)
 	SetNuiFocus(false, false)
 	SetNuiFocusKeepInput(false)
-	SetTimeout(Config.TimeoutLength, function()
-		targetActive, success, hasFocus = false, false, false
-	end)
+	Wait(100)
+	targetActive, success, hasFocus = false, false, false
 end)
 
 CreateThread(function()
@@ -865,14 +930,20 @@ end)
 -- This is to make sure you can restart the resource manually without having to log-out.
 AddEventHandler('onResourceStart', function(resource)
 	if resource == GetCurrentResourceName() then
-		Wait(200)
 		PlayerData = QBCore.Functions.GetPlayerData()
 		isLoggedIn = true
+		Functions:SpawnPeds()
+	end
+end)
+
+AddEventHandler('onResourceStop', function(resource)
+	if resource == GetCurrentResourceName() then
+		Functions:DeletePeds()
 	end
 end)
 
 if Config.Debug then
-	AddEventHandler('qb-target:debug', function(data)
+	AddEventHandler(GetCurrentResourceName()..':debug', function(data)
 		print('Flag: '..curFlag, 'Entity: '..data.entity, 'Type: '..GetEntityType(data.entity))
 		if data.remove then
 			Functions:RemoveTargetEntity(data.entity, 'HelloWorld')
@@ -881,7 +952,7 @@ if Config.Debug then
 				options = {
 					{
 						type = "client",
-						event = "qb-target:debug",
+						event = GetCurrentResourceName()..':debug',
 						icon = "fas fa-box-circle-check",
 						label = "HelloWorld",
 						remove = true
@@ -896,7 +967,7 @@ if Config.Debug then
 		options = {
 			{
 				type = "client",
-				event = "qb-target:debug",
+				event = GetCurrentResourceName()..':debug',
 				icon = "fas fa-male",
 				label = "(Debug) Ped",
 			},
@@ -908,7 +979,7 @@ if Config.Debug then
 		options = {
 			{
 				type = "client",
-				event = "qb-target:debug",
+				event = GetCurrentResourceName()..':debug',
 				icon = "fas fa-car",
 				label = "(Debug) Vehicle",
 			},
@@ -920,7 +991,7 @@ if Config.Debug then
 		options = {
 			{
 				type = "client",
-				event = "qb-target:debug",
+				event = GetCurrentResourceName()..':debug',
 				icon = "fas fa-cube",
 				label = "(Debug) Object",
 			},
@@ -932,7 +1003,7 @@ if Config.Debug then
 		options = {
 			{
 				type = "client",
-				event = "qb-target:debug",
+				event = GetCurrentResourceName()..':debug',
 				icon = "fas fa-cube",
 				label = "(Debug) Player",
 			},

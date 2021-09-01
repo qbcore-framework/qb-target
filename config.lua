@@ -17,9 +17,6 @@ Config.EnableOutline = false
 -- Enable default options (Toggling vehicle doors)
 Config.EnableDefaultOptions = false
 
--- Doesn't need to be changed unless people can shoot after selecting an item
-Config.TimeoutLength = 100
-
 -------------------------------------------------------------------------------
 -- Target Configs
 -------------------------------------------------------------------------------
@@ -67,6 +64,10 @@ Config.ObjectOptions = {
 }
 
 Config.PlayerOptions = {
+
+}
+
+Config.Peds = {
 
 }
 
