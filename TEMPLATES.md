@@ -1223,3 +1223,47 @@ Citizen.CreateThread(function
   local copy = Targeting:CloneTable()
 end)
 ```
+
+## Ped Spawner
+
+### Config option, this will go into the Config.Peds table
+
+```lua
+-- Any of the options in the index table besides model and coords are optional, you can leave them out or set them to false
+["index"] = { -- This can be a number or a string, doesn't matter (UNIQUE)
+  model = 'a_m_m_indian_01', -- This is the ped model that is going to be spawning at the given coords
+  coords = vector4(x, y, z, w), -- This is the coords that the ped is going to spawn at, always has to be a vector4 and the w value is the heading
+  minusOne = true, -- Set this to true if your ped is hovering above the ground but you want it on the ground (OPTIONAL)
+  freeze = true, -- Set this to true if you want the ped to be frozen at the given coords (OPTIONAL)
+  invincible = true, -- Set this to true if you want the ped to not take any damage from any source (OPTIONAL)
+  blockevents = true, -- Set this to true if you don't want the ped to react the to the environment (OPTIONAL)
+  animDict = 'abigail_mcs_1_concat-0', -- This is the animation dictionairy to load the animation to play from (OPTIONAL)
+  anim = 'csb_abigail_dual-0', -- This is the animation that will play chosen from the animDict, this will loop the whole time the ped is spawned (OPTIONAL)
+  flag = 1, -- This is the flag of the animation to play, for all the flags, check the TaskPlayAnim native here https://docs.fivem.net/natives/?_0x5AB552C6 (OPTIONAL)
+  scenario = 'WORLD_HUMAN_AA_COFFEE', -- This is the scenario that will play the whole time the ped is spawned, this cannot pair with anim and animDict (OPTIONAL)
+  target = { -- This is the target options table, here you can specify all the options to display when targeting the ped (OPTIONAL)
+    options = {
+      { -- This is the first table with options, you can make as many options inside the options table as you want
+        type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
+        event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
+        icon = 'fas fa-example', -- This is the icon that will display next to this trigger option, all the icons can be found on fontawesome.com
+        label = 'Test', -- This is the label of this option which you would be able to click on to trigger everything, this has to be a string
+        targeticon = 'fas fa-example', -- This is the icon of the target itself, the icon changes to this when it turns blue on this specific option, this is OPTIONAL
+        item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
+        action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
+          if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
+          TriggerEvent('testing:event', 'test')
+          return true
+        end,
+        canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+          if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
+          return true
+        end,
+        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
+      }
+    },
+    distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
+  },
+  currentpednumber = 0, -- This is the current ped number, this will be assigned when spawned, you can leave this out because it will always be created (OPTIONAL)
+},
+```
