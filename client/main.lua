@@ -1,31 +1,7 @@
 local Config, Players, Types, Entities, Models, Zones, Bones, PlayerData = load(LoadResourceFile(GetCurrentResourceName(), 'config.lua'))()
 local playerPed, isLoggedIn, targetActive, hasFocus, success, curFlag, PedsReady, sendData = PlayerPedId(), false, false, false, false, false, 30
 
-RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
-AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
-	PlayerData = QBCore.Functions.GetPlayerData()
-	isLoggedIn = true
-	Functions:SpawnPeds()
-end)
-
-RegisterNetEvent('QBCore:Client:OnPlayerUnload')
-AddEventHandler('QBCore:Client:OnPlayerUnload', function()
-	isLoggedIn = false
-	PlayerData = {}
-	Functions:DeletePeds()
-end)
-
-RegisterNetEvent('QBCore:Client:OnJobUpdate')
-AddEventHandler('QBCore:Client:OnJobUpdate', function(JobInfo)
-	PlayerData.job = JobInfo
-end)
-
-RegisterNetEvent('QBCore:Client:SetPlayerData')
-AddEventHandler('QBCore:Client:SetPlayerData', function(val)
-	PlayerData = val
-end)
-
---Functions
+-- Functions
 
 local Functions = {
 	AddCircleZone = function(self, name, center, radius, options, targetoptions)
@@ -653,6 +629,8 @@ local Functions = {
 	end,
 }
 
+-- Exports
+
 exports("AddCircleZone", function(name, center, radius, options, targetoptions)
     Functions:AddCircleZone(name, center, radius, options, targetoptions)
 end)
@@ -781,6 +759,8 @@ exports("FetchFunctions", function()
     return Functions
 end)
 
+-- NUI Callbacks
+
 RegisterNUICallback('selectTarget', function(option, cb)
     SetNuiFocus(false, false)
     SetNuiFocusKeepInput(false)
@@ -817,6 +797,8 @@ RegisterNUICallback('closeTarget', function(data, cb)
 	Wait(100)
 	targetActive, success, hasFocus = false, false, false
 end)
+
+-- Main thread
 
 CreateThread(function()
     RegisterCommand('+playerTarget', function()
@@ -927,6 +909,32 @@ CreateThread(function()
     end
 end)
 
+-- Events
+
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
+AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
+	PlayerData = QBCore.Functions.GetPlayerData()
+	isLoggedIn = true
+	Functions:SpawnPeds()
+end)
+
+RegisterNetEvent('QBCore:Client:OnPlayerUnload')
+AddEventHandler('QBCore:Client:OnPlayerUnload', function()
+	isLoggedIn = false
+	PlayerData = {}
+	Functions:DeletePeds()
+end)
+
+RegisterNetEvent('QBCore:Client:OnJobUpdate')
+AddEventHandler('QBCore:Client:OnJobUpdate', function(JobInfo)
+	PlayerData.job = JobInfo
+end)
+
+RegisterNetEvent('QBCore:Client:SetPlayerData')
+AddEventHandler('QBCore:Client:SetPlayerData', function(val)
+	PlayerData = val
+end)
+
 -- This is to make sure you can restart the resource manually without having to log-out.
 AddEventHandler('onResourceStart', function(resource)
 	if resource == GetCurrentResourceName() then
@@ -941,6 +949,8 @@ AddEventHandler('onResourceStop', function(resource)
 		Functions:DeletePeds()
 	end
 end)
+
+-- Debug Options
 
 if Config.Debug then
 	AddEventHandler(GetCurrentResourceName()..':debug', function(data)
