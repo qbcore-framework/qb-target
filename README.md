@@ -8,6 +8,8 @@ qb-target is a targeting solution that allows interaction with any predefined en
 
 * All the credit goes to [bt-target](https://github.com/brentN5/bt-target) from brentN5 for making this awesome resource and making this repository exist!
 
+* Credit to [ms-peds](https://github.com/MiddleSkillz/ms-peds) for allowing me to use their awesome ped spawner inside the target!
+
 # Dependencies
 
 * [QBCore](https://github.com/qbcore-framework/qb-core)
