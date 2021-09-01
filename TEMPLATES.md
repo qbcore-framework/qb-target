@@ -646,7 +646,7 @@ Citizen.CreateThread(function()
   local models = {
     'a_m_m_indian_01',
   }
-  exports['qb-target']:AddTargetModel(models { -- This defines the models, can be a string or a table
+  exports['qb-target']:AddTargetModel(models, { -- This defines the models, can be a string or a table
       options = {
         { -- This is the first table with options, you can make as many options inside the options table as you want
           type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
