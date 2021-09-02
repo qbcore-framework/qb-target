@@ -51,19 +51,19 @@ Config.TargetModels = {
 
 }
 
-Config.PedOptions = {
+Config.GlobalPedOptions = {
 
 }
 
-Config.VehicleOptions = {
+Config.GlobalVehicleOptions = {
 
 }
 
-Config.ObjectOptions = {
+Config.GlobalObjectOptions = {
 
 }
 
-Config.PlayerOptions = {
+Config.GlobalPlayerOptions = {
 
 }
 
