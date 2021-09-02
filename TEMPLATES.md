@@ -721,12 +721,12 @@ Citizen.CreateThread(function()
 end)
 ```
 
-## AddType
+## AddGlobalTypeOptions
 
 ### Function Format
 
 ```lua
-Functions:AddType(type: integer, parameters: table)
+Functions:AddGlobalTypeOptions(type: integer, parameters: table)
 
 parameters = {
   options = {
@@ -776,12 +776,12 @@ Citizen.CreateThread(function()
 end)
 ```
 
-## AddPed
+## AddGlobalPedOptions
 
 ### Function Format
 
 ```lua
-Functions:AddPed(parameters: table)
+Functions:AddGlobalPedOptions(parameters: table)
 
 parameters = {
   options = {
@@ -801,7 +801,7 @@ parameters = {
 }
 ```
 
-### Config option, this will go into the Config.PedOptions table
+### Config option, this will go into the Config.GlobalPedOptions table
 
 ```lua
   options = {
@@ -862,7 +862,7 @@ end)
 ### Function Format
 
 ```lua
-Functions:AddVehicle(parameters: table)
+Functions:AddGlobalVehicleOptions(parameters: table)
 
 parameters = {
   options = {
@@ -882,7 +882,7 @@ parameters = {
 }
 ```
 
-### Config option, this will go into the Config.VehicleOptions table
+### Config option, this will go into the Config.GlobalVehicleOptions table
 
 ```lua
   options = {
@@ -938,12 +938,12 @@ Citizen.CreateThread(function()
 end)
 ```
 
-## AddObject
+## AddGlobalObjectOptions
 
 ### Function Format
 
 ```lua
-Functions:AddObject(parameters: table)
+Functions:AddGlobalObjectOptions(parameters: table)
 
 parameters = {
   options = {
@@ -963,7 +963,7 @@ parameters = {
 }
 ```
 
-### Config option, this will go into the Config.ObjectOptions table
+### Config option, this will go into the Config.GlobalObjectOptions table
 
 ```lua
   options = {
@@ -1019,12 +1019,12 @@ Citizen.CreateThread(function()
 end)
 ```
 
-## AddPlayer
+## AddGlobalPlayerOptions
 
 ### Function Format
 
 ```lua
-Functions:AddPlayer(parameters: table)
+Functions:AddGlobalPlayerOptions(parameters: table)
 
 parameters = {
   options = {
@@ -1044,7 +1044,7 @@ parameters = {
 }
 ```
 
-### Config option, this will go into the Config.PlayerOptions table
+### Config option, this will go into the Config.GlobalPlayerOptions table
 
 ```lua
   options = {
@@ -1100,12 +1100,12 @@ Citizen.CreateThread(function()
 end)
 ```
 
-## RemoveType
+## RemoveGlobalTypeOptions
 
 ### Function Format
 
 ```lua
-Functions:RemoveType(type: integer, labels: table or string)
+Functions:RemoveGlobalTypeOptions(type: integer, labels: table or string)
 ```
 
 ### Export option, this will go into any client side resource file aside from qb-target's one
@@ -1116,12 +1116,12 @@ Citizen.CreateThread(function()
 end)
 ```
 
-## RemovePed
+## RemoveGlobalPedOptions
 
 ### Function Format
 
 ```lua
-Functions:RemovePed(labels: table or string)
+Functions:RemoveGlobalPedOptions(labels: table or string)
 ```
 
 ### Export option, this will go into any client side resource file aside from qb-target's one
@@ -1132,12 +1132,12 @@ Citizen.CreateThread(function()
 end)
 ```
 
-## RemoveVehicle
+## RemoveGlobalVehicleOptions
 
 ### Function Format
 
 ```lua
-Functions:RemoveVehicle(labels: table or string)
+Functions:RemoveGlobalVehicleOptions(labels: table or string)
 ```
 
 ### Export option, this will go into any client side resource file aside from qb-target's one
@@ -1148,12 +1148,12 @@ Citizen.CreateThread(function()
 end)
 ```
 
-## RemoveObject
+## RemoveGlobalObjectOptions
 
 ### Function Format
 
 ```lua
-Functions:RemoveObject(labels: table or string)
+Functions:RemoveGlobalObjectOptions(labels: table or string)
 ```
 
 ### Export option, this will go into any client side resource file aside from qb-target's one
@@ -1164,12 +1164,12 @@ Citizen.CreateThread(function()
 end)
 ```
 
-## RemovePlayer
+## RemoveGlobalPlayerOptions
 
 ### Function Format
 
 ```lua
-Functions:RemovePlayer(labels: table or string)
+Functions:RemoveGlobalPlayerOptions(labels: table or string)
 ```
 
 ### Export option, this will go into any client side resource file aside from qb-target's one
