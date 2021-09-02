@@ -1,5 +1,5 @@
 local Config, Players, Types, Entities, Models, Zones, Bones, PlayerData = load(LoadResourceFile(GetCurrentResourceName(), 'config.lua'))()
-local playerPed, isLoggedIn, targetActive, hasFocus, success, curFlag, PedsReady, sendData = PlayerPedId(), false, false, false, false, false, 30
+local playerPed, isLoggedIn, targetActive, hasFocus, success, PedsReady, curFlag, sendData = PlayerPedId(), false, false, false, false, false, 30
 
 -- Functions
 
@@ -126,7 +126,7 @@ local Functions = {
 		end
 	end,
 
-	AddType = function(self, type, parameters)
+	AddGlobalTypeOptions = function(self, type, parameters)
 		local distance, options = parameters.distance or Config.MaxDistance, parameters.options
 		for k, v in pairs(options) do
 			if v.distance == nil or not v.distance or v.distance > distance then v.distance = distance end
@@ -134,13 +134,13 @@ local Functions = {
 		end
 	end,
 
-	AddPed = function(self, parameters) self:AddType(1, parameters) end,
+	AddGlobalPedOptions = function(self, parameters) self:AddGlobalTypeOptions(1, parameters) end,
 
-	AddVehicle = function(self, parameters) self:AddType(2, parameters) end,
+	AddGlobalVehicleOptions = function(self, parameters) self:AddGlobalTypeOptions(2, parameters) end,
 
-	AddObject = function(self, parameters) self:AddType(3, parameters) end,
+	AddGlobalObjectOptions = function(self, parameters) self:AddGlobalTypeOptions(3, parameters) end,
 
-	AddPlayer = function(self, parameters)
+	AddGlobalPlayerOptions = function(self, parameters)
 		local distance, options = parameters.distance or Config.MaxDistance, parameters.options
 		for k, v in pairs(options) do
 			if v.distance == nil or not v.distance or v.distance > distance then v.distance = distance end
@@ -148,19 +148,19 @@ local Functions = {
 		end
 	end,
 
-	RemoveType = function(self, type, labels)
+	RemoveGlobalTypeOptions = function(self, type, labels)
 		for k, v in pairs(labels) do
 			Types[type][v] = nil
 		end
 	end,
 
-	RemovePed = function(self, labels) self:RemoveType(1, labels) end,
+	RemoveGlobalPedOptions = function(self, labels) self:RemoveGlobalType(1, labels) end,
 
-	RemoveVehicle = function(self, labels) self:RemoveType(2, labels) end,
+	RemoveGlobalVehicleOptions = function(self, labels) self:RemoveGlobalType(2, labels) end,
 
-	RemoveObject = function(self, labels) self:RemoveType(3, labels) end,
+	RemoveGlobalObjectOptions = function(self, labels) self:RemoveGlobalType(3, labels) end,
 
-	RemovePlayer = function(self, labels)
+	RemoveGlobalPlayerOptions = function(self, labels)
 		if type(labels) == 'table' then
 			for k, v in pairs(labels) do
 				Players[v.label] = nil
@@ -627,6 +627,9 @@ local Functions = {
 			end
 		end
 	end,
+	GetPeds = function()
+		return Config.Peds
+	end,
 }
 
 -- Exports
@@ -672,43 +675,43 @@ exports("RemoveTargetEntity", function(entity, labels)
 end)
 
 exports("AddType", function(type, parameters)
-	Functions:AddType(type, parameters)
+	Functions:AddGlobalTypeOptions(type, parameters)
 end)
 
 exports("AddPed", function(parameters)
-    Functions:AddPed(parameters)
+    Functions:AddGlobalPedOptions(parameters)
 end)
 
 exports("AddVehicle", function(parameters)
-    Functions:AddVehicle(parameters)
+    Functions:AddGlobalVehicleOptions(parameters)
 end)
 
 exports("AddObject", function(parameters)
-    Functions:AddObject(parameters)
+    Functions:AddGlobalObjectOptions(parameters)
 end)
 
 exports("AddPlayer", function(parameters)
-    Functions:AddPlayer(parameters)
+    Functions:AddGlobalPlayerOptions(parameters)
 end)
 
 exports("RemoveType", function(type, labels)
-	Functions:RemoveType(type, labels)
+	Functions:RemoveGlobalTypeOptions(type, labels)
 end)
 
 exports("RemovePed", function(labels)
-    Functions:RemovePed(labels)
+    Functions:RemoveGlobalPedOptions(labels)
 end)
 
 exports("RemoveVehicle", function(labels)
-    Functions:RemoveVehicle(labels)
+    Functions:RemoveGlobalVehicleOptions(labels)
 end)
 
 exports("RemoveObject", function(labels)
-    Functions:RemoveObject(labels)
+    Functions:RemoveGlobalObjectOptions(labels)
 end)
 
 exports("RemovePlayer", function(labels)
-    Functions:RemovePlayer(labels)
+    Functions:RemoveGlobalPlayerOptions(labels)
 end)
 
 exports("IsTargetActive", function()
@@ -753,6 +756,10 @@ end)
 
 exports("GetTargetPlayerData", function(label)
 	return Functions:GetTargetPlayerData(label)
+end)
+
+exports("GetPeds", function()
+	return Functions:GetPeds()
 end)
 
 exports("FetchFunctions", function()
@@ -892,20 +899,20 @@ CreateThread(function()
         end
     end
 
-    if next(Config.PedOptions) then
-        Functions:AddPed({options = Config.PedOptions.options, distance = Config.PedOptions.distance})
+    if next(Config.GlobalPedOptions) then
+        Functions:AddGlobalPedOptions({options = Config.GlobalPedOptions.options, distance = Config.GlobalPedOptions.distance})
     end
 
-    if next(Config.VehicleOptions) then
-        Functions:AddVehicle({options = Config.VehicleOptions.options, distance = Config.VehicleOptions.distance})
+    if next(Config.GlobalVehicleOptions) then
+        Functions:AddGlobalVehicleOptions({options = Config.GlobalVehicleOptions.options, distance = Config.GlobalVehicleOptions.distance})
     end
 
-    if next(Config.ObjectOptions) then
-        Functions:AddObject({options = Config.ObjectOptions.options, distance = Config.ObjectOptions.distance})
+    if next(Config.GlobalObjectOptions) then
+        Functions:AddGlobalObjectOptions({options = Config.GlobalObjectOptions.options, distance = Config.GlobalObjectOptions.distance})
     end
 
-    if next(Config.PlayerOptions) then
-        Functions:AddPlayer({options = Config.PlayerOptions.options, distance = Config.PlayerOptions.distance})
+    if next(Config.GlobalPlayerOptions) then
+        Functions:AddGlobalPlayerOptions({options = Config.GlobalPlayerOptions.options, distance = Config.GlobalPlayerOptions.distance})
     end
 end)
 
@@ -973,7 +980,7 @@ if Config.Debug then
 		end
 	end)
 
-	Functions:AddPed({
+	Functions:AddGlobalPedOptions({
 		options = {
 			{
 				type = "client",
@@ -985,7 +992,7 @@ if Config.Debug then
 		distance = Config.MaxDistance
 	})
 
-	Functions:AddVehicle({
+	Functions:AddGlobalVehicleOptions({
 		options = {
 			{
 				type = "client",
@@ -997,7 +1004,7 @@ if Config.Debug then
 		distance = Config.MaxDistance
 	})
 
-	Functions:AddObject({
+	Functions:AddGlobalObjectOptions({
 		options = {
 			{
 				type = "client",
@@ -1009,7 +1016,7 @@ if Config.Debug then
 		distance = Config.MaxDistance
 	})
 
-	Functions:AddPlayer({
+	Functions:AddGlobalPlayerOptions({
 		options = {
 			{
 				type = "client",
