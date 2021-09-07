@@ -6,20 +6,24 @@ local playerPed, isLoggedIn, targetActive, hasFocus, success, PedsReady, curFlag
 local Functions = {
 	AddCircleZone = function(self, name, center, radius, options, targetoptions)
 		Zones[name] = CircleZone:Create(center, radius, options)
+		if targetoptions.distance == nil then targetoptions.distance = Config.MaxDistance end
 		Zones[name].targetoptions = targetoptions
 	end,
 
 	AddBoxZone = function(self, name, center, length, width, options, targetoptions)
 		Zones[name] = BoxZone:Create(center, length, width, options)
+		if targetoptions.distance == nil then targetoptions.distance = Config.MaxDistance end
 		Zones[name].targetoptions = targetoptions
 	end,
 
 	AddPolyzone = function(self, name, points, options, targetoptions)
 		Zones[name] = PolyZone:Create(points, options)
+		if targetoptions.distance == nil then targetoptions.distance = Config.MaxDistance end
 		Zones[name].targetoptions = targetoptions
 	end,
 
 	AddTargetBone = function(self, bones, parameters)
+		if parameters.distance == nil then parameters.distance = Config.MaxDistance end
 		if type(bones) == 'table' then
 			for _, bone in pairs(bones) do
 				Bones[bone] = parameters
@@ -29,8 +33,8 @@ local Functions = {
 		end
 	end,
 
-	AddTargetEntity = function(self, entity, parameters)
-		local entity = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity) or false
+	AddTargetEntity = function(self, ent, parameters)
+		local entity = NetworkGetEntityIsNetworked(ent) and NetworkGetNetworkIdFromEntity(ent) or false
 		if entity then
 			local distance, options = parameters.distance or Config.MaxDistance, parameters.options
 			if not Entities[entity] then Entities[entity] = {} end
@@ -43,12 +47,12 @@ local Functions = {
 
 	AddEntityZone = function(self, name, entity, options, targetoptions)
 		Zones[name] = EntityZone:Create(entity, options)
+		if targetoptions.distance == nil then targetoptions.distance = Config.MaxDistance end
 		Zones[name].targetoptions = targetoptions
 	end,
 
 	AddTargetModel = function(self, models, parameters)
 		local distance, options = parameters.distance or Config.MaxDistance, parameters.options
-		local model
 		if type(models) == 'table' then
 			for _, model in pairs(models) do
 				if type(model) == 'string' then model = GetHashKey(model) end
@@ -59,11 +63,11 @@ local Functions = {
 				end
 			end
 		else
-			if type(models) == 'string' then model = GetHashKey(models) else model = models end
-			if not Models[model] then Models[model] = {} end
+			if type(models) == 'string' then models = GetHashKey(models) end
+			if not Models[models] then Models[models] = {} end
 			for k, v in pairs(options) do
 				if v.distance == nil or not v.distance or v.distance > distance then v.distance = distance end
-				Models[model][v.label] = v
+				Models[models][v.label] = v
 			end
 		end
 	end,
@@ -77,7 +81,6 @@ local Functions = {
 	end,
 
 	RemoveTargetModel = function(self, models, labels)
-		local model
 		if type(models) == 'table' then
 			for _, model in pairs(models) do
 				if type(model) == 'string' then model = GetHashKey(model) end
@@ -94,23 +97,23 @@ local Functions = {
 				end
 			end
 		else
-			if type(models) == 'string' then model = GetHashKey(model) else model = models end
+			if type(models) == 'string' then models = GetHashKey(models) end
 			if type(labels) == 'table' then
 				for k, v in pairs(labels) do
-					if Models[model] then
-						Models[model][v] = nil
+					if Models[models] then
+						Models[models][v] = nil
 					end
 				end
 			elseif type(labels) == 'string' then
-				if Models[model] then
-					Models[model][labels] = nil
+				if Models[models] then
+					Models[models][labels] = nil
 				end
 			end
 		end
 	end,
 
-	RemoveTargetEntity = function(self, entity, labels)
-		local entity = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity) or false
+	RemoveTargetEntity = function(self, ent, labels)
+		local entity = NetworkGetEntityIsNetworked(ent) and NetworkGetNetworkIdFromEntity(ent) or false
 		if entity then
 			if type(labels) == 'table' then
 				for k, v in pairs(labels) do
@@ -193,39 +196,51 @@ local Functions = {
 			end
 		end
 	end,
+
 	IsTargetActive = function(self)
 		return targetActive
 	end,
+
 	IsTargetSuccess = function(self)
 		return success
 	end,
+
 	GetTargetTypeData = function(self, type, label)
 		return Types[type][label]
 	end,
+
 	GetTargetZoneData = function(self, name)
 		return Zones[name]
 	end,
+
 	GetTargetBoneData = function(self, bone)
 		return Bones[bone]
 	end,
+
 	GetTargetEntityData = function(self, entity, label)
 		return Entities[entity][label]
 	end,
+
 	GetTargetModelData = function(self, model, label)
 		return Models[model][label]
 	end,
+
 	GetTargetPedData = function(self, label)
 		return Types[1][label]
 	end,
+
 	GetTargetVehicleData = function(self, label)
 		return Types[2][label]
 	end,
+
 	GetTargetObjectData = function(self, label)
 		return Types[3][label]
 	end,
+
 	GetTargetPlayerData = function(self, label)
 		return Players[label]
 	end,
+
 	CloneTable = function(self, table)
 		local copy = {}
 		for k,v in pairs(table) do
@@ -238,18 +253,22 @@ local Functions = {
 		end
 		return copy
 	end,
+
 	CheckOptions = function(self, data, entity, distance)
 		if (data.distance == nil or distance <= data.distance)
 		and (data.job == nil or data.job == PlayerData.job.name or (data.job[PlayerData.job.name] and data.job[PlayerData.job.name] <= PlayerData.job.grade.level))
+		and (data.gang == nil or data.gang == PlayerData.gang.name or (data.gang[PlayerData.gang.name] and data.gang[PlayerData.gang.name] <= PlayerData.gang.grade.level))
 		and (data.item == nil or data.item and self:ItemCount(data.item) > 0)
 		and (data.canInteract == nil or data.canInteract(entity)) then return true
 		end
 		return false
 	end,
+
 	switch = function(self)
 		if curFlag == 30 then curFlag = -1 else curFlag = 30 end
 		return curFlag
 	end,
+
 	EnableTarget = function(self)
 		if success or not isLoggedIn then return end
 		if not targetActive then
@@ -404,6 +423,8 @@ local Functions = {
 									send_options[slot].entity = entity
 								end
 							end
+							TriggerEvent(GetCurrentResourceName()..':client:enterPolyZone', send_options[slot])
+							TriggerServerEvent(GetCurrentResourceName()..':server:enterPolyZone', send_options[slot])
 							sendData = send_options
 							if next(send_options) then
 								success = true
@@ -411,8 +432,8 @@ local Functions = {
 								self:DrawOutlineEntity(entity, true)
 								while targetActive and success do
 									local playerCoords = GetEntityCoords(playerPed)
-									local _, coords, entity2 = self:RaycastCamera(hit)
-									if not zone:isPointInside(coords) then
+									local _, endcoords, entity2 = self:RaycastCamera(hit)
+									if not zone:isPointInside(endcoords) then
 										if IsControlReleased(0, 19) then
 											self:DisableTarget(true)
 										else
@@ -437,6 +458,8 @@ local Functions = {
 								else
 									self:LeftTarget()
 								end
+								TriggerEvent(GetCurrentResourceName()..':client:exitPolyZone', send_options[slot])
+								TriggerServerEvent(GetCurrentResourceName()..':server:exitPolyZone', send_options[slot])
 								self:DrawOutlineEntity(entity, false)
 							end
 						end
@@ -447,6 +470,7 @@ local Functions = {
 			self:DisableTarget(false)
 		end
 	end,
+
 	EnableNUI = function(self, options)
 		if targetActive and not hasFocus then
 			SetCursorLocation(0.5, 0.5)
@@ -456,19 +480,22 @@ local Functions = {
 			SendNUIMessage({response = "validTarget", data = options})
 		end
 	end,
+
 	DisableNUI = function(self)
 		SetNuiFocus(false, false)
 		SetNuiFocusKeepInput(false)
 		hasFocus = false
 	end,
+
 	LeftTarget = function(self)
 		SetNuiFocus(false, false)
 		SetNuiFocusKeepInput(false)
 		success, hasFocus = false, false
 		SendNUIMessage({response = "leftTarget"})
 	end,
-	DisableTarget = function(self, disablenui)
-		if (targetActive and not hasFocus) or disablenui then
+
+	DisableTarget = function(self, forcedisable)
+		if (targetActive and not hasFocus) or forcedisable then
 			SetNuiFocus(false, false)
 			SetNuiFocusKeepInput(false)
 			Wait(100)
@@ -476,6 +503,7 @@ local Functions = {
 			SendNUIMessage({response = "closeTarget"})
 		end
 	end,
+
 	ItemCount = function(self, item)
 		for k, v in pairs(PlayerData.items) do
 			if v.name == item then
@@ -484,6 +512,7 @@ local Functions = {
 		end
 		return 0
 	end,
+
 	DrawOutlineEntity = function(self, entity, bool)
 		if Config.EnableOutline then
 			if not IsEntityAPed(entity) then
@@ -491,9 +520,10 @@ local Functions = {
 			end
 		end
 	end,
-	CheckEntity = function(self, hit, data, entity, distance)
+
+	CheckEntity = function(self, hit, datatable, entity, distance)
 		local send_options, send_distance, slot = {}, {}, 0
-		for o, data in pairs(data) do
+		for o, data in pairs(datatable) do
 			if self:CheckOptions(data, entity, distance) then
 				slot = #send_options + 1
 				send_options[slot] = data
@@ -509,7 +539,7 @@ local Functions = {
 			while targetActive and success do
 				local playerCoords = GetEntityCoords(playerPed)
 				local _, coords, entity2 = self:RaycastCamera(hit)
-				local distance = #(playerCoords - coords)
+				local dist = #(playerCoords - coords)
 				if entity ~= entity2 then
 					if IsControlReleased(0, 19) then
 						self:DisableTarget(true)
@@ -523,7 +553,7 @@ local Functions = {
 					self:DrawOutlineEntity(entity, false)
 				else
 					for k, v in pairs(send_distance) do
-						if v and distance > k then
+						if v and dist > k then
 							if IsControlReleased(0, 19) then
 								self:DisableTarget(true)
 							else
@@ -544,10 +574,10 @@ local Functions = {
 			self:DrawOutlineEntity(entity, false)
 		end
 	end,
+
 	CheckBones = function(self, coords, entity, min, max, bonelist)
 		local closestBone, closestDistance, closestPos, closestBoneName = -1, 20
 		for k, v in pairs(bonelist) do
-			local coords = coords
 			if Bones[v] then
 				local boneId = GetEntityBoneIndexByName(entity, v)
 				local bonePos = GetWorldPositionOfEntityBone(entity, boneId)
@@ -560,11 +590,13 @@ local Functions = {
 		if closestBone ~= -1 then return closestBone, closestPos, closestBoneName
 		else return false end
 	end,
+
 	SpawnPeds = function(self)
 		if not PedsReady then
 			if next(Config.Peds) then
 				for k, v in pairs(Config.Peds) do
 					local spawnedped = 0
+					local networked = v.networked ~= nil and v.networked or false
 					RequestModel(v.model)
 					while not HasModelLoaded(v.model) do
 						Wait(1)
@@ -573,9 +605,9 @@ local Functions = {
 					if type(v.model) == 'string' then v.model = GetHashKey(v.model) end
 
 					if v.minusOne then
-						spawnedped = CreatePed(0, v.model, v.coords.x, v.coords.y, v.coords.z - 1.0, v.coords.w, false, true)
+						spawnedped = CreatePed(0, v.model, v.coords.x, v.coords.y, v.coords.z - 1.0, v.coords.w, networked, true)
 					else
-						spawnedped = CreatePed(0, v.model, v.coords.x, v.coords.y, v.coords.z, v.coords.w, false, true)
+						spawnedped = CreatePed(0, v.model, v.coords.x, v.coords.y, v.coords.z, v.coords.w, networked, true)
 					end
 
 					if v.freeze then
@@ -596,7 +628,7 @@ local Functions = {
 							Wait(1)
 						end
 
-						TaskPlayAnim(spawnedped, v.animDict, v.anim, 8.0, 0, -1, v.flag, 0, 0, 0, 0)
+						TaskPlayAnim(spawnedped, v.animDict, v.anim, 8.0, 0, -1, v.flag or 1, 0, 0, 0, 0)
 					end
 
 					if v.scenario then
@@ -616,6 +648,7 @@ local Functions = {
 			end
 		end
 	end,
+
 	DeletePeds = function(self)
 		if PedsReady then
 			if next(Config.Peds) then
@@ -627,8 +660,115 @@ local Functions = {
 			end
 		end
 	end,
-	GetPeds = function()
+
+	GetPeds = function(self)
 		return Config.Peds
+	end,
+
+	SpawnPed = function(self, data)
+		local spawnedped = 0
+		if type(data[2]) == 'table' then
+			for k, v in pairs(data) do
+				local networked = v.networked ~= nil and v.networked or false
+				RequestModel(v.model)
+				while not HasModelLoaded(v.model) do
+					Wait(50)
+				end
+
+				if type(v.model) == 'string' then v.model = GetHashKey(v.model) end
+
+				if v.minusOne then
+					spawnedped = CreatePed(0, v.model, v.coords.x, v.coords.y, v.coords.z - 1.0, v.coords.w, networked, true)
+				else
+					spawnedped = CreatePed(0, v.model, v.coords.x, v.coords.y, v.coords.z, v.coords.w, networked, true)
+				end
+
+				if v.freeze then
+					FreezeEntityPosition(spawnedped, true)
+				end
+
+				if v.invincible then
+					SetEntityInvincible(spawnedped, true)
+				end
+
+				if v.blockevents then
+					SetBlockingOfNonTemporaryEvents(spawnedped, true)
+				end
+
+				if v.animDict and v.anim then
+					RequestAnimDict(v.animDict)
+					while not HasAnimDictLoaded(v.animDict) do
+						Wait(50)
+					end
+
+					TaskPlayAnim(spawnedped, v.animDict, v.anim, 8.0, 0, -1, v.flag or 1, 0, 0, 0, 0)
+				end
+
+				if v.scenario then
+					TaskStartScenarioInPlace(spawnedped, v.scenario, 0, true)
+				end
+
+				if v.target then
+					self:AddTargetModel(v.model, {
+						options = v.target.options,
+						distance = v.target.distance
+					})
+				end
+				v.currentpednumber = spawnedped
+				Config.Peds[#Config.Peds+1] = v
+			end
+		else
+			if type(data[1]) == 'table' then print('['..GetCurrentResourceName()..'] WRONG TABLE FORMAT FOR SPAWN PED EXPORT') return end
+			local networked = data.networked ~= nil and data.networked or false
+			RequestModel(data.model)
+			while not HasModelLoaded(data.model) do
+				Wait(50)
+			end
+
+			if type(data.model) == 'string' then data.model = GetHashKey(data.model) end
+
+			if data.minusOne then
+				spawnedped = CreatePed(0, data.model, data.coords.x, data.coords.y, data.coords.z - 1.0, data.coords.w, networked, true)
+			else
+				spawnedped = CreatePed(0, data.model, data.coords.x, data.coords.y, data.coords.z, data.coords.w, networked, true)
+			end
+
+			if data.freeze then
+				FreezeEntityPosition(spawnedped, true)
+			end
+
+			if data.invincible then
+				SetEntityInvincible(spawnedped, true)
+			end
+
+			if data.blockevents then
+				SetBlockingOfNonTemporaryEvents(spawnedped, true)
+			end
+
+			if data.animDict and data.anim then
+				RequestAnimDict(data.animDict)
+				while not HasAnimDictLoaded(data.animDict) do
+					Wait(50)
+				end
+
+				TaskPlayAnim(spawnedped, data.animDict, data.anim, 8.0, 0, -1, data.flag or 1, 0, 0, 0, 0)
+			end
+
+			if data.scenario then
+				TaskStartScenarioInPlace(spawnedped, data.scenario, 0, true)
+			end
+
+			if data.target then
+				self:AddTargetModel(data.model, {
+					options = data.target.options,
+					distance = data.target.distance
+				})
+			end
+
+			data.currentpednumber = spawnedped
+
+			Config.Peds[#Config.Peds+1] = data
+		end
 	end,
 }
 
@@ -758,6 +898,10 @@ exports("GetTargetPlayerData", function(label)
 	return Functions:GetTargetPlayerData(label)
 end)
 
+exports("SpawnPed", function(spawntable)
+	Functions:SpawnPed(spawntable)
+end)
+
 exports("GetPeds", function()
 	return Functions:GetPeds()
 end)
@@ -791,7 +935,7 @@ RegisterNUICallback('selectTarget', function(option, cb)
                 TriggerEvent(data.event, data)
             end
         else
-            print("["..GetCurrentResourceName().."]: ERROR NO EVENT SETUP")
+            print("["..GetCurrentResourceName().."]: ERROR NO TRIGGER SETUP")
         end
     end)
 
@@ -918,6 +1062,7 @@ end)
 
 -- Events
 
+-- This makes sure that only when you are logged in that you can access the target
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
 AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
 	PlayerData = QBCore.Functions.GetPlayerData()
@@ -925,6 +1070,7 @@ AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
 	Functions:SpawnPeds()
 end)
 
+-- This will make sure everything resets and the player can't access the target when they are logged out
 RegisterNetEvent('QBCore:Client:OnPlayerUnload')
 AddEventHandler('QBCore:Client:OnPlayerUnload', function()
 	isLoggedIn = false
@@ -932,11 +1078,13 @@ AddEventHandler('QBCore:Client:OnPlayerUnload', function()
 	Functions:DeletePeds()
 end)
 
+-- This will update the job when a new job has been assigned to a player
 RegisterNetEvent('QBCore:Client:OnJobUpdate')
 AddEventHandler('QBCore:Client:OnJobUpdate', function(JobInfo)
 	PlayerData.job = JobInfo
 end)
 
+-- Updates the PlayerData to make sure it doesn't 'stay behind'
 RegisterNetEvent('QBCore:Client:SetPlayerData')
 AddEventHandler('QBCore:Client:SetPlayerData', function(val)
 	PlayerData = val
@@ -951,6 +1099,7 @@ AddEventHandler('onResourceStart', function(resource)
 	end
 end)
 
+-- This will delete the peds when the resource stops to make sure you don't have random peds walking
 AddEventHandler('onResourceStop', function(resource)
 	if resource == GetCurrentResourceName() then
 		Functions:DeletePeds()
@@ -961,7 +1110,7 @@ end)
 
 if Config.Debug then
 	AddEventHandler(GetCurrentResourceName()..':debug', function(data)
-		print('Flag: '..curFlag, 'Entity: '..data.entity, 'Type: '..GetEntityType(data.entity))
+		print('Flag: '..curFlag, 'Entity: '..data.entity, 'Entity Model: '..GetEntityModel(data.entity), 'Type: '..GetEntityType(data.entity))
 		if data.remove then
 			Functions:RemoveTargetEntity(data.entity, 'HelloWorld')
 		else
