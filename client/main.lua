@@ -433,7 +433,7 @@ local Functions = {
 								while targetActive and success do
 									local playerCoords = GetEntityCoords(playerPed)
 									local _, endcoords, entity2 = self:RaycastCamera(hit)
-									if not zone:isPointInside(endcoords) then
+									if not zone:isPointInside(endcoords) or #(playerCoords - endcoords) > zone.targetoptions.distance then
 										if IsControlReleased(0, 19) then
 											self:DisableTarget(true)
 										else
