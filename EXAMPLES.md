@@ -38,11 +38,6 @@ AddEventHandler('Toggle:Duty', function()
     TriggerServerEvent("QBCore:ToggleDuty")
     TriggerServerEvent("police:server:UpdateBlips")
     TriggerEvent('qb-policealerts:ToggleDuty', onDuty)
-    if onDuty then
-        exports["rp-radio"]:GivePlayerAccessToFrequencies(1, 2)
-    else
-        exports["rp-radio"]:RemovePlayerAccessToFrequencies(1, 2)
-    end
 end)
 ```
 
@@ -80,11 +75,6 @@ AddEventHandler('Toggle:Duty', function()
     TriggerServerEvent("QBCore:ToggleDuty")
     TriggerServerEvent("police:server:UpdateBlips")
     TriggerEvent('qb-policealerts:ToggleDuty', onDuty)
-    if onDuty then
-        exports["rp-radio"]:GivePlayerAccessToFrequencies(1, 2)
-    else
-        exports["rp-radio"]:RemovePlayerAccessToFrequencies(1, 2)
-    end
 end)
 ```
 
@@ -133,6 +123,8 @@ exports['qb-target']:AddTargetModel(Config.Peds, {
 
 This is an example using the provided **config**
 
+**NOTE:** this is not an optimal way of interacting with players, this is just an example, use the Config.GlobalPlayerOptions for player interactions instead
+
 ```lua
 Config.TargetModels = {
     ["targetmodel1"] = {
@@ -167,7 +159,7 @@ Config.TargetModels = {
 ```
 
 ## Add Target Entity
-This is an example from a postop resource. Players can rent delivery vehicles in order to make deliveries. When they rent a vehicle, we apply this qtarget to that entity only, which allows them to "get packages" from the vehicle.
+This is an example from a postop resource. Players can rent delivery vehicles in order to make deliveries. When they rent a vehicle, we apply this target to that entity only, which allows them to "get packages" from the vehicle.
 
 This is an example using **exports**
 
@@ -223,7 +215,7 @@ exports['qb-target']:AddTargetModel(coffee, {
             event = "coffee:buy",
             icon = "fas fa-coffee",
             label = "Coffee",
-            item = "coffee",
+            itemname = "coffee",
             price = 5,
         },
     },
@@ -232,12 +224,12 @@ exports['qb-target']:AddTargetModel(coffee, {
 
 RegisterNetEvent('coffee:buy')
 AddEventHandler('coffee:buy',function(data)
-    QBCore.Functions.Notify("You purchased a " .. data.item .. " for $" .. data.price .. ". Enjoy!", 'success')
+    QBCore.Functions.Notify("You purchased a " .. data.itemname .. " for $" .. data.price .. ". Enjoy!", 'success')
     -- server event to buy the item here
 end)
 ```
 
-### EntityZone / Add a qtarget in an event
+### EntityZone / Add a target in an event
 This is an example of how you can dynamically create a target options in an event, for example, planting a potato plant.
 
 This is an example using **exports**

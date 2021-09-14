@@ -2,10 +2,6 @@ body {
     overflow: hidden;
 }
 
-.target-wrapper {
-    display: none;
-}
-
 #target-eye {
     position: absolute;
     top: 50%;
@@ -15,19 +11,19 @@ body {
     text-shadow: 0.2vh 0.2vh 0.2vh #000000;
 }
 
-.target-label-wrapper {
+#target-label-wrapper {
     position: absolute;
     display: flex;
     align-content: center;
     justify-content: center;
     flex-direction: row;
-    left: 91.5vh;
+    left: 4vh;
     width: fit-content;
     height: 100%;
-    top: 49.25%;
+    top: 29%;
 }
 
-.target-label {
+#target-label {
     list-style: none;
     font-size: 1.3vh;
     font-weight: bold;
@@ -36,8 +32,4 @@ body {
     user-select: none;
     white-space: nowrap;
     text-shadow: 0.2vh 0.2vh 0.2vh #000000;
-}
-
-.target-icon {
-    color: rgb(30, 144, 255);
 }
