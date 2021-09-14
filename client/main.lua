@@ -1,9 +1,10 @@
 local Config, Players, Types, Entities, Models, Zones, Bones, PlayerData = load(LoadResourceFile(GetCurrentResourceName(), 'config.lua'))()
-local playerPed, isLoggedIn, targetActive, hasFocus, success, PedsReady, curFlag, sendData = PlayerPedId(), false, false, false, false, false, 30
+local playerPed, isLoggedIn, targetActive, hasFocus, success, PedsReady, AllowTarget, curFlag, sendData = PlayerPedId(), false, false, false, false, false, true, 30
 
 -- Functions
 
 local Functions = {
+
 	AddCircleZone = function(self, name, center, radius, options, targetoptions)
 		Zones[name] = CircleZone:Create(center, radius, options)
 		if targetoptions.distance == nil then targetoptions.distance = Config.MaxDistance end
@@ -183,7 +184,7 @@ local Functions = {
 		local rayHandle = StartShapeTestLosProbe(cam, destination, flag or -1, playerPed or PlayerPedId(), 0)
 		while true do
 			Wait(5)
-			local result, _, endCoords, _, entityHit = GetShapeTestResult(rayHandle)
+			local result, datatwo, endCoords, datathree, entityHit = GetShapeTestResult(rayHandle)
 			if Config.Debug then
 				local entCoords = GetEntityCoords(playerPed or PlayerPedId())
 				DrawLine(entCoords.x, entCoords.y, entCoords.z, destination.x, destination.y, destination.z, 255, 0, 255, 255)
@@ -270,7 +271,7 @@ local Functions = {
 	end,
 
 	EnableTarget = function(self)
-		if success or not isLoggedIn then return end
+		if not AllowTarget or success or not isLoggedIn then return end
 		if not targetActive then
 			targetActive = true
 			SendNUIMessage({response = "openTarget"})
@@ -770,6 +771,11 @@ local Functions = {
 			Config.Peds[#Config.Peds+1] = data
 		end
 	end,
+
+	AllowTargeting = function(self, bool)
+		AllowTarget = bool
+	end,
+
 }
 
 -- Exports
@@ -875,7 +881,7 @@ exports("GetTargetBoneData", function(bone)
 end)
 
 exports("GetTargetEntityData", function(entity, label)
-	Functions:GetTargetEntityData(entity, label)
+	return Functions:GetTargetEntityData(entity, label)
 end)
 
 exports("GetTargetModelData", function(model, label)
@@ -1044,19 +1050,19 @@ CreateThread(function()
     end
 
     if next(Config.GlobalPedOptions) then
-        Functions:AddGlobalPedOptions({options = Config.GlobalPedOptions.options, distance = Config.GlobalPedOptions.distance})
+        Functions:AddGlobalPedOptions(Config.GlobalPedOptions)
     end
 
     if next(Config.GlobalVehicleOptions) then
-        Functions:AddGlobalVehicleOptions({options = Config.GlobalVehicleOptions.options, distance = Config.GlobalVehicleOptions.distance})
+        Functions:AddGlobalVehicleOptions(Config.GlobalVehicleOptions)
     end
 
     if next(Config.GlobalObjectOptions) then
-        Functions:AddGlobalObjectOptions({options = Config.GlobalObjectOptions.options, distance = Config.GlobalObjectOptions.distance})
+        Functions:AddGlobalObjectOptions(Config.GlobalObjectOptions)
     end
 
     if next(Config.GlobalPlayerOptions) then
-        Functions:AddGlobalPlayerOptions({options = Config.GlobalPlayerOptions.options, distance = Config.GlobalPlayerOptions.distance})
+        Functions:AddGlobalPlayerOptions(Config.GlobalPlayerOptions)
     end
 end)
 
