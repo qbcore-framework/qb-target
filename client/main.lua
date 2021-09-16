@@ -23,6 +23,12 @@ local Functions = {
 		Zones[name].targetoptions = targetoptions
 	end,
 
+	AddComboZone = function(self, zones, options, targetoptions)
+		Zones[name] = ComboZone:Create(zones, options)
+		if targetoptions.distance == nil then targetoptions.distance = Config.MaxDistance end
+		Zones[name].targetoptions = targetoptions
+	end,
+
 	AddTargetBone = function(self, bones, parameters)
 		if parameters.distance == nil then parameters.distance = Config.MaxDistance end
 		if type(bones) == 'table' then
@@ -351,18 +357,18 @@ local Functions = {
 										local closestBone2, closestPos2, closestBoneName2 = self:CheckBones(coords, entity, min, max, Config.VehicleBones)
 
 										if closestBone ~= closestBone2 then
-											if IsControlReleased(0, 19) then
+											if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
 												self:DisableTarget(true)
 											else
 												self:LeftTarget()
 											end
 											self:DrawOutlineEntity(entity, false)
 											break
-										elseif not hasFocus and IsControlPressed(0, 238) then
+										elseif not hasFocus and (IsControlPressed(0, 238) or IsDisabledControlPressed(0, 238)) then
 											self:EnableNUI(self:CloneTable(sendData))
 											self:DrawOutlineEntity(entity, false)
 										elseif #(playerCoords - coords) > data.distance then
-											if IsControlReleased(0, 19) then
+											if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
 												self:DisableTarget(true)
 											else
 												self:LeftTarget()
@@ -370,7 +376,7 @@ local Functions = {
 											self:DrawOutlineEntity(entity, false)
 										end
 									else
-										if IsControlReleased(0, 19) then
+										if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
 											self:DisableTarget(true)
 										else
 											self:LeftTarget()
@@ -380,7 +386,7 @@ local Functions = {
 									end
 									Wait(5)
 								end
-								if IsControlReleased(0, 19) then
+								if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
 									self:DisableTarget(true)
 								else
 									self:LeftTarget()
@@ -435,17 +441,17 @@ local Functions = {
 									local playerCoords = GetEntityCoords(playerPed)
 									local _, endcoords, entity2 = self:RaycastCamera(hit)
 									if not zone:isPointInside(endcoords) then
-										if IsControlReleased(0, 19) then
+										if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
 											self:DisableTarget(true)
 										else
 											self:LeftTarget()
 										end
 										self:DrawOutlineEntity(entity, false)
-									elseif not hasFocus and IsControlPressed(0, 238) then
+									elseif not hasFocus and (IsControlPressed(0, 238) or IsDisabledControlPressed(0, 238)) then
 										self:EnableNUI(self:CloneTable(sendData))
 										self:DrawOutlineEntity(entity, false)
 									elseif #(playerCoords - zone.center) > zone.targetoptions.distance then
-										if IsControlReleased(0, 19) then
+										if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
 											self:DisableTarget(true)
 										else
 											self:LeftTarget()
@@ -454,7 +460,7 @@ local Functions = {
 									end
 									Wait(5)
 								end
-								if IsControlReleased(0, 19) then
+								if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
 									self:DisableTarget(true)
 								else
 									self:LeftTarget()
@@ -542,20 +548,20 @@ local Functions = {
 				local _, coords, entity2 = self:RaycastCamera(hit)
 				local dist = #(playerCoords - coords)
 				if entity ~= entity2 then
-					if IsControlReleased(0, 19) then
+					if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
 						self:DisableTarget(true)
 					else
 						self:LeftTarget()
 					end
 					self:DrawOutlineEntity(entity, false)
 					break
-				elseif not hasFocus and IsControlPressed(0, 238) then
+				elseif not hasFocus and (IsControlPressed(0, 238) or IsDisabledControlPressed(0, 238)) then
 					self:EnableNUI(self:CloneTable(sendData))
 					self:DrawOutlineEntity(entity, false)
 				else
 					for k, v in pairs(send_distance) do
 						if v and dist > k then
-							if IsControlReleased(0, 19) then
+							if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
 								self:DisableTarget(true)
 							else
 								self:LeftTarget()
@@ -567,7 +573,7 @@ local Functions = {
 				end
 				Wait(5)
 			end
-			if IsControlReleased(0, 19) then
+			if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
 				self:DisableTarget(true)
 			else
 				self:LeftTarget()
@@ -590,6 +596,10 @@ local Functions = {
 		end
 		if closestBone ~= -1 then return closestBone, closestPos, closestBoneName
 		else return false end
+	end,
+
+	AllowTargeting = function(self, bool)
+		AllowTarget = bool
 	end,
 
 	SpawnPeds = function(self)
@@ -716,7 +726,13 @@ local Functions = {
 					})
 				end
 				v.currentpednumber = spawnedped
-				Config.Peds[#Config.Peds+1] = v
+
+				local nextnumber = #Config.Peds + 1
+				if nextnumber <= 0 then
+					nextnumber = 1
+				end
+
+				Config.Peds[nextnumber] = v
 			end
 		else
 			if type(data[1]) == 'table' then print('['..GetCurrentResourceName()..'] WRONG TABLE FORMAT FOR SPAWN PED EXPORT') return end
@@ -768,12 +784,13 @@ local Functions = {
 
 			data.currentpednumber = spawnedped
 
-			Config.Peds[#Config.Peds+1] = data
-		end
-	end,
+			local nextnumber = #Config.Peds + 1
+			if nextnumber <= 0 then
+				nextnumber = 1
+			end
 
-	AllowTargeting = function(self, bool)
-		AllowTarget = bool
+			Config.Peds[nextnumber] = data
+		end
 	end,
 
 }
@@ -790,6 +807,10 @@ end)
 
 exports("AddPolyzone", function(name, points, options, targetoptions)
     Functions:AddPolyzone(name, points, options, targetoptions)
+end)
+
+exports("AddComboZone", function(zones, options, targetoptions)
+	Functions:AddComboZone(zones, options, targetoptions)
 end)
 
 exports("AddTargetBone", function(bones, parameters)
@@ -910,6 +931,10 @@ end)
 
 exports("GetPeds", function()
 	return Functions:GetPeds()
+end)
+
+exports("AllowTargeting", function(bool)
+	Functions:AllowTargeting(bool)
 end)
 
 exports("FetchFunctions", function()
