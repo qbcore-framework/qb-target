@@ -2,20 +2,6 @@
 
 qb-target is a targeting solution that allows interaction with any predefined entity, model, entity type, or polyzone. While activated you can easily and safely replace markers and distance checking, instead relying on intuitive design to improve player experiences and optimize interaction.
 
-# Credits
-
-* Lots of credits goes to [qtarget](https://github.com/QuantusRP/qtarget) for re-writing all of bt-target to make it more optimized!
-
-* All the credit goes to [bt-target](https://github.com/brentN5/bt-target) from brentN5 for making this awesome resource and making this repository exist!
-
-* Credit to [ms-peds](https://github.com/MiddleSkillz/ms-peds) for allowing me to use their awesome ped spawner inside the target!
-
-# Dependencies
-
-* [QBCore](https://github.com/qbcore-framework/qb-core)
-
-* [PolyZone](https://github.com/mkafrin/PolyZone)
-
 ## Information
 
 This repository was originally a fork and now it's own repository as it's basically qtarget but with lots of changes to it to make it better, most of the code comes from qtarget as I find their work awesome on this and what they've achieved with it, mostly the optimization.
@@ -37,6 +23,19 @@ The wiki and examples.md are always being improved and new examples can be made 
 - Support for entity bones, with builtin tables for opening doors
 - Support checking for job, items, or specific entities
 - Utilise the `canInteract` function for advanced checks to show or hide an option based on any trigger
+- Ped spawner to spawn peds in one place
+
+# Dependencies
+
+* [QBCore](https://github.com/qbcore-framework/qb-core)
+
+* [PolyZone](https://github.com/mkafrin/PolyZone)
+
+# Credits
+
+* [qtarget](https://github.com/QuantusRP/qtarget)
+
+* [bt-target](https://github.com/brentN5/bt-target)
 
 ## Issues and Suggestions
 Please use the GitHub issues system to report issues or make suggestions, when making suggestion, please keep `[Suggestion]` in the title to make it clear that it is a suggestion or join the [discord](https://discord.gg/qbcore).
