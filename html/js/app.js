@@ -89,9 +89,9 @@ const Targeting = Vue.createApp({
             const items = item.data;
             items.forEach(function(item, index) {
                 if (AlsoChangeTextIconColor) {
-                    TargetLabel = "<div id='target-" + index + "' style='margin-bottom: 1vw;'><span id='target-icon-" + index + "'><i class='" + item.icon + "'></i></span>&nbsp" + item.label + "</div>" + TargetLabel;
+                    TargetLabel = "<div id='target-" + index + "' style='margin-bottom: 1vh;'><span id='target-icon-" + index + "'><i class='" + item.icon + "'></i></span>&nbsp" + item.label + "</div>" + TargetLabel;
                 } else {
-                    TargetLabel = "<div id='target-" + index + "' style='margin-bottom: 1vw;'><span id='target-icon-" + index + "' style='color: " + FoundColor + "'><i class='" + item.icon + "'></i></span>&nbsp" + item.label + "</div>" + TargetLabel;
+                    TargetLabel = "<div id='target-" + index + "' style='margin-bottom: 1vh;'><span id='target-icon-" + index + "' style='color: " + FoundColor + "'><i class='" + item.icon + "'></i></span>&nbsp" + item.label + "</div>" + TargetLabel;
                 };
 
                 setTimeout(function() {
