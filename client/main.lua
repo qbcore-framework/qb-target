@@ -158,7 +158,7 @@ local Functions = {
 		end
 	end,
 
-	RemoveGlobalTypeOptions = function(self, type, labels)
+	RemoveGlobalType = function(self, type, labels)
 		for k, v in pairs(labels) do
 			Types[type][v] = nil
 		end
