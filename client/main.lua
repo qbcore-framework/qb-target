@@ -164,11 +164,11 @@ local Functions = {
 		end
 	end,
 
-	RemoveGlobalPedOptions = function(self, labels) self:RemoveGlobalType(1, labels) end,
+	RemoveGlobalPedOptions = function(self, labels) self:RemoveGlobalTypeOptions(1, labels) end,
 
-	RemoveGlobalVehicleOptions = function(self, labels) self:RemoveGlobalType(2, labels) end,
+	RemoveGlobalVehicleOptions = function(self, labels) self:RemoveGlobalTypeOptions(2, labels) end,
 
-	RemoveGlobalObjectOptions = function(self, labels) self:RemoveGlobalType(3, labels) end,
+	RemoveGlobalObjectOptions = function(self, labels) self:RemoveGlobalTypeOptions(3, labels) end,
 
 	RemoveGlobalPlayerOptions = function(self, labels)
 		if type(labels) == 'table' then
