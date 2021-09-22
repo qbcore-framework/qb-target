@@ -3,7 +3,7 @@ game 'gta5'
 
 author 'BerkieB'
 description 'bt-target rewritten with the help of contributors to make the best interaction system for FiveM whilst keeping the best optimization possible!'
-version '2.5.7'
+version '2.5.8'
 
 ui_page 'html/index.html'
 
