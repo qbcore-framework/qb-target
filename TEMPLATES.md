@@ -52,7 +52,7 @@ targetoptions = {
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           TriggerEvent('testing:event', 'test')
         end,
-        canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+        canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
@@ -67,7 +67,7 @@ targetoptions = {
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
-Citizen.CreateThread(function()
+CreateThread(function()
   exports['qb-target']:AddCircleZone("name", vector3(x, y, z), 1.5, { -- The name has to be unique, the coords a vector3 as shown and the 1.5 is the radius which has to be a float value
     name = "name", -- This is the name of the zone recognized by PolyZone, this has to be unique so it doesn't mess up with other zones
     debugPoly = false, -- This is for enabling/disabling the drawing of the box, it accepts only a boolean value (true or false), when true it will draw the polyzone in green
@@ -84,7 +84,7 @@ Citizen.CreateThread(function()
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           TriggerEvent('testing:event', 'test')
         end,
-        canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+        canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
@@ -156,7 +156,7 @@ targetoptions = {
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           TriggerEvent('testing:event', 'test')
         end,
-        canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+        canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
@@ -171,7 +171,7 @@ targetoptions = {
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
-Citizen.CreateThread(function()
+CreateThread(function()
   exports['qb-target']:AddBoxZone("name", vector3(x, y, z), 1.5, 1.6, { -- The name has to be unique, the coords a vector3 as shown, the 1.5 is the length of the boxzone and the 1.6 is the width of the boxzone, the length and width have to be float values
     name = "name", -- This is the name of the zone recognized by PolyZone, this has to be unique so it doesn't mess up with other zones
     heading = 12.0, -- The heading of the boxzone, this has to be a float value
@@ -191,7 +191,7 @@ Citizen.CreateThread(function()
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           TriggerEvent('testing:event', 'test')
         end,
-        canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+        canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
@@ -265,7 +265,7 @@ targetoptions = {
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           TriggerEvent('testing:event', 'test')
         end,
-        canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+        canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
@@ -280,7 +280,7 @@ targetoptions = {
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
-Citizen.CreateThread(function()
+CreateThread(function()
   local points = {
     vector2(x, y, z), vector2(x, y, z), vector2(x, y, z)
   }
@@ -302,7 +302,7 @@ Citizen.CreateThread(function()
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           TriggerEvent('testing:event', 'test')
         end,
-        canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+        canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
@@ -352,7 +352,7 @@ targetoptions = {
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
-Citizen.CreateThread(function()
+CreateThread(function()
   local zone1 = BoxZone:Create(vector3(500, 500, 100), 3.0, 5.0, {
     name = "test",
     debugPoly = false
@@ -378,7 +378,7 @@ Citizen.CreateThread(function()
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           TriggerEvent('testing:event', 'test')
         end,
-        canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+        canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
@@ -435,7 +435,7 @@ parameters = {
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           TriggerEvent('testing:event', 'test')
         end,
-        canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+        canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
@@ -450,7 +450,7 @@ parameters = {
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
-Citizen.CreateThread(function()
+CreateThread(function()
   local bones = {
     'boot',
     'bonnet'
@@ -468,7 +468,7 @@ Citizen.CreateThread(function()
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           TriggerEvent('testing:event', 'test')
         end,
-        canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+        canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
@@ -486,7 +486,7 @@ end)
 ### Function Format
 
 ```lua
-Functions:AddTargetEntity(entity: integer, parameters: table)
+Functions:AddTargetEntity(entity: integer or table, parameters: table)
 
 parameters = {
   options = {
@@ -524,7 +524,7 @@ parameters = {
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           TriggerEvent('testing:event', 'test')
         end,
-        canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+        canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
@@ -539,7 +539,7 @@ parameters = {
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
-Citizen.CreateThread(function()
+CreateThread(function()
   local entity = CreatePed(2, `a_m_m_indian_01`, 500.0, 500.0, 100.0, 12.0, true, false)
   exports['qb-target']:AddTargetEntity(entity, { -- The specified entity number
     options = {
@@ -554,7 +554,7 @@ Citizen.CreateThread(function()
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           TriggerEvent('testing:event', 'test')
         end,
-        canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+        canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
@@ -617,7 +617,7 @@ targetoptions = {
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           TriggerEvent('testing:event', 'test')
         end,
-        canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+        canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
@@ -632,7 +632,7 @@ targetoptions = {
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
-Citizen.CreateThread(function()
+CreateThread(function()
   local entity = CreatePed(2, `a_m_m_indian_01`, 500.0, 500.0, 100.0, 12.0, true, false)
   exports['qb-target']:AddEntityZone("name", entity, { -- The specified entity number
     {
@@ -651,7 +651,7 @@ Citizen.CreateThread(function()
             if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
             TriggerEvent('testing:event', 'test')
           end,
-          canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+          canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
             if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
             return true
           end,
@@ -710,7 +710,7 @@ parameters = {
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           TriggerEvent('testing:event', 'test')
         end,
-        canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+        canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
@@ -725,7 +725,7 @@ parameters = {
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
-Citizen.CreateThread(function()
+CreateThread(function()
   local models = {
     'a_m_m_indian_01',
   }
@@ -742,7 +742,7 @@ Citizen.CreateThread(function()
             if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
             TriggerEvent('testing:event', 'test')
           end,
-          canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+          canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
             if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
             return true
           end,
@@ -767,8 +767,24 @@ Functions:RemoveZone(name: string)
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
-Citizen.CreateThread(function()
+CreateThread(function()
   exports['qb-target']:RemoveZone("name")
+end)
+```
+
+## RemoveTargetBone
+
+## Function Format
+
+```lua
+Functions:RemoveTargetBone(bones: table or string, labels: table or string)
+```
+
+### Export option, this will go into any client side resource file aside from qb-target's one
+
+```lua
+CreateThread(function()
+  exports['qb-target']:RemoveTargetBone('bonnet', 'Test')
 end)
 ```
 
@@ -783,7 +799,7 @@ Functions:RemoveTargetModel(models: table or string, labels: table or string)
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
-Citizen.CreateThread(function()
+CreateThread(function()
   exports['qb-target']:RemoveTargetModel('a_m_m_indian_01', 'Test')
 end)
 ```
@@ -793,13 +809,13 @@ end)
 ### Function Format
 
 ```lua
-Functions:RemoveTargetEntity(entity: integer, labels: table or string)
+Functions:RemoveTargetEntity(entity: integer or table, labels: table or string)
 ```
 
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
-Citizen.CreateThread(function()
+CreateThread(function()
   exports['qb-target']:RemoveTargetEntity(entity, 'Test')
 end)
 ```
@@ -833,7 +849,7 @@ parameters = {
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
-Citizen.CreateThread(function()
+CreateThread(function()
   local Targeting = exports['qb-target']:FetchFunctions()
   Targeting:AddType(1, { -- 1 stands for ped types
     options = {
@@ -848,7 +864,7 @@ Citizen.CreateThread(function()
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           TriggerEvent('testing:event', 'test')
         end,
-        canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+        canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
@@ -902,7 +918,7 @@ parameters = {
         if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
         TriggerEvent('testing:event', 'test')
       end,
-      canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+      canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
         if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
         return true
       end,
@@ -916,7 +932,7 @@ parameters = {
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
-Citizen.CreateThread(function()
+CreateThread(function()
   exports['qb-target']:AddPed({
     options = {
       { -- This is the first table with options, you can make as many options inside the options table as you want
@@ -930,7 +946,7 @@ Citizen.CreateThread(function()
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           TriggerEvent('testing:event', 'test')
         end,
-        canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+        canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
@@ -943,7 +959,7 @@ Citizen.CreateThread(function()
 end)
 ```
 
-## AddVehicle
+## AddGlobalVehicleOptions
 
 ### Function Format
 
@@ -984,7 +1000,7 @@ parameters = {
         if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
         TriggerEvent('testing:event', 'test')
       end,
-      canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+      canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
         if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
         return true
       end,
@@ -998,7 +1014,7 @@ parameters = {
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
-Citizen.CreateThread(function()
+CreateThread(function()
   exports['qb-target']:AddVehicle({
     options = {
       { -- This is the first table with options, you can make as many options inside the options table as you want
@@ -1012,7 +1028,7 @@ Citizen.CreateThread(function()
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           TriggerEvent('testing:event', 'test')
         end,
-        canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+        canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
@@ -1066,7 +1082,7 @@ parameters = {
         if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
         TriggerEvent('testing:event', 'test')
       end,
-      canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+      canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
         if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
         return true
       end,
@@ -1080,7 +1096,7 @@ parameters = {
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
-Citizen.CreateThread(function()
+CreateThread(function()
   exports['qb-target']:AddObject({
     options = {
       { -- This is the first table with options, you can make as many options inside the options table as you want
@@ -1095,7 +1111,7 @@ Citizen.CreateThread(function()
           TriggerEvent('testing:event', 'test')
           return true
         end,
-        canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+        canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
         end,
         job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
@@ -1148,7 +1164,7 @@ parameters = {
         if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
         TriggerEvent('testing:event', 'test')
       end,
-      canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+      canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
         if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
         return true
       end,
@@ -1162,7 +1178,7 @@ parameters = {
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
-Citizen.CreateThread(function()
+CreateThread(function()
   exports['qb-target']:AddPlayer({
     options = {
       { -- This is the first table with options, you can make as many options inside the options table as you want
@@ -1176,7 +1192,7 @@ Citizen.CreateThread(function()
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           TriggerEvent('testing:event', 'test')
         end,
-        canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+        canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
@@ -1200,7 +1216,7 @@ Functions:RemoveGlobalTypeOptions(type: integer, labels: table or string)
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
-Citizen.CreateThread(function()
+CreateThread(function()
   exports['qb-target']:RemoveType(1, 'Test') -- 1 is for peds
 end)
 ```
@@ -1216,7 +1232,7 @@ Functions:RemoveGlobalPedOptions(labels: table or string)
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
-Citizen.CreateThread(function()
+CreateThread(function()
   exports['qb-target']:RemovePed('Test')
 end)
 ```
@@ -1232,7 +1248,7 @@ Functions:RemoveGlobalVehicleOptions(labels: table or string)
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
-Citizen.CreateThread(function()
+CreateThread(function()
   exports['qb-target']:RemoveVehicle('Test')
 end)
 ```
@@ -1248,7 +1264,7 @@ Functions:RemoveGlobalObjectOptions(labels: table or string)
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
-Citizen.CreateThread(function()
+CreateThread(function()
   exports['qb-target']:RemoveObject('Test')
 end)
 ```
@@ -1264,7 +1280,7 @@ Functions:RemoveGlobalPlayerOptions(labels: table or string)
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
-Citizen.CreateThread(function()
+CreateThread(function()
   exports['qb-target']:RemovePlayer('Test')
 end)
 ```
@@ -1281,12 +1297,14 @@ Functions:RaycastCamera(flag: integer) -- Preferably 30 or -1, -1 will not inter
 
 ```lua
 local Targeting = exports['qb-target']:FetchFunctions()
-Citizen.CreateThread(function()
-  local curFlag = 30
-  function switch()
-    if curFlag == 30 then curFlag = -1 else curFlag = 30 end
-  end
-  local hit, coords, entity, entityType = Targeting:RaycastCamera(switch())
+CreateThread(function()
+    while true do
+        local curFlag = 30
+        local hit, coords, entity, entityType = Targeting:RaycastCamera(Targeting:switch())
+        if entityType > 0 then
+            print('gotten')
+        end
+    end
 end)
 ```
 
@@ -1302,7 +1320,7 @@ Functions:CloneTable(table: table)
 
 ```lua
 local Targeting = exports['qb-target']:FetchFunctions()
-Citizen.CreateThread(function()
+CreateThread(function()
   local table = {
     [1] = "something eh",
     [2] = function()
@@ -1417,7 +1435,7 @@ datatable = {
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           TriggerEvent('testing:event', 'test')
         end,
-        canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+        canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
@@ -1459,7 +1477,7 @@ exports['qb-target']:SpawnPed({
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           TriggerEvent('testing:event', 'test')
         end,
-        canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+        canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
@@ -1498,7 +1516,7 @@ exports['qb-target']:SpawnPed({
             if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
             TriggerEvent('testing:event', 'test')
           end,
-          canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+          canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
             if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
             return true
           end,
@@ -1534,7 +1552,7 @@ exports['qb-target']:SpawnPed({
             if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
             TriggerEvent('testing:event', 'test')
           end,
-          canInteract = function(entity) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
+          canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
             if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
             return true
           end,
@@ -1561,6 +1579,6 @@ Functions:AllowTargeting(allow: bool)
 
 ```lua
 if IsEntityDead(PlayerPedId()) then
-  exports['qb-target']:AllowTargeting(false)
+    exports['qb-target']:AllowTargeting(false)
 end
 ```
