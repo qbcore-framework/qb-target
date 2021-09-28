@@ -1,10 +1,9 @@
-local Config, Players, Types, Entities, Models, Zones, Bones, PlayerData = load(LoadResourceFile(GetCurrentResourceName(), 'config.lua'))()
-local playerPed, isLoggedIn, targetActive, hasFocus, success, PedsReady, AllowTarget, curFlag, sendData = PlayerPedId(), false, false, false, false, false, true, 30
+local CurrentResourceName = GetCurrentResourceName()
+local Config, Players, Types, Entities, Models, Zones, Bones, PlayerData = load(LoadResourceFile(CurrentResourceName, 'config.lua'))()
+local playerPed, isLoggedIn, targetActive, hasFocus, success, PedsReady, AllowTarget, curFlag, sendData = PlayerPedId(), false, false, false, false, false, true, 30, nil
 
 -- Functions
-
 local Functions = {
-
 	AddCircleZone = function(self, name, center, radius, options, targetoptions)
 		Zones[name] = CircleZone:Create(center, radius, options)
 		if targetoptions.distance == nil then targetoptions.distance = Config.MaxDistance end
@@ -17,7 +16,7 @@ local Functions = {
 		Zones[name].targetoptions = targetoptions
 	end,
 
-	AddPolyzone = function(self, name, points, options, targetoptions)
+	AddPolyZone = function(self, name, points, options, targetoptions)
 		Zones[name] = PolyZone:Create(points, options)
 		if targetoptions.distance == nil then targetoptions.distance = Config.MaxDistance end
 		Zones[name].targetoptions = targetoptions
@@ -30,24 +29,45 @@ local Functions = {
 	end,
 
 	AddTargetBone = function(self, bones, parameters)
-		if parameters.distance == nil then parameters.distance = Config.MaxDistance end
+		local distance, options = parameters.distance or Config.MaxDistance, parameters.options
 		if type(bones) == 'table' then
 			for _, bone in pairs(bones) do
-				Bones[bone] = parameters
+				if not Bones[bone] then Bones[bone] = {} end
+				for k, v in pairs(options) do
+					if v.distance == nil or not v.distance or v.distance > distance then v.distance = distance end
+					Bones[bone][v.label] = v
+				end
 			end
 		elseif type(bones) == 'string' then
-			Bones[bones] = parameters
+			if not Bones[bones] then Bones[bones] = {} end
+			for k, v in pairs(options) do
+				if v.distance == nil or not v.distance or v.distance > distance then v.distance = distance end
+				Bones[bones][v.label] = v
+			end
 		end
 	end,
 
-	AddTargetEntity = function(self, ent, parameters)
-		local entity = NetworkGetEntityIsNetworked(ent) and NetworkGetNetworkIdFromEntity(ent) or false
-		if entity then
-			local distance, options = parameters.distance or Config.MaxDistance, parameters.options
-			if not Entities[entity] then Entities[entity] = {} end
-			for k, v in pairs(options) do
-				if v.distance == nil or not v.distance or v.distance > distance then v.distance = distance end
-				Entities[entity][v.label] = v
+	AddTargetEntity = function(self, entities, parameters)
+		local distance, options = parameters.distance or Config.MaxDistance, parameters.options
+		if type(entities) == 'table' then
+			for _, entity in pairs(entities) do
+				entity = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity) or false
+				if entity then
+					if not Entities[entity] then Entities[entity] = {} end
+					for k, v in pairs(options) do
+						if v.distance == nil or not v.distance or v.distance > distance then v.distance = distance end
+						Entities[entity][v.label] = v
+					end
+				end
+			end
+		elseif type(entities) == 'string' then
+			local entity = NetworkGetEntityIsNetworked(entities) and NetworkGetNetworkIdFromEntity(entities) or false
+			if entity then
+				if not Entities[entity] then Entities[entity] = {} end
+				for k, v in pairs(options) do
+					if v.distance == nil or not v.distance or v.distance > distance then v.distance = distance end
+					Entities[entity][v.label] = v
+				end
 			end
 		end
 	end,
@@ -87,6 +107,36 @@ local Functions = {
 		Zones[name] = nil
 	end,
 
+	RemoveTargetBone = function(self, bones, labels)
+		if type(bones) == 'table' then
+			for _, bone in pairs(bones) do
+				if type(labels) == 'table' then
+					for k, v in pairs(labels) do
+						if Bones[bone] then
+							Bones[bone][v] = nil
+						end
+					end
+				elseif type(labels) == 'string' then
+					if Bones[bone] then
+						Bones[bone][labels] = nil
+					end
+				end
+			end
+		else
+			if type(labels) == 'table' then
+				for k, v in pairs(labels) do
+					if Bones[bones] then
+						Bones[bones][v] = nil
+					end
+				end
+			elseif type(labels) == 'string' then
+				if Bones[bones] then
+					Bones[bones][labels] = nil
+				end
+			end
+		end
+	end,
+
 	RemoveTargetModel = function(self, models, labels)
 		if type(models) == 'table' then
 			for _, model in pairs(models) do
@@ -119,18 +169,37 @@ local Functions = {
 		end
 	end,
 
-	RemoveTargetEntity = function(self, ent, labels)
-		local entity = NetworkGetEntityIsNetworked(ent) and NetworkGetNetworkIdFromEntity(ent) or false
-		if entity then
-			if type(labels) == 'table' then
-				for k, v in pairs(labels) do
-					if Entities[entity] then
-						Entities[entity][v] = nil
+	RemoveTargetEntity = function(self, entities, labels)
+		if type(entities) == 'table' then
+			for _, entity in pairs(entities) do
+				entity = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity) or false
+				if entity then
+					if type(labels) == 'table' then
+						for k, v in pairs(labels) do
+							if Entities[entity] then
+								Entities[entity][v] = nil
+							end
+						end
+					elseif type(labels) == 'string' then
+						if Entities[entity] then
+							Entities[entity][labels] = nil
+						end
 					end
 				end
-			elseif type(labels) == 'string' then
-				if Entities[entity] then
-					Entities[entity][labels] = nil
+			end
+		elseif type(entities) == 'string' then
+			local entity = NetworkGetEntityIsNetworked(entities) and NetworkGetNetworkIdFromEntity(entities) or false
+			if entity then
+				if type(labels) == 'table' then
+					for k, v in pairs(labels) do
+						if Entities[entity] then
+							Entities[entity][v] = nil
+						end
+					end
+				elseif type(labels) == 'string' then
+					if Entities[entity] then
+						Entities[entity][labels] = nil
+					end
 				end
 			end
 		end
@@ -159,8 +228,12 @@ local Functions = {
 	end,
 
 	RemoveGlobalTypeOptions = function(self, type, labels)
-		for k, v in pairs(labels) do
-			Types[type][v] = nil
+		if type(labels) == 'table' then
+			for k, v in pairs(labels) do
+				Types[type][v] = nil
+			end
+		elseif type(labels) == 'string' then
+			Types[type][labels] = nil
 		end
 	end,
 
@@ -220,8 +293,8 @@ local Functions = {
 		return Zones[name]
 	end,
 
-	GetTargetBoneData = function(self, bone)
-		return Bones[bone]
+	GetTargetBoneData = function(self, bone, label)
+		return Bones[bone][label]
 	end,
 
 	GetTargetEntityData = function(self, entity, label)
@@ -233,19 +306,55 @@ local Functions = {
 	end,
 
 	GetTargetPedData = function(self, label)
-		return Types[1][label]
+		return self:GetTargetTypeData(1, label)
 	end,
 
 	GetTargetVehicleData = function(self, label)
-		return Types[2][label]
+		return self:GetTargetTypeData(2, label)
 	end,
 
 	GetTargetObjectData = function(self, label)
-		return Types[3][label]
+		return self:GetTargetTypeData(3, label)
 	end,
 
 	GetTargetPlayerData = function(self, label)
 		return Players[label]
+	end,
+
+	UpdateTargetTypeData = function(self, type, label, data)
+		Types[type][label] = data
+	end,
+
+	UpdateTargetZoneData = function(self, name, data)
+		Zones[name] = data
+	end,
+
+	UpdateTargetBoneData = function(self, bone, label, data)
+		Bones[bone][label] = data
+	end,
+
+	UpdateTargetEntityData = function(self, entity, label, data)
+		Entities[entity][label] = data
+	end,
+
+	UpdateTargetModelData = function(self, model, label, data)
+		Models[model][label] = data
+	end,
+
+	UpdateTargetPedData = function(self, label, data)
+		self:UpdateTargetTypeData(1, label, data)
+	end,
+
+	UpdateTargetVehicleData = function(self, label, data)
+		self:UpdateTargetTypeData(2, label, data)
+	end,
+
+	UpdateTargetObjectData = function(self, label, data)
+		self:UpdateTargetTypeData(3, label, data)
+	end,
+
+	UpdateTargetPlayerData = function(self, label, data)
+		Players[label] = data
 	end,
 
 	CloneTable = function(self, table)
@@ -266,7 +375,7 @@ local Functions = {
 		and (data.job == nil or data.job == PlayerData.job.name or (data.job[PlayerData.job.name] and data.job[PlayerData.job.name] <= PlayerData.job.grade.level))
 		and (data.gang == nil or data.gang == PlayerData.gang.name or (data.gang[PlayerData.gang.name] and data.gang[PlayerData.gang.name] <= PlayerData.gang.grade.level))
 		and (data.item == nil or data.item and self:ItemCount(data.item) > 0)
-		and (data.canInteract == nil or data.canInteract(entity)) then return true
+		and (data.canInteract == nil or data.canInteract(entity, distance, data)) then return true
 		end
 		return false
 	end,
@@ -335,15 +444,16 @@ local Functions = {
 					elseif entityType == 2 then
 						local min, max = GetModelDimensions(GetEntityModel(entity))
 						local closestBone, closestPos, closestBoneName = self:CheckBones(coords, entity, min, max, Config.VehicleBones)
-						local data = Bones[closestBoneName]
-						if closestBone and #(plyCoords - coords) <= data.distance then
-							local send_options, slot = {}, 0
-							for o, data in pairs(data.options) do
-								if self:CheckOptions(data, entity) then
+						local datatable = Bones[closestBoneName]
+						if closestBone then
+							local send_options, send_distance, slot = {}, {}, 0
+							for o, data in pairs(datatable) do
+								if self:CheckOptions(data, entity, #(plyCoords - coords)) then
 									slot = #send_options + 1
 									send_options[slot] = data
 									send_options[slot].entity = entity
-								end
+									send_distance[data.distance] = true
+								else send_distance[data.distance] = false end
 							end
 							sendData = send_options
 							if next(send_options) then
@@ -351,10 +461,11 @@ local Functions = {
 								SendNUIMessage({response = "foundTarget", data = sendData[slot].targeticon})
 								self:DrawOutlineEntity(entity, true)
 								while targetActive and success do
-									local playerCoords = GetEntityCoords(playerPed)
 									local _, coords, entity2 = self:RaycastCamera(hit)
 									if hit and entity == entity2 then
+										local playerCoords = GetEntityCoords(playerPed)
 										local closestBone2, closestPos2, closestBoneName2 = self:CheckBones(coords, entity, min, max, Config.VehicleBones)
+										local dist = #(playerCoords - coords)
 
 										if closestBone ~= closestBone2 then
 											if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
@@ -367,13 +478,18 @@ local Functions = {
 										elseif not hasFocus and (IsControlPressed(0, 238) or IsDisabledControlPressed(0, 238)) then
 											self:EnableNUI(self:CloneTable(sendData))
 											self:DrawOutlineEntity(entity, false)
-										elseif #(playerCoords - coords) > data.distance then
-											if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
-												self:DisableTarget(true)
-											else
-												self:LeftTarget()
+										else
+											for k, v in pairs(send_distance) do
+												if v and dist > k then
+													if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
+														self:DisableTarget(true)
+													else
+														self:LeftTarget()
+													end
+													self:DrawOutlineEntity(entity, false)
+													break
+												end
 											end
-											self:DrawOutlineEntity(entity, false)
 										end
 									else
 										if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
@@ -419,7 +535,7 @@ local Functions = {
 				end
 				if not success then
 					-- Zone targets
-					for _,zone in pairs(Zones) do
+					for _, zone in pairs(Zones) do
 						local distance = #(plyCoords - zone.center)
 						if zone:isPointInside(coords) and distance <= zone.targetoptions.distance then
 							local send_options, slot = {}, 0
@@ -430,8 +546,8 @@ local Functions = {
 									send_options[slot].entity = entity
 								end
 							end
-							TriggerEvent(GetCurrentResourceName()..':client:enterPolyZone', send_options[slot])
-							TriggerServerEvent(GetCurrentResourceName()..':server:enterPolyZone', send_options[slot])
+							TriggerEvent(CurrentResourceName..':client:enterPolyZone', send_options[slot])
+							TriggerServerEvent(CurrentResourceName..':server:enterPolyZone', send_options[slot])
 							sendData = send_options
 							if next(send_options) then
 								success = true
@@ -465,8 +581,8 @@ local Functions = {
 								else
 									self:LeftTarget()
 								end
-								TriggerEvent(GetCurrentResourceName()..':client:exitPolyZone', send_options[slot])
-								TriggerServerEvent(GetCurrentResourceName()..':server:exitPolyZone', send_options[slot])
+								TriggerEvent(CurrentResourceName..':client:exitPolyZone', send_options[slot])
+								TriggerServerEvent(CurrentResourceName..':server:exitPolyZone', send_options[slot])
 								self:DrawOutlineEntity(entity, false)
 							end
 						end
@@ -607,7 +723,7 @@ local Functions = {
 			if next(Config.Peds) then
 				for k, v in pairs(Config.Peds) do
 					local spawnedped = 0
-					local networked = v.networked ~= nil and v.networked or false
+					local networked = v.networked or false
 					RequestModel(v.model)
 					while not HasModelLoaded(v.model) do
 						Wait(1)
@@ -676,11 +792,15 @@ local Functions = {
 		return Config.Peds
 	end,
 
+	UpdatePedsData = function(self, index, data)
+		Config.Peds[index] = data
+	end,
+
 	SpawnPed = function(self, data)
 		local spawnedped = 0
 		if type(data[2]) == 'table' then
 			for k, v in pairs(data) do
-				local networked = v.networked ~= nil and v.networked or false
+				local networked = v.networked or false
 				RequestModel(v.model)
 				while not HasModelLoaded(v.model) do
 					Wait(50)
@@ -735,8 +855,13 @@ local Functions = {
 				Config.Peds[nextnumber] = v
 			end
 		else
-			if type(data[1]) == 'table' then print('['..GetCurrentResourceName()..'] WRONG TABLE FORMAT FOR SPAWN PED EXPORT') return end
-			local networked = data.networked ~= nil and data.networked or false
+			if type(data[1]) == 'table' then
+				if Config.Debug then
+					print('Wrong table format for spawn ped export')
+				end
+				return
+			end
+			local networked = data.networked or false
 			RequestModel(data.model)
 			while not HasModelLoaded(data.model) do
 				Wait(50)
@@ -792,11 +917,9 @@ local Functions = {
 			Config.Peds[nextnumber] = data
 		end
 	end,
-
 }
 
 -- Exports
-
 exports("AddCircleZone", function(name, center, radius, options, targetoptions)
     Functions:AddCircleZone(name, center, radius, options, targetoptions)
 end)
@@ -805,8 +928,8 @@ exports("AddBoxZone", function(name, center, length, width, options, targetoptio
     Functions:AddBoxZone(name, center, length, width, options, targetoptions)
 end)
 
-exports("AddPolyzone", function(name, points, options, targetoptions)
-    Functions:AddPolyzone(name, points, options, targetoptions)
+exports("AddPolyZone", function(name, points, options, targetoptions)
+    Functions:AddPolyZone(name, points, options, targetoptions)
 end)
 
 exports("AddComboZone", function(zones, options, targetoptions)
@@ -925,12 +1048,48 @@ exports("GetTargetPlayerData", function(label)
 	return Functions:GetTargetPlayerData(label)
 end)
 
+exports("UpdateTargetZoneData", function(name, data)
+	Functions:UpdateTargetZoneData(name, data)
+end)
+
+exports("UpdateTargetBoneData", function(bone, label, data)
+	Functions:UpdateTargetBoneData(bone, label, data)
+end)
+
+exports("UpdateTargetEntityData", function(entity, label, data)
+	Functions:UpdateTargetEntityData(entity, label, data)
+end)
+
+exports("UpdateTargetModelData", function(model, label, data)
+	Functions:UpdateTargetModelData(model, label, data)
+end)
+
+exports("UpdateTargetPedData", function(label, data)
+	Functions:UpdateTargetPedData(label, data)
+end)
+
+exports("UpdateTargetVehicleData", function(label, data)
+	Functions:UpdateTargetVehicleData(label, data)
+end)
+
+exports("UpdateTargetObjectData", function(label, data)
+	Functions:UpdateTargetObjectData(label, data)
+end)
+
+exports("UpdateTargetPlayerData", function(label, data)
+	Functions:UpdateTargetPlayerData(label, data)
+end)
+
 exports("SpawnPed", function(spawntable)
 	Functions:SpawnPed(spawntable)
 end)
 
 exports("GetPeds", function()
 	return Functions:GetPeds()
+end)
+
+exports("UpdatePedsData", function(index, data)
+	Functions:UpdatePedsData(index, data)
 end)
 
 exports("AllowTargeting", function(bool)
@@ -942,7 +1101,6 @@ exports("FetchFunctions", function()
 end)
 
 -- NUI Callbacks
-
 RegisterNUICallback('selectTarget', function(option, cb)
     SetNuiFocus(false, false)
     SetNuiFocusKeepInput(false)
@@ -951,9 +1109,9 @@ RegisterNUICallback('selectTarget', function(option, cb)
     local data = sendData[option]
     CreateThread(function()
         Wait(50)
-        if data.action ~= nil then
+        if data.action then
             data.action(data.entity)
-        elseif data.event ~= nil then
+        elseif data.event then
             if data.type == "client" then
                 TriggerEvent(data.event, data)
             elseif data.type == "server" then
@@ -966,7 +1124,9 @@ RegisterNUICallback('selectTarget', function(option, cb)
                 TriggerEvent(data.event, data)
             end
         else
-            print("["..GetCurrentResourceName().."]: ERROR NO TRIGGER SETUP")
+            if Config.Debug then
+            	print("No trigger setup")
+            end
         end
     end)
 
@@ -980,8 +1140,7 @@ RegisterNUICallback('closeTarget', function(data, cb)
 	targetActive, success, hasFocus = false, false, false
 end)
 
--- Main thread
-
+-- Startup thread
 CreateThread(function()
     RegisterCommand('+playerTarget', function()
 		Functions:EnableTarget()
@@ -1094,36 +1253,32 @@ end)
 -- Events
 
 -- This makes sure that only when you are logged in that you can access the target
-RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
-AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
 	PlayerData = QBCore.Functions.GetPlayerData()
 	isLoggedIn = true
 	Functions:SpawnPeds()
 end)
 
 -- This will make sure everything resets and the player can't access the target when they are logged out
-RegisterNetEvent('QBCore:Client:OnPlayerUnload')
-AddEventHandler('QBCore:Client:OnPlayerUnload', function()
+RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
 	isLoggedIn = false
 	PlayerData = {}
 	Functions:DeletePeds()
 end)
 
 -- This will update the job when a new job has been assigned to a player
-RegisterNetEvent('QBCore:Client:OnJobUpdate')
-AddEventHandler('QBCore:Client:OnJobUpdate', function(JobInfo)
+RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
 	PlayerData.job = JobInfo
 end)
 
 -- Updates the PlayerData to make sure it doesn't 'stay behind'
-RegisterNetEvent('QBCore:Client:SetPlayerData')
-AddEventHandler('QBCore:Client:SetPlayerData', function(val)
+RegisterNetEvent('QBCore:Client:SetPlayerData', function(val)
 	PlayerData = val
 end)
 
 -- This is to make sure you can restart the resource manually without having to log-out.
 AddEventHandler('onResourceStart', function(resource)
-	if resource == GetCurrentResourceName() then
+	if resource == CurrentResourceName then
 		PlayerData = QBCore.Functions.GetPlayerData()
 		isLoggedIn = true
 		Functions:SpawnPeds()
@@ -1132,15 +1287,14 @@ end)
 
 -- This will delete the peds when the resource stops to make sure you don't have random peds walking
 AddEventHandler('onResourceStop', function(resource)
-	if resource == GetCurrentResourceName() then
+	if resource == CurrentResourceName then
 		Functions:DeletePeds()
 	end
 end)
 
 -- Debug Options
-
 if Config.Debug then
-	AddEventHandler(GetCurrentResourceName()..':debug', function(data)
+	AddEventHandler(CurrentResourceName..':debug', function(data)
 		print('Flag: '..curFlag, 'Entity: '..data.entity, 'Entity Model: '..GetEntityModel(data.entity), 'Type: '..GetEntityType(data.entity))
 		if data.remove then
 			Functions:RemoveTargetEntity(data.entity, 'HelloWorld')
@@ -1149,7 +1303,7 @@ if Config.Debug then
 				options = {
 					{
 						type = "client",
-						event = GetCurrentResourceName()..':debug',
+						event = CurrentResourceName..':debug',
 						icon = "fas fa-box-circle-check",
 						label = "HelloWorld",
 						remove = true
@@ -1164,7 +1318,7 @@ if Config.Debug then
 		options = {
 			{
 				type = "client",
-				event = GetCurrentResourceName()..':debug',
+				event = CurrentResourceName..':debug',
 				icon = "fas fa-male",
 				label = "(Debug) Ped",
 			},
@@ -1176,7 +1330,7 @@ if Config.Debug then
 		options = {
 			{
 				type = "client",
-				event = GetCurrentResourceName()..':debug',
+				event = CurrentResourceName..':debug',
 				icon = "fas fa-car",
 				label = "(Debug) Vehicle",
 			},
@@ -1188,7 +1342,7 @@ if Config.Debug then
 		options = {
 			{
 				type = "client",
-				event = GetCurrentResourceName()..':debug',
+				event = CurrentResourceName..':debug',
 				icon = "fas fa-cube",
 				label = "(Debug) Object",
 			},
@@ -1200,7 +1354,7 @@ if Config.Debug then
 		options = {
 			{
 				type = "client",
-				event = GetCurrentResourceName()..':debug',
+				event = CurrentResourceName..':debug',
 				icon = "fas fa-cube",
 				label = "(Debug) Player",
 			},
