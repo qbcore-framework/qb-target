@@ -24,7 +24,9 @@ This version is for QBCore but can be used by any framework if you make your own
 
 You are free to help through Pull Requests and leave as much suggestions or issues, I love some help and want I'm always up for new challenges!
 
-The wiki and examples.md are always being improved and new examples can be made on request, just let me know!
+The TEMPLATES.md is always being improved and new examples can be made on request, just let me know!
+
+The EXAMPLES.md is currently not advised and will be reworked in the future.
 
 ## Features 
 - Maintains compatibility with bt-target while providing improved utility and performance
