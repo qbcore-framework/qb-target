@@ -1,7 +1,7 @@
 local CurrentResourceName = GetCurrentResourceName()
 local QBCore = exports['qb-core']:GetCoreObject()
 local Config, Players, Types, Entities, Models, Zones, Bones, PlayerData = load(LoadResourceFile(CurrentResourceName, 'config.lua'))()
-local playerPed, isLoggedIn, targetActive, hasFocus, success, PedsReady, AllowTarget, curFlag, sendData = PlayerPedId(), false, false, false, false, false, true, 30, nil
+local playerPed, targetActive, hasFocus, success, PedsReady, AllowTarget, curFlag, sendData = PlayerPedId(), false, false, false, false, true, 30, nil
 
 -- Functions
 local Functions = {
@@ -387,7 +387,7 @@ local Functions = {
 	end,
 
 	EnableTarget = function(self)
-		if not AllowTarget or success or not isLoggedIn then return end
+		if not AllowTarget or success or not LocalPlayer.state['isLoggedIn'] then return end
 		if not targetActive then
 			targetActive = true
 			SendNUIMessage({response = "openTarget"})
@@ -1256,13 +1256,11 @@ end)
 -- This makes sure that only when you are logged in that you can access the target
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
 	PlayerData = QBCore.Functions.GetPlayerData()
-	isLoggedIn = true
 	Functions:SpawnPeds()
 end)
 
 -- This will make sure everything resets and the player can't access the target when they are logged out
 RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
-	isLoggedIn = false
 	PlayerData = {}
 	Functions:DeletePeds()
 end)
@@ -1281,7 +1279,6 @@ end)
 AddEventHandler('onResourceStart', function(resource)
 	if resource == CurrentResourceName then
 		PlayerData = QBCore.Functions.GetPlayerData()
-		isLoggedIn = true
 		Functions:SpawnPeds()
 	end
 end)
