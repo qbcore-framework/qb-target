@@ -1,4 +1,5 @@
 local CurrentResourceName = GetCurrentResourceName()
+local QBCore = exports['qb-core']:GetCoreObject()
 local Config, Players, Types, Entities, Models, Zones, Bones, PlayerData = load(LoadResourceFile(CurrentResourceName, 'config.lua'))()
 local playerPed, isLoggedIn, targetActive, hasFocus, success, PedsReady, AllowTarget, curFlag, sendData = PlayerPedId(), false, false, false, false, false, true, 30, nil
 
