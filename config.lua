@@ -23,7 +23,7 @@ Config.EnableDefaultOptions = false
 -- Target Configs
 -------------------------------------------------------------------------------
 
--- These are all empty for you to fill in, refer to the wiki and .md files for help in filling these in
+-- These are all empty for you to fill in, refer to the .md files for help in filling these in
 
 Config.CircleZones = {
 
@@ -93,82 +93,74 @@ end
 -- Default options
 -------------------------------------------------------------------------------
 
+-- These options don't represent the actual way of making TargetBones or filling out Config.TargetBones, refer to the TEMPLATES.md for a template on that, this is only the way to add it without affecting the config table
+
 if Config.EnableDefaultOptions then
 	Bones['seat_dside_f'] = {
-		options = {
-			{
-				icon = "fas fa-door-open",
-				label = "Toggle front Door",
-				canInteract = function(entity)
-					return GetEntityBoneIndexByName(entity, 'door_dside_f') ~= -1
-				end,
-				action = function(entity)
-					Config.ToggleDoor(entity, 0)
-				end
-			},
-		},
-		distance = 1.2
+		["Toggle Front Door"] = {
+			icon = "fas fa-door-open",
+			label = "Toggle Front Door",
+			canInteract = function(entity)
+				return GetEntityBoneIndexByName(entity, 'door_dside_f') ~= -1
+			end,
+			action = function(entity)
+				Config.ToggleDoor(entity, 0)
+			end,
+			distance = 1.2
+		}
 	}
 
 	Bones['seat_pside_f'] = {
-		options = {
-			{
-				icon = "fas fa-door-open",
-				label = "Toggle front Door",
-				canInteract = function(entity)
-					return GetEntityBoneIndexByName(entity, 'door_pside_f') ~= -1
-				end,
-				action = function(entity)
-					Config.ToggleDoor(entity, 1)
-				end
-			},
-		},
-		distance = 1.2
+		["Toggle Front Door"] = {
+			icon = "fas fa-door-open",
+			label = "Toggle Front Door",
+			canInteract = function(entity)
+				return GetEntityBoneIndexByName(entity, 'door_pside_f') ~= -1
+			end,
+			action = function(entity)
+				Config.ToggleDoor(entity, 1)
+			end,
+			distance = 1.2
+		}
 	}
 
 	Bones['seat_dside_r'] = {
-		options = {
-			{
-				icon = "fas fa-door-open",
-				label = "Toggle rear Door",
-				canInteract = function(entity)
-					return GetEntityBoneIndexByName(entity, 'door_dside_r') ~= -1
-				end,
-				action = function(entity)
-					Config.ToggleDoor(entity, 2)
-				end
-			},
-		},
-		distance = 1.2
+		["Toggle Rear Door"] = {
+			icon = "fas fa-door-open",
+			label = "Toggle Rear Door",
+			canInteract = function(entity)
+				return GetEntityBoneIndexByName(entity, 'door_dside_r') ~= -1
+			end,
+			action = function(entity)
+				Config.ToggleDoor(entity, 2)
+			end,
+			distance = 1.2
+		}
 	}
 
 	Bones['seat_pside_r'] = {
-		options = {
-			{
-				icon = "fas fa-door-open",
-				label = "Toggle rear Door",
-				canInteract = function(entity)
-					return GetEntityBoneIndexByName(entity, 'door_pside_r') ~= -1
-				end,
-				action = function(entity)
-					Config.ToggleDoor(entity, 3)
-				end
-			},
-		},
-		distance = 1.2
+		["Toggle Rear Door"] = {
+			icon = "fas fa-door-open",
+			label = "Toggle Rear Door",
+			canInteract = function(entity)
+				return GetEntityBoneIndexByName(entity, 'door_pside_r') ~= -1
+			end,
+			action = function(entity)
+				Config.ToggleDoor(entity, 3)
+			end,
+			distance = 1.2
+		}
 	}
 
 	Bones['bonnet'] = {
-		options = {
-			{
-				icon = "fa-duotone fa-engine",
-				label = "Toggle Hood",
-				action = function(entity)
-					Config.ToggleDoor(entity, 4)
-				end
-			},
-		},
-		distance = 0.9
+		["Toggle Hood"] = {
+			icon = "fa-duotone fa-engine",
+			label = "Toggle Hood",
+			action = function(entity)
+				Config.ToggleDoor(entity, 4)
+			end,
+			distance = 0.9
+		}
 	}
 end
 

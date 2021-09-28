@@ -53,6 +53,7 @@ const Targeting = Vue.createApp({
                 $.post(`https://${GetParentResourceName()}/closeTarget`);
             }
         });
+
         this.keyListener = window.addEventListener("keydown", (event) => {
             if (event.key == 'Escape' || event.key == 'Backspace') {
                 this.CloseTarget();
@@ -66,12 +67,14 @@ const Targeting = Vue.createApp({
             this.Show = true;
             this.TargetEyeStyleObject.color = this.StandardColor;
         },
+
         CloseTarget() {
             this.TargetHTML = "";
             this.TargetEyeStyleObject.color = this.StandardColor;
             this.Show = false;
             this.CurrentIcon = this.StandardEyeIcon;
         },
+
         FoundTarget(item) {
             if (item.data) {
                 this.CurrentIcon = item.data;
@@ -80,41 +83,41 @@ const Targeting = Vue.createApp({
             }
             this.TargetEyeStyleObject.color = this.SuccessColor;
         },
+
         ValidTarget(item) {
             this.TargetHTML = "";
             let TargetLabel = this.TargetHTML;
             const FoundColor = this.SuccessColor;
             const ResetColor = this.StandardColor;
             const AlsoChangeTextIconColor = this.ChangeTextIconColor;
-            const items = item.data;
-            items.forEach(function(item, index) {
+            item.data.forEach(function(item, index) {
                 if (AlsoChangeTextIconColor) {
-                    TargetLabel = "<div id='target-" + index + "' style='margin-bottom: 1vh;'><span id='target-icon-" + index + "'><i class='" + item.icon + "'></i></span>&nbsp" + item.label + "</div>" + TargetLabel;
+                    TargetLabel += "<div id='target-" + index + "' style='margin-bottom: 1vh;'><span id='target-icon-" + index + "' style='color: " + ResetColor + "'><i class='" + item.icon + "'></i></span>&nbsp" + item.label + "</div>";
                 } else {
-                    TargetLabel = "<div id='target-" + index + "' style='margin-bottom: 1vh;'><span id='target-icon-" + index + "' style='color: " + FoundColor + "'><i class='" + item.icon + "'></i></span>&nbsp" + item.label + "</div>" + TargetLabel;
+                    TargetLabel += "<div id='target-" + index + "' style='margin-bottom: 1vh;'><span id='target-icon-" + index + "' style='color: " + FoundColor + "'><i class='" + item.icon + "'></i></span>&nbsp" + item.label + "</div>";
                 };
 
                 setTimeout(function() {
-
                     const hoverelem = document.getElementById("target-" + index);
 
-                    hoverelem.addEventListener('mouseenter', function(event) {
+                    hoverelem.addEventListener("mouseenter", function(event) {
                         event.target.style.color = FoundColor;
                         if (AlsoChangeTextIconColor) {
                             document.getElementById("target-icon-" + index).style.color = FoundColor;
                         };
                     });
 
-                    hoverelem.addEventListener('mouseleave', function(event) {
+                    hoverelem.addEventListener("mouseleave", function(event) {
                         event.target.style.color = ResetColor;
                         if (AlsoChangeTextIconColor) {
                             document.getElementById("target-icon-" + index).style.color = ResetColor;
                         };
                     });
-                }, 5)
+                }, 10)
             });
             this.TargetHTML = TargetLabel;
         },
+
         LeftTarget() {
             this.TargetHTML = "";
             this.CurrentIcon = this.StandardEyeIcon;
