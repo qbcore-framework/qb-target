@@ -61,7 +61,7 @@ local Functions = {
 					end
 				end
 			end
-		elseif type(entities) == 'string' then
+		elseif type(entities) == 'number' then
 			local entity = NetworkGetEntityIsNetworked(entities) and NetworkGetNetworkIdFromEntity(entities) or false
 			if entity then
 				if not Entities[entity] then Entities[entity] = {} end
