@@ -1,9 +1,9 @@
 fx_version 'cerulean'
 game 'gta5'
 
-author 'BerkieB'
-description 'bt-target rewritten with the help of contributors to make the best interaction system for FiveM whilst keeping the best optimization possible!'
-version '2.6.2'
+author 'BerkieB & Contributors'
+description 'A better interaction for FiveM, a third eye for you to interact with and keep your server optimised!'
+version '3.0.0'
 
 ui_page 'html/index.html'
 
