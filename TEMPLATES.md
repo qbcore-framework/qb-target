@@ -6,7 +6,7 @@
 
 ```lua
 -- This is the function from how you would use it inside qb-target/client/main.lua
-Functions:AddCircleZone(name: string, center: vector3, radius: float, options: table, targetoptions: table)
+Functions.AddCircleZone(name: string, center: vector3, radius: float, options: table, targetoptions: table)
 
 options = {
   name: string (UNIQUE),
@@ -103,7 +103,7 @@ end)
 
 ```lua
 -- This is the function from how you would use it inside qb-target/client/main.lua
-Functions:AddBoxZone(name: string, center: vector3, length: float, width: float, options: table, targetoptions: table)
+Functions.AddBoxZone(name: string, center: vector3, length: float, width: float, options: table, targetoptions: table)
 
 options = {
   name: string (UNIQUE),
@@ -210,7 +210,7 @@ end)
 
 ```lua
 -- This is the function from how you would use it inside qb-target/client/main.lua
-Functions:AddPolyZone(name: string, points: table, options: table, targetoptions: table)
+Functions.AddPolyZone(name: string, points: table, options: table, targetoptions: table)
 
 points = {
   vector2(x, y), vector2(x, y), -- Add a minimum of 3 points for this to work and they have to be in order of drawing
@@ -321,7 +321,7 @@ end)
 
 ```lua
 -- This is the function from how you would use it inside qb-target/client/main.lua
-Functions:AddComboZone(zones: table, options: table, targetoptions: table)
+Functions.AddComboZone(zones: table, options: table, targetoptions: table)
 
 zones = {zone1: zone, zone2: zone} -- Minimum of 2 zones
 
@@ -397,7 +397,7 @@ end)
 
 ```lua
 -- This is the function from how you would use it inside qb-target/client/main.lua
-Functions:AddTargetBone(bones: table or string, parameters: table)
+Functions.AddTargetBone(bones: table or string, parameters: table)
 
 parameters = {
   options = {
@@ -486,7 +486,7 @@ end)
 ### Function Format
 
 ```lua
-Functions:AddTargetEntity(entity: integer or table, parameters: table)
+Functions.AddTargetEntity(entity: integer or table, parameters: table)
 
 parameters = {
   options = {
@@ -572,7 +572,7 @@ end)
 ### Function Format
 
 ```lua
-Functions:AddEntityZone(name: string, entity: integer, options: table, targetoptions: table)
+Functions.AddEntityZone(name: string, entity: integer, options: table, targetoptions: table)
 
 options = {
   name: string (UNIQUE),
@@ -670,7 +670,7 @@ end)
 ### Function Format
 
 ```lua
-Functions:AddTargetModel(models: string or table, parameters: table)
+Functions.AddTargetModel(models: string or table, parameters: table)
 
 parameters = {
   options = {
@@ -761,7 +761,7 @@ end)
 ### Function Format
 
 ```lua
-Functions:RemoveZone(name: string)
+Functions.RemoveZone(name: string)
 ```
 
 ### Export option, this will go into any client side resource file aside from qb-target's one
@@ -777,7 +777,7 @@ end)
 ## Function Format
 
 ```lua
-Functions:RemoveTargetBone(bones: table or string, labels: table or string)
+Functions.RemoveTargetBone(bones: table or string, labels: table or string)
 ```
 
 ### Export option, this will go into any client side resource file aside from qb-target's one
@@ -793,7 +793,7 @@ end)
 ## Function Format
 
 ```lua
-Functions:RemoveTargetModel(models: table or string, labels: table or string)
+Functions.RemoveTargetModel(models: table or string, labels: table or string)
 ```
 
 ### Export option, this will go into any client side resource file aside from qb-target's one
@@ -809,7 +809,7 @@ end)
 ### Function Format
 
 ```lua
-Functions:RemoveTargetEntity(entity: integer or table, labels: table or string)
+Functions.RemoveTargetEntity(entity: integer or table, labels: table or string)
 ```
 
 ### Export option, this will go into any client side resource file aside from qb-target's one
@@ -825,7 +825,7 @@ end)
 ### Function Format
 
 ```lua
-Functions:AddGlobalTypeOptions(type: integer, parameters: table)
+Functions.AddGlobalTypeOptions(type: integer, parameters: table)
 
 parameters = {
   options = {
@@ -851,7 +851,7 @@ parameters = {
 ```lua
 CreateThread(function()
   local Targeting = exports['qb-target']:FetchFunctions()
-  Targeting:AddType(1, { -- 1 stands for ped types
+  Targeting.AddType(1, { -- 1 stands for ped types
     options = {
       { -- This is the first table with options, you can make as many options inside the options table as you want
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
@@ -882,7 +882,7 @@ end)
 ### Function Format
 
 ```lua
-Functions:AddGlobalPedOptions(parameters: table)
+Functions.AddGlobalPedOptions(parameters: table)
 
 parameters = {
   options = {
@@ -964,7 +964,7 @@ end)
 ### Function Format
 
 ```lua
-Functions:AddGlobalVehicleOptions(parameters: table)
+Functions.AddGlobalVehicleOptions(parameters: table)
 
 parameters = {
   options = {
@@ -1046,7 +1046,7 @@ end)
 ### Function Format
 
 ```lua
-Functions:AddGlobalObjectOptions(parameters: table)
+Functions.AddGlobalObjectOptions(parameters: table)
 
 parameters = {
   options = {
@@ -1128,7 +1128,7 @@ end)
 ### Function Format
 
 ```lua
-Functions:AddGlobalPlayerOptions(parameters: table)
+Functions.AddGlobalPlayerOptions(parameters: table)
 
 parameters = {
   options = {
@@ -1210,7 +1210,7 @@ end)
 ### Function Format
 
 ```lua
-Functions:RemoveGlobalTypeOptions(type: integer, labels: table or string)
+Functions.RemoveGlobalTypeOptions(type: integer, labels: table or string)
 ```
 
 ### Export option, this will go into any client side resource file aside from qb-target's one
@@ -1226,7 +1226,7 @@ end)
 ### Function Format
 
 ```lua
-Functions:RemoveGlobalPedOptions(labels: table or string)
+Functions.RemoveGlobalPedOptions(labels: table or string)
 ```
 
 ### Export option, this will go into any client side resource file aside from qb-target's one
@@ -1242,7 +1242,7 @@ end)
 ### Function Format
 
 ```lua
-Functions:RemoveGlobalVehicleOptions(labels: table or string)
+Functions.RemoveGlobalVehicleOptions(labels: table or string)
 ```
 
 ### Export option, this will go into any client side resource file aside from qb-target's one
@@ -1258,7 +1258,7 @@ end)
 ### Function Format
 
 ```lua
-Functions:RemoveGlobalObjectOptions(labels: table or string)
+Functions.RemoveGlobalObjectOptions(labels: table or string)
 ```
 
 ### Export option, this will go into any client side resource file aside from qb-target's one
@@ -1274,7 +1274,7 @@ end)
 ### Function Format
 
 ```lua
-Functions:RemoveGlobalPlayerOptions(labels: table or string)
+Functions.RemoveGlobalPlayerOptions(labels: table or string)
 ```
 
 ### Export option, this will go into any client side resource file aside from qb-target's one
@@ -1290,7 +1290,7 @@ end)
 ### Function Format
 
 ```lua
-Functions:RaycastCamera(flag: integer) -- Preferably 30 or -1, -1 will not interact with any hashes higher than 32 bit and 30 will not interact with polyzones
+Functions.RaycastCamera(flag: integer) -- Preferably 30 or -1, -1 will not interact with any hashes higher than 32 bit and 30 will not interact with polyzones
 ```
 
 ### Export option, this will go into any client side resource file aside from qb-target's one
@@ -1300,7 +1300,7 @@ local Targeting = exports['qb-target']:FetchFunctions()
 CreateThread(function()
     while true do
         local curFlag = 30
-        local hit, coords, entity, entityType = Targeting:RaycastCamera(Targeting:switch())
+        local hit, coords, entity, entityType = Targeting.RaycastCamera(Targeting.switch())
         if entityType > 0 then
             print('gotten')
         end
@@ -1313,7 +1313,7 @@ end)
 ### Function Format
 
 ```lua
-Functions:CloneTable(table: table)
+Functions.CloneTable(table: table)
 ```
 
 ### Export option, this will go into any client side resource file aside from qb-target's one
@@ -1328,7 +1328,7 @@ CreateThread(function()
     end,
     [3] = 'something else too',
   }
-  local copy = Targeting:CloneTable()
+  local copy = Targeting.CloneTable()
   print(json.encode(copy))
 end)
 ```
@@ -1338,7 +1338,7 @@ end)
 ### Function Format
 
 ```lua
-Functions:SpawnPed(datatable: table)
+Functions.SpawnPed(datatable: table)
 
 -- This is for 1 ped
 datatable = {
@@ -1572,7 +1572,7 @@ exports['qb-target']:SpawnPed({
 ### Function Format
 
 ```lua
-Functions:AllowTargeting(allow: bool)
+Functions.AllowTargeting(allow: bool)
 ```
 
 ### Export option, this will go into any client side resource file aside from qb-target's one
