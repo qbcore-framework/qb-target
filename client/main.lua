@@ -262,7 +262,7 @@ function Functions.RaycastCamera(flag)
 	local destination = vec3(cam.x + direction.x * 30, cam.y + direction.y * 30, cam.z + direction.z * 30)
 	local rayHandle = StartShapeTestLosProbe(cam, destination, flag or -1, playerPed or PlayerPedId(), 0)
 	while true do
-		Wait(5)
+		Wait(0)
 		local result, _, endCoords, _, entityHit = GetShapeTestResult(rayHandle)
 		if Config.Debug then
 			local entCoords = GetEntityCoords(playerPed or PlayerPedId())
@@ -410,7 +410,7 @@ function Functions.EnableTarget()
 				DisableControlAction(0, 257, true)
 				DisableControlAction(0, 263, true)
 				DisableControlAction(0, 264, true)
-				Wait(5)
+				Wait(0)
 			until not targetActive
 		end)
 		playerPed = PlayerPedId()
@@ -498,7 +498,7 @@ function Functions.EnableTarget()
 									Functions.DrawOutlineEntity(entity, false)
 									break
 								end
-								Wait(5)
+								Wait(0)
 							end
 							if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
 								Functions.DisableTarget(true)
@@ -572,7 +572,7 @@ function Functions.EnableTarget()
 									end
 									Functions.DrawOutlineEntity(entity, false)
 								end
-								Wait(5)
+								Wait(0)
 							end
 							if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
 								Functions.DisableTarget(true)
@@ -685,7 +685,7 @@ function Functions.CheckEntity(hit, datatable, entity, distance)
 					end
 				end
 			end
-			Wait(5)
+			Wait(0)
 		end
 		if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
 			Functions.DisableTarget(true)
@@ -724,7 +724,7 @@ function Functions.SpawnPeds()
 				local networked = v.networked or false
 				RequestModel(v.model)
 				while not HasModelLoaded(v.model) do
-					Wait(1)
+					Wait(50)
 				end
 
 				if type(v.model) == 'string' then v.model = GetHashKey(v.model) end
@@ -750,7 +750,7 @@ function Functions.SpawnPeds()
 				if v.animDict and v.anim then
 					RequestAnimDict(v.animDict)
 					while not HasAnimDictLoaded(v.animDict) do
-						Wait(1)
+						Wait(50)
 					end
 
 					TaskPlayAnim(spawnedped, v.animDict, v.anim, 8.0, 0, -1, v.flag or 1, 0, 0, 0, 0)
@@ -796,7 +796,8 @@ end
 
 function Functions.SpawnPed(data)
 	local spawnedped = 0
-	if type(data[2]) == 'table' then
+	local key, value = next(data)
+	if type(key) ~= 'target' and type(key) ~= 'coords' and type(value) == 'table' then
 		for k, v in pairs(data) do
 			local networked = v.networked or false
 			RequestModel(v.model)
@@ -853,9 +854,9 @@ function Functions.SpawnPed(data)
 			Config.Peds[nextnumber] = v
 		end
 	else
-		if type(data[1]) == 'table' then
+		if type(key) ~= 'target' and type(key) ~= 'coords' and type(value) == 'table' then
 			if Config.Debug then
-				print('Wrong table format for spawn ped export')
+				print('Wrong table format for SpawnPed export')
 			end
 			return
 		end
