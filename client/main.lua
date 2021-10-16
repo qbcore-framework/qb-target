@@ -797,7 +797,7 @@ end
 function Functions.SpawnPed(data)
 	local spawnedped = 0
 	local key, value = next(data)
-	if type(key) ~= 'target' and type(key) ~= 'coords' and type(value) == 'table' then
+	if key ~= 'target' and key ~= 'coords' and type(value) == 'table' then
 		for k, v in pairs(data) do
 			local networked = v.networked or false
 			RequestModel(v.model)
@@ -854,7 +854,7 @@ function Functions.SpawnPed(data)
 			Config.Peds[nextnumber] = v
 		end
 	else
-		if type(key) ~= 'target' and type(key) ~= 'coords' and type(value) == 'table' then
+		if key ~= 'target' and key ~= 'coords' and type(value) == 'table' then
 			if Config.Debug then
 				print('Wrong table format for SpawnPed export')
 			end
