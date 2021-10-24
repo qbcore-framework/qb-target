@@ -28,8 +28,8 @@ function Functions.AddComboZone(zones, options, targetoptions)
 	Zones[name].targetoptions = targetoptions
 end
 
-function Functions.AddTargetBone(bones, parameters)
-	local distance, options = parameters.distance or Config.MaxDistance, parameters.options
+function Functions.AddTargetBone(bones, parameters, sentDistance)
+	local distance, options = parameters.distance or sentDistance or Config.MaxDistance, parameters.options
 	if type(bones) == 'table' then
 		for _, bone in pairs(bones) do
 			if not Bones[bone] then Bones[bone] = {} end
