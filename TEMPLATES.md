@@ -820,12 +820,12 @@ CreateThread(function()
 end)
 ```
 
-## AddGlobalTypeOptions
+## AddGlobalType
 
 ### Function Format
 
 ```lua
-Functions.AddGlobalTypeOptions(type: integer, parameters: table)
+Functions.AddGlobalType(type: integer, parameters: table)
 
 parameters = {
   options = {
@@ -851,7 +851,7 @@ parameters = {
 ```lua
 CreateThread(function()
   local Targeting = exports['qb-target']:FetchFunctions()
-  Targeting.AddType(1, { -- 1 stands for ped types
+  Targeting.AddGlobalType(1, { -- 1 stands for ped types
     options = {
       { -- This is the first table with options, you can make as many options inside the options table as you want
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
@@ -877,12 +877,12 @@ CreateThread(function()
 end)
 ```
 
-## AddGlobalPedOptions
+## AddGlobalPed
 
 ### Function Format
 
 ```lua
-Functions.AddGlobalPedOptions(parameters: table)
+Functions.AddGlobalPed(parameters: table)
 
 parameters = {
   options = {
@@ -933,7 +933,7 @@ parameters = {
 
 ```lua
 CreateThread(function()
-  exports['qb-target']:AddPed({
+  exports['qb-target']:AddGlobalPed({
     options = {
       { -- This is the first table with options, you can make as many options inside the options table as you want
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
@@ -959,12 +959,12 @@ CreateThread(function()
 end)
 ```
 
-## AddGlobalVehicleOptions
+## AddGlobalVehicle
 
 ### Function Format
 
 ```lua
-Functions.AddGlobalVehicleOptions(parameters: table)
+Functions.AddGlobalVehicle(parameters: table)
 
 parameters = {
   options = {
@@ -1015,7 +1015,7 @@ parameters = {
 
 ```lua
 CreateThread(function()
-  exports['qb-target']:AddVehicle({
+  exports['qb-target']:AddGlobalVehicle({
     options = {
       { -- This is the first table with options, you can make as many options inside the options table as you want
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
@@ -1041,12 +1041,12 @@ CreateThread(function()
 end)
 ```
 
-## AddGlobalObjectOptions
+## AddGlobalObject
 
 ### Function Format
 
 ```lua
-Functions.AddGlobalObjectOptions(parameters: table)
+Functions.AddGlobalObject(parameters: table)
 
 parameters = {
   options = {
@@ -1097,7 +1097,7 @@ parameters = {
 
 ```lua
 CreateThread(function()
-  exports['qb-target']:AddObject({
+  exports['qb-target']:AddGlobalObject({
     options = {
       { -- This is the first table with options, you can make as many options inside the options table as you want
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
@@ -1123,12 +1123,12 @@ CreateThread(function()
 end)
 ```
 
-## AddGlobalPlayerOptions
+## AddGlobalPlayer
 
 ### Function Format
 
 ```lua
-Functions.AddGlobalPlayerOptions(parameters: table)
+Functions.AddGlobalPlayer(parameters: table)
 
 parameters = {
   options = {
@@ -1179,7 +1179,7 @@ parameters = {
 
 ```lua
 CreateThread(function()
-  exports['qb-target']:AddPlayer({
+  exports['qb-target']:AddGlobalPlayer({
     options = {
       { -- This is the first table with options, you can make as many options inside the options table as you want
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified

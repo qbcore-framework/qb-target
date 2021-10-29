@@ -205,7 +205,7 @@ function Functions.RemoveTargetEntity(entities, labels)
 	end
 end
 
-function Functions.AddGlobalTypeOptions(type, parameters)
+function Functions.AddGlobalType(type, parameters)
 	local distance, options = parameters.distance or Config.MaxDistance, parameters.options
 	for k, v in pairs(options) do
 		if v.distance == nil or not v.distance or v.distance > distance then v.distance = distance end
@@ -213,13 +213,13 @@ function Functions.AddGlobalTypeOptions(type, parameters)
 	end
 end
 
-function Functions.AddGlobalPedOptions(parameters) Functions.AddGlobalTypeOptions(1, parameters) end
+function Functions.AddGlobalPed(parameters) Functions.AddGlobalType(1, parameters) end
 
-function Functions.AddGlobalVehicleOptions(parameters) Functions.AddGlobalTypeOptions(2, parameters) end
+function Functions.AddGlobalVehicle(parameters) Functions.AddGlobalType(2, parameters) end
 
-function Functions.AddGlobalObjectOptions(parameters) Functions.AddGlobalTypeOptions(3, parameters) end
+function Functions.AddGlobalObject(parameters) Functions.AddGlobalType(3, parameters) end
 
-function Functions.AddGlobalPlayerOptions(parameters)
+function Functions.AddGlobalPlayer(parameters)
 	local distance, options = parameters.distance or Config.MaxDistance, parameters.options
 	for k, v in pairs(options) do
 		if v.distance == nil or not v.distance or v.distance > distance then v.distance = distance end
@@ -227,7 +227,7 @@ function Functions.AddGlobalPlayerOptions(parameters)
 	end
 end
 
-function Functions.RemoveGlobalTypeOptions(type, labels)
+function Functions.RemoveGlobalType(type, labels)
 	if type(labels) == 'table' then
 		for k, v in pairs(labels) do
 			Types[type][v] = nil
@@ -237,13 +237,13 @@ function Functions.RemoveGlobalTypeOptions(type, labels)
 	end
 end
 
-function Functions.RemoveGlobalPedOptions(labels) Functions.RemoveGlobalTypeOptions(1, labels) end
+function Functions.RemoveGlobalPed(labels) Functions.RemoveGlobalType(1, labels) end
 
-function Functions.RemoveGlobalVehicleOptions(labels) Functions.RemoveGlobalTypeOptions(2, labels) end
+function Functions.RemoveGlobalVehicle(labels) Functions.RemoveGlobalType(2, labels) end
 
-function Functions.RemoveGlobalObjectOptions(labels) Functions.RemoveGlobalTypeOptions(3, labels) end
+function Functions.RemoveGlobalObject(labels) Functions.RemoveGlobalType(3, labels) end
 
-function Functions.RemoveGlobalPlayerOptions(labels)
+function Functions.RemoveGlobalPlayer(labels)
 	if type(labels) == 'table' then
 		for k, v in pairs(labels) do
 			Players[v] = nil
@@ -285,11 +285,11 @@ function Functions.IsTargetSuccess()
 	return success
 end
 
-function Functions.GetTargetTypeData(type, label)
+function Functions.GetGlobalTypeData(type, label)
 	return Types[type][label]
 end
 
-function Functions.GetTargetZoneData(name)
+function Functions.GetZoneData(name)
 	return Zones[name]
 end
 
@@ -305,27 +305,27 @@ function Functions.GetTargetModelData(model, label)
 	return Models[model][label]
 end
 
-function Functions.GetTargetPedData(label)
-	return Functions.GetTargetTypeData(1, label)
+function Functions.GetGlobalPedData(label)
+	return Functions.GetGlobalTypeData(1, label)
 end
 
-function Functions.GetTargetVehicleData(label)
-	return Functions.GetTargetTypeData(2, label)
+function Functions.GetGlobalVehicleData(label)
+	return Functions.GetGlobalTypeData(2, label)
 end
 
-function Functions.GetTargetObjectData(label)
-	return Functions.GetTargetTypeData(3, label)
+function Functions.GetGlobalObjectData(label)
+	return Functions.GetGlobalTypeData(3, label)
 end
 
-function Functions.GetTargetPlayerData(label)
+function Functions.GetGlobalPlayerData(label)
 	return Players[label]
 end
 
-function Functions.UpdateTargetTypeData(type, label, data)
+function Functions.UpdateGlobalTypeData(type, label, data)
 	Types[type][label] = data
 end
 
-function Functions.UpdateTargetZoneData(name, data)
+function Functions.UpdateZoneData(name, data)
 	Zones[name] = data
 end
 
@@ -341,19 +341,19 @@ function Functions.UpdateTargetModelData(model, label, data)
 	Models[model][label] = data
 end
 
-function Functions.UpdateTargetPedData(label, data)
-	Functions.UpdateTargetTypeData(1, label, data)
+function Functions.UpdateGlobalPedData(label, data)
+	Functions.UpdateGlobalTypeData(1, label, data)
 end
 
-function Functions.UpdateTargetVehicleData(label, data)
-	Functions.UpdateTargetTypeData(2, label, data)
+function Functions.UpdateGlobalVehicleData(label, data)
+	Functions.UpdateGlobalTypeData(2, label, data)
 end
 
-function Functions.UpdateTargetObjectData(label, data)
-	Functions.UpdateTargetTypeData(3, label, data)
+function Functions.UpdateGlobalObjectData(label, data)
+	Functions.UpdateGlobalTypeData(3, label, data)
 end
 
-function Functions.UpdateTargetPlayerData(label, data)
+function Functions.UpdateGlobalPlayerData(label, data)
 	Players[label] = data
 end
 
@@ -918,89 +918,47 @@ function Functions.SpawnPed(data)
 end
 
 -- Exports
-exports("AddCircleZone", function(name, center, radius, options, targetoptions)
-    Functions.AddCircleZone(name, center, radius, options, targetoptions)
-end)
+exports("AddCircleZone", Functions.AddCircleZone)
 
-exports("AddBoxZone", function(name, center, length, width, options, targetoptions)
-    Functions.AddBoxZone(name, center, length, width, options, targetoptions)
-end)
+exports("AddBoxZone", Functions.AddBoxZone)
 
-exports("AddPolyZone", function(name, points, options, targetoptions)
-    Functions.AddPolyZone(name, points, options, targetoptions)
-end)
+exports("AddPolyZone", Functions.AddPolyZone)
 
-exports("AddComboZone", function(zones, options, targetoptions)
-	Functions.AddComboZone(zones, options, targetoptions)
-end)
+exports("AddComboZone", Functions.AddComboZone)
 
-exports("AddTargetBone", function(bones, parameters)
-    Functions.AddTargetBone(bones, parameters)
-end)
+exports("AddTargetBone", Functions.AddTargetBone)
 
-exports("AddTargetEntity", function(entity, parameters)
-    Functions.AddTargetEntity(entity, parameters)
-end)
+exports("AddTargetEntity", Functions.AddTargetEntity)
 
-exports("AddEntityZone", function(name, entity, options, targetoptions)
-    Functions.AddEntityZone(name, entity, options, targetoptions)
-end)
+exports("AddEntityZone", Functions.AddEntityZone)
 
-exports("AddTargetModel", function(models, parameters)
-    Functions.AddTargetModel(models, parameters)
-end)
+exports("AddTargetModel", Functions.AddTargetModel)
 
-exports("RemoveZone", function(name)
-    Functions.RemoveZone(name)
-end)
+exports("RemoveZone", Functions.RemoveZone)
 
-exports("RemoveTargetModel", function(models, labels)
-    Functions.RemoveTargetModel(models, labels)
-end)
+exports("RemoveTargetModel", Functions.RemoveTargetModel)
 
-exports("RemoveTargetEntity", function(entity, labels)
-    Functions.RemoveTargetEntity(entity, labels)
-end)
+exports("RemoveTargetEntity", Functions.RemoveTargetEntity)
 
-exports("AddType", function(type, parameters)
-	Functions.AddGlobalTypeOptions(type, parameters)
-end)
+exports("AddGlobalType", Functions.AddGlobalType)
 
-exports("AddPed", function(parameters)
-    Functions.AddGlobalPedOptions(parameters)
-end)
+exports("AddGlobalPed", Functions.AddGlobalPed)
 
-exports("AddVehicle", function(parameters)
-    Functions.AddGlobalVehicleOptions(parameters)
-end)
+exports("AddGlobalVehicle", Functions.AddGlobalVehicle)
 
-exports("AddObject", function(parameters)
-    Functions.AddGlobalObjectOptions(parameters)
-end)
+exports("AddGlobalObject", Functions.AddGlobalObject)
 
-exports("AddPlayer", function(parameters)
-    Functions.AddGlobalPlayerOptions(parameters)
-end)
+exports("AddGlobalPlayer", Functions.AddGlobalPlayer)
 
-exports("RemoveType", function(type, labels)
-	Functions.RemoveGlobalTypeOptions(type, labels)
-end)
+exports("RemoveGlobalType", Functions.RemoveGlobalType)
 
-exports("RemovePed", function(labels)
-    Functions.RemoveGlobalPedOptions(labels)
-end)
+exports("RemoveGlobalPed", Functions.RemoveGlobalPed)
 
-exports("RemoveVehicle", function(labels)
-    Functions.RemoveGlobalVehicleOptions(labels)
-end)
+exports("RemoveGlobalVehicle", Functions.RemoveGlobalVehicle)
 
-exports("RemoveObject", function(labels)
-    Functions.RemoveGlobalObjectOptions(labels)
-end)
+exports("RemoveGlobalObject", Functions.RemoveGlobalObject)
 
-exports("RemovePlayer", function(labels)
-    Functions.RemoveGlobalPlayerOptions(labels)
-end)
+exports("RemoveGlobalPlayer", Functions.RemoveGlobalPlayer)
 
 exports("IsTargetActive", function()
 	return Functions.IsTargetActive()
@@ -1010,12 +968,12 @@ exports("IsTargetSuccess", function()
 	return Functions.IsTargetSuccess()
 end)
 
-exports("GetTargetTypeData", function(type, label)
-	return Functions.GetTargetTypeData(type, label)
+exports("GetGlobalTypeData", function(type, label)
+	return Functions.GetGlobalTypeData(type, label)
 end)
 
-exports("GetTargetZoneData", function(name)
-	return Functions.GetTargetZoneData(name)
+exports("GetZoneData", function(name)
+	return Functions.GetZoneData(name)
 end)
 
 exports("GetTargetBoneData", function(bone)
@@ -1030,69 +988,47 @@ exports("GetTargetModelData", function(model, label)
 	return Functions.GetTargetModelData(model, label)
 end)
 
-exports("GetTargetPedData", function(label)
-	return Functions.GetTargetPedData(label)
+exports("GetGlobalPedData", function(label)
+	return Functions.GetGlobalPedData(label)
 end)
 
-exports("GetTargetVehicleData", function(label)
-	return Functions.GetTargetVehicleData(label)
+exports("GetGlobalVehicleData", function(label)
+	return Functions.GetGlobalVehicleData(label)
 end)
 
-exports("GetTargetObjectData", function(label)
-	return Functions.GetTargetObjectData(label)
+exports("GetGlobalObjectData", function(label)
+	return Functions.GetGlobalObjectData(label)
 end)
 
-exports("GetTargetPlayerData", function(label)
-	return Functions.GetTargetPlayerData(label)
+exports("GetGlobalPlayerData", function(label)
+	return Functions.GetGlobalPlayerData(label)
 end)
 
-exports("UpdateTargetZoneData", function(name, data)
-	Functions.UpdateTargetZoneData(name, data)
-end)
+exports("UpdateZoneData", Functions.UpdateZoneData)
 
-exports("UpdateTargetBoneData", function(bone, label, data)
-	Functions.UpdateTargetBoneData(bone, label, data)
-end)
+exports("UpdateTargetBoneData", Functions.UpdateTargetBoneData)
 
-exports("UpdateTargetEntityData", function(entity, label, data)
-	Functions.UpdateTargetEntityData(entity, label, data)
-end)
+exports("UpdateTargetEntityData", Functions.UpdateTargetEntityData)
 
-exports("UpdateTargetModelData", function(model, label, data)
-	Functions.UpdateTargetModelData(model, label, data)
-end)
+exports("UpdateTargetModelData", Functions.UpdateTargetModelData)
 
-exports("UpdateTargetPedData", function(label, data)
-	Functions.UpdateTargetPedData(label, data)
-end)
+exports("UpdateGlobalPedData", Functions.UpdateGlobalPedData)
 
-exports("UpdateTargetVehicleData", function(label, data)
-	Functions.UpdateTargetVehicleData(label, data)
-end)
+exports("UpdateGlobalVehicleData", Functions.UpdateGlobalVehicleData)
 
-exports("UpdateTargetObjectData", function(label, data)
-	Functions.UpdateTargetObjectData(label, data)
-end)
+exports("UpdateGlobalObjectData", Functions.UpdateGlobalObjectData)
 
-exports("UpdateTargetPlayerData", function(label, data)
-	Functions.UpdateTargetPlayerData(label, data)
-end)
+exports("UpdateGlobalPlayerData", Functions.UpdateGlobalPlayerData)
 
-exports("SpawnPed", function(spawntable)
-	Functions.SpawnPed(spawntable)
-end)
+exports("SpawnPed", Functions.SpawnPed)
 
 exports("GetPeds", function()
 	return Functions.GetPeds()
 end)
 
-exports("UpdatePedsData", function(index, data)
-	Functions.UpdatePedsData(index, data)
-end)
+exports("UpdatePedsData", Functions.UpdatePedsData)
 
-exports("AllowTargeting", function(bool)
-	Functions.AllowTargeting(bool)
-end)
+exports("AllowTargeting", Functions.AllowTargeting)
 
 exports("FetchFunctions", function()
     return Functions
@@ -1215,19 +1151,19 @@ CreateThread(function()
     end
 
     if next(Config.GlobalPedOptions) then
-        Functions.AddGlobalPedOptions(Config.GlobalPedOptions)
+        Functions.AddGlobalPed(Config.GlobalPedOptions)
     end
 
     if next(Config.GlobalVehicleOptions) then
-        Functions.AddGlobalVehicleOptions(Config.GlobalVehicleOptions)
+        Functions.AddGlobalVehicle(Config.GlobalVehicleOptions)
     end
 
     if next(Config.GlobalObjectOptions) then
-        Functions.AddGlobalObjectOptions(Config.GlobalObjectOptions)
+        Functions.AddGlobalObject(Config.GlobalObjectOptions)
     end
 
     if next(Config.GlobalPlayerOptions) then
-        Functions.AddGlobalPlayerOptions(Config.GlobalPlayerOptions)
+        Functions.AddGlobalPlayer(Config.GlobalPlayerOptions)
     end
 end)
 
@@ -1292,7 +1228,7 @@ if Config.Debug then
 		end
 	end)
 
-	Functions.AddGlobalPedOptions({
+	Functions.AddGlobalPed({
 		options = {
 			{
 				type = "client",
@@ -1304,7 +1240,7 @@ if Config.Debug then
 		distance = Config.MaxDistance
 	})
 
-	Functions.AddGlobalVehicleOptions({
+	Functions.AddGlobalVehicle({
 		options = {
 			{
 				type = "client",
@@ -1316,7 +1252,7 @@ if Config.Debug then
 		distance = Config.MaxDistance
 	})
 
-	Functions.AddGlobalObjectOptions({
+	Functions.AddGlobalObject({
 		options = {
 			{
 				type = "client",
@@ -1328,7 +1264,7 @@ if Config.Debug then
 		distance = Config.MaxDistance
 	})
 
-	Functions.AddGlobalPlayerOptions({
+	Functions.AddGlobalPlayer({
 		options = {
 			{
 				type = "client",
