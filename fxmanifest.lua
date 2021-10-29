@@ -3,7 +3,7 @@ game 'gta5'
 
 author 'BerkieB & Contributors'
 description 'A better interaction for FiveM, a third eye for you to interact with and keep your server optimised!'
-version '3.1.2'
+version '3.1.3'
 
 ui_page 'html/index.html'
 
