@@ -1,4 +1,4 @@
-local Config, Players, Types, Entities, Models, Zones, Bones, PlayerData, Functions = {}, {}, {}, {}, {}, {}, {}, {}, {}
+Config, Types, Bones = {}, {}, {}
 Types[1], Types[2], Types[3] = {}, {}, {}
 
 -- This is the vehicle bones table, this is needed to verify if the vehicle bone exists when checking them, here is a list of vehicle bones you can use, all of them are included in this table: https://wiki.rage.mp/index.php?title=Vehicle_Bones
@@ -7,6 +7,10 @@ Config.VehicleBones = {'chassis', 'chassis_lowlod', 'chassis_dummy', 'seat_dside
 ----------------------------------------------------------------------------------------
 -- Settings
 ----------------------------------------------------------------------------------------
+
+-- The current used framework dependant on your server
+Config.Framework = 'none' -- Can be 'none', 'QBCore' or 'ESX'
+
 -- It's possible to interact with entities through walls so this should be low
 Config.MaxDistance = 3.0
 
@@ -18,6 +22,13 @@ Config.EnableOutline = false
 
 -- Enable default options (Toggling vehicle doors)
 Config.EnableDefaultOptions = false
+
+-- Key to open the target
+Config.OpenKey = 'LMENU' -- Left Alt
+Config.OpenControlKey = 19 -- Control for keypress detection also Left Alt, controls are found here https://docs.fivem.net/docs/game-references/controls/
+
+-- Key to open the menu
+Config.MenuControlKey = 238 -- Control for keypress detection, this is the Right Mouse Button, controls are found here https://docs.fivem.net/docs/game-references/controls/
 
 ----------------------------------------------------------------------------------------
 -- Target Configs
@@ -74,7 +85,7 @@ Config.Peds = {
 ----------------------------------------------------------------------------------------
 
 if Config.EnableDefaultOptions then
-	Config.ToggleDoor = function(vehicle, door)
+	function Config.ToggleDoor(vehicle, door)
 		if GetVehicleDoorLockStatus(vehicle) ~= 2 then
 			if GetVehicleDoorAngleRatio(vehicle, door) > 0.0 then
 				SetVehicleDoorShut(vehicle, door, false)
@@ -159,7 +170,3 @@ if Config.EnableDefaultOptions then
 		}
 	}
 end
-
-----------------------------------------------------------------------------------------
-return Config, Players, Types, Entities, Models, Zones, Bones, PlayerData, Functions
-----------------------------------------------------------------------------------------

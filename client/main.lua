@@ -1,30 +1,133 @@
 local CurrentResourceName = GetCurrentResourceName()
-local QBCore = exports['qb-core']:GetCoreObject()
-local Config, Players, Types, Entities, Models, Zones, Bones, PlayerData, Functions = load(LoadResourceFile(CurrentResourceName, 'config.lua'))()
-local playerPed, targetActive, hasFocus, success, PedsReady, AllowTarget, curFlag, sendData = PlayerPedId(), false, false, false, false, true, 30, nil
+local QBCore, ESX, PlayerLoaded, PlayerData
+local Config, Types, Bones, Players, Entities, Models, Zones, Functions = Config, Types, Bones, {}, {}, {}, {}, {}
+local playerPed, curFlag, targetActive, hasFocus, success, PedsReady, AllowTarget, sendData = PlayerPedId(), 30, false, false, false, false, true, nil
+
+if Config.Framework == 'QBCore' then
+	QBCore = exports['qb-core']:GetCoreObject()
+	PlayerData = QBCore.Functions.GetPlayerData()
+
+	-- This makes sure that peds only spawn when you are spawned and your PlayerData gets set when you have access to the target
+	RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
+		PlayerData = QBCore.Functions.GetPlayerData()
+		Functions.SpawnPeds()
+	end)
+
+	-- This will make sure everything resets and despawns after you logout/disconnect
+	RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
+		PlayerData = {}
+		Functions.DeletePeds()
+	end)
+
+	-- This will update the job when a new job has been assigned to a player
+	RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
+		PlayerData.job = JobInfo
+	end)
+
+	-- This will update the gang when a new gang has been assigned to a player
+	RegisterNetEvent('QBCore:Client:OnGangUpdate', function(GangInfo)
+		PlayerData.gang = GangInfo
+	end)
+
+	-- This will make sure all the PlayerData stays updated
+	RegisterNetEvent('QBCore:Client:SetPlayerData', function(val)
+		PlayerData = val
+	end)
+
+	function Functions.CheckOptions(data, entity, distance)
+		if (not data.distance or distance <= data.distance)
+		and (not data.job or data.job == PlayerData.job.name or (data.job[PlayerData.job.name] and data.job[PlayerData.job.name] <= PlayerData.job.grade.level))
+		and (not data.gang or data.gang == PlayerData.gang.name or (data.gang[PlayerData.gang.name] and data.gang[PlayerData.gang.name] <= PlayerData.gang.grade.level))
+		and (not data.item or data.item and Functions.ItemCount(data.item) > 0)
+		and (not data.canInteract or data.canInteract(entity, distance, data)) then return true
+		end
+		return false
+	end
+
+	function Functions.ItemCount(item)
+		for k, v in pairs(PlayerData.items) do
+			if v.name == item then
+				return v.amount
+			end
+		end
+		return 0
+	end
+elseif Config.Framework == 'ESX' then
+	ESX = exports['es_extended']:getSharedObject()
+	PlayerData = ESX.GetPlayerData()
+
+	-- This makes sure that peds only spawn when you are spawned and your PlayerData gets set when you have access to the target
+	RegisterNetEvent('esx:playerLoaded', function(xPlayer)
+		PlayerData = xPlayer
+		Functions.SpawnPeds()
+		PlayerLoaded = true
+	end)
+
+	-- This will make sure everything resets and despawns after you logout/disconnect
+	RegisterNetEvent('esx:onPlayerLogout', function()
+		PlayerData = {}
+		Functions.DeletePeds()
+		PlayerLoaded = false
+	end)
+
+	-- This will update the job when a new job has been assigned to a player
+	RegisterNetEvent('esx:setJob', function(job)
+		PlayerData.job = job
+	end)
+
+	-- This will make sure all the PlayerData stays updated
+	RegisterNetEvent('esx:setPlayerData', function(key, val)
+		PlayerData[key] = val
+	end)
+
+	function Functions.CheckOptions(data, entity, distance)
+		if (not data.distance or distance <= data.distance)
+		and (not data.job or data.job == PlayerData.job.name or (data.job[PlayerData.job.name] and data.job[PlayerData.job.name] <= PlayerData.job.grade))
+		and (not data.item or data.item and Functions.ItemCount(data.item) > 0)
+		and (not data.canInteract or data.canInteract(entity, distance, data)) then return true
+		end
+		return false
+	end
+
+	function Functions.ItemCount(item)
+		for k, v in pairs(PlayerData.inventory) do
+			if v.name == item then
+				return v.count
+			end
+		end
+		return 0
+	end
+elseif Config.Framework == 'none' then
+	function Functions.CheckOptions(data, entity, distance)
+		if (not data.distance or distance <= data.distance)
+		and (not data.canInteract or data.canInteract(entity, distance, data)) then return true
+		end
+		return false
+	end
+end
 
 -- Functions
 function Functions.AddCircleZone(name, center, radius, options, targetoptions)
 	Zones[name] = CircleZone:Create(center, radius, options)
-	if targetoptions.distance == nil then targetoptions.distance = Config.MaxDistance end
+	targetoptions.distance = targetoptions.distance or Config.MaxDistance
 	Zones[name].targetoptions = targetoptions
 end
 
 function Functions.AddBoxZone(name, center, length, width, options, targetoptions)
 	Zones[name] = BoxZone:Create(center, length, width, options)
-	if targetoptions.distance == nil then targetoptions.distance = Config.MaxDistance end
+	targetoptions.distance = targetoptions.distance or Config.MaxDistance
 	Zones[name].targetoptions = targetoptions
 end
 
 function Functions.AddPolyZone(name, points, options, targetoptions)
 	Zones[name] = PolyZone:Create(points, options)
-	if targetoptions.distance == nil then targetoptions.distance = Config.MaxDistance end
+	targetoptions.distance = targetoptions.distance or Config.MaxDistance
 	Zones[name].targetoptions = targetoptions
 end
 
 function Functions.AddComboZone(zones, options, targetoptions)
 	Zones[name] = ComboZone:Create(zones, options)
-	if targetoptions.distance == nil then targetoptions.distance = Config.MaxDistance end
+	targetoptions.distance = targetoptions.distance or Config.MaxDistance
 	Zones[name].targetoptions = targetoptions
 end
 
@@ -74,7 +177,7 @@ end
 
 function Functions.AddEntityZone(name, entity, options, targetoptions)
 	Zones[name] = EntityZone:Create(entity, options)
-	if targetoptions.distance == nil then targetoptions.distance = Config.MaxDistance end
+	targetoptions.distance = targetoptions.distance or Config.MaxDistance
 	Zones[name].targetoptions = targetoptions
 end
 
@@ -370,23 +473,13 @@ function Functions.CloneTable(table)
 	return copy
 end
 
-function Functions.CheckOptions(data, entity, distance)
-	if (data.distance == nil or distance <= data.distance)
-	and (data.job == nil or data.job == PlayerData.job.name or (data.job[PlayerData.job.name] and data.job[PlayerData.job.name] <= PlayerData.job.grade.level))
-	and (data.gang == nil or data.gang == PlayerData.gang.name or (data.gang[PlayerData.gang.name] and data.gang[PlayerData.gang.name] <= PlayerData.gang.grade.level))
-	and (data.item == nil or data.item and Functions.ItemCount(data.item) > 0)
-	and (data.canInteract == nil or data.canInteract(entity, distance, data)) then return true
-	end
-	return false
-end
-
 function Functions.switch()
 	if curFlag == 30 then curFlag = -1 else curFlag = 30 end
 	return curFlag
 end
 
 function Functions.EnableTarget()
-	if not AllowTarget or success or not LocalPlayer.state['isLoggedIn'] then return end
+	if not AllowTarget or success or (Config.Framework == 'QBCore' and not LocalPlayer.state['isLoggedIn']) or (Config.Framework == 'ESX' and not PlayerLoaded) then return end
 	if not targetActive then
 		targetActive = true
 		SendNUIMessage({response = "openTarget"})
@@ -414,9 +507,7 @@ function Functions.EnableTarget()
 			until not targetActive
 		end)
 		playerPed = PlayerPedId()
-		PlayerData = QBCore.Functions.GetPlayerData()
 		while targetActive do
-			local sleep = 10
 			local plyCoords = GetEntityCoords(playerPed)
 			local hit, coords, entity, entityType = Functions.RaycastCamera(Functions.switch())
 
@@ -440,8 +531,7 @@ function Functions.EnableTarget()
 
 				-- Vehicle bones
 				elseif entityType == 2 then
-					local min, max = GetModelDimensions(GetEntityModel(entity))
-					local closestBone, closestPos, closestBoneName = Functions.CheckBones(coords, entity, min, max, Config.VehicleBones)
+					local closestBone, closestPos, closestBoneName = Functions.CheckBones(coords, entity, Config.VehicleBones)
 					local datatable = Bones[closestBoneName]
 					if closestBone then
 						local send_options, send_distance, slot = {}, {}, 0
@@ -462,24 +552,24 @@ function Functions.EnableTarget()
 								local _, coords, entity2 = Functions.RaycastCamera(hit)
 								if hit and entity == entity2 then
 									local playerCoords = GetEntityCoords(playerPed)
-									local closestBone2, closestPos2, closestBoneName2 = Functions.CheckBones(coords, entity, min, max, Config.VehicleBones)
+									local closestBone2 = Functions.CheckBones(coords, entity, Config.VehicleBones)
 									local dist = #(playerCoords - coords)
 
 									if closestBone ~= closestBone2 then
-										if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
+										if IsControlReleased(0, Config.OpenControlKey) or IsDisabledControlReleased(0, Config.OpenControlKey) then
 											Functions.DisableTarget(true)
 										else
 											Functions.LeftTarget()
 										end
 										Functions.DrawOutlineEntity(entity, false)
 										break
-									elseif not hasFocus and (IsControlPressed(0, 238) or IsDisabledControlPressed(0, 238)) then
+									elseif not hasFocus and (IsControlPressed(0, Config.MenuControlKey) or IsDisabledControlPressed(0, Config.MenuControlKey)) then
 										Functions.EnableNUI(Functions.CloneTable(sendData))
 										Functions.DrawOutlineEntity(entity, false)
 									else
 										for k, v in pairs(send_distance) do
 											if v and dist > k then
-												if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
+												if IsControlReleased(0, Config.OpenControlKey) or IsDisabledControlReleased(0, Config.OpenControlKey) then
 													Functions.DisableTarget(true)
 												else
 													Functions.LeftTarget()
@@ -490,7 +580,7 @@ function Functions.EnableTarget()
 										end
 									end
 								else
-									if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
+									if IsControlReleased(0, Config.OpenControlKey) or IsDisabledControlReleased(0, Config.OpenControlKey) then
 										Functions.DisableTarget(true)
 									else
 										Functions.LeftTarget()
@@ -500,7 +590,7 @@ function Functions.EnableTarget()
 								end
 								Wait(0)
 							end
-							if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
+							if IsControlReleased(0, Config.OpenControlKey) or IsDisabledControlReleased(0, Config.OpenControlKey) then
 								Functions.DisableTarget(true)
 							else
 								Functions.LeftTarget()
@@ -555,17 +645,17 @@ function Functions.EnableTarget()
 								local playerCoords = GetEntityCoords(playerPed)
 								local _, endcoords, entity2 = Functions.RaycastCamera(hit)
 								if not zone:isPointInside(endcoords) then
-									if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
+									if IsControlReleased(0, Config.OpenControlKey) or IsDisabledControlReleased(0, Config.OpenControlKey) then
 										Functions.DisableTarget(true)
 									else
 										Functions.LeftTarget()
 									end
 									Functions.DrawOutlineEntity(entity, false)
-								elseif not hasFocus and (IsControlPressed(0, 238) or IsDisabledControlPressed(0, 238)) then
+								elseif not hasFocus and (IsControlPressed(0, Config.MenuControlKey) or IsDisabledControlPressed(0, Config.MenuControlKey)) then
 									Functions.EnableNUI(Functions.CloneTable(sendData))
 									Functions.DrawOutlineEntity(entity, false)
 								elseif #(playerCoords - zone.center) > zone.targetoptions.distance then
-									if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
+									if IsControlReleased(0, Config.OpenControlKey) or IsDisabledControlReleased(0, Config.OpenControlKey) then
 										Functions.DisableTarget(true)
 									else
 										Functions.LeftTarget()
@@ -574,7 +664,7 @@ function Functions.EnableTarget()
 								end
 								Wait(0)
 							end
-							if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
+							if IsControlReleased(0, Config.OpenControlKey) or IsDisabledControlReleased(0, Config.OpenControlKey) then
 								Functions.DisableTarget(true)
 							else
 								Functions.LeftTarget()
@@ -586,7 +676,7 @@ function Functions.EnableTarget()
 					end
 				end
 			end
-			Wait(sleep)
+			Wait(100)
 		end
 		Functions.DisableTarget(false)
 	end
@@ -625,15 +715,6 @@ function Functions.DisableTarget(forcedisable)
 	end
 end
 
-function Functions.ItemCount(item)
-	for k, v in pairs(PlayerData.items) do
-		if v.name == item then
-			return v.amount
-		end
-	end
-	return 0
-end
-
 function Functions.DrawOutlineEntity(entity, bool)
 	if Config.EnableOutline then
 		if not IsEntityAPed(entity) then
@@ -662,20 +743,20 @@ function Functions.CheckEntity(hit, datatable, entity, distance)
 			local _, coords, entity2 = Functions.RaycastCamera(hit)
 			local dist = #(playerCoords - coords)
 			if entity ~= entity2 then
-				if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
+				if IsControlReleased(0, Config.OpenControlKey) or IsDisabledControlReleased(0, Config.OpenControlKey) then
 					Functions.DisableTarget(true)
 				else
 					Functions.LeftTarget()
 				end
 				Functions.DrawOutlineEntity(entity, false)
 				break
-			elseif not hasFocus and (IsControlPressed(0, 238) or IsDisabledControlPressed(0, 238)) then
+			elseif not hasFocus and (IsControlPressed(0, Config.MenuControlKey) or IsDisabledControlPressed(0, Config.MenuControlKey)) then
 				Functions.EnableNUI(Functions.CloneTable(sendData))
 				Functions.DrawOutlineEntity(entity, false)
 			else
 				for k, v in pairs(send_distance) do
 					if v and dist > k then
-						if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
+						if IsControlReleased(0, Config.OpenControlKey) or IsDisabledControlReleased(0, Config.OpenControlKey) then
 							Functions.DisableTarget(true)
 						else
 							Functions.LeftTarget()
@@ -687,7 +768,7 @@ function Functions.CheckEntity(hit, datatable, entity, distance)
 			end
 			Wait(0)
 		end
-		if IsControlReleased(0, 19) or IsDisabledControlReleased(0, 19) then
+		if IsControlReleased(0, Config.OpenControlKey) or IsDisabledControlReleased(0, Config.OpenControlKey) then
 			Functions.DisableTarget(true)
 		else
 			Functions.LeftTarget()
@@ -696,7 +777,7 @@ function Functions.CheckEntity(hit, datatable, entity, distance)
 	end
 end
 
-function Functions.CheckBones(coords, entity, min, max, bonelist)
+function Functions.CheckBones(coords, entity, bonelist)
 	local closestBone, closestDistance, closestPos, closestBoneName = -1, 20
 	for k, v in pairs(bonelist) do
 		if Bones[v] then
@@ -724,7 +805,7 @@ function Functions.SpawnPeds()
 				local networked = v.networked or false
 				RequestModel(v.model)
 				while not HasModelLoaded(v.model) do
-					Wait(50)
+					Wait(5)
 				end
 
 				if type(v.model) == 'string' then v.model = GetHashKey(v.model) end
@@ -750,7 +831,7 @@ function Functions.SpawnPeds()
 				if v.animDict and v.anim then
 					RequestAnimDict(v.animDict)
 					while not HasAnimDictLoaded(v.animDict) do
-						Wait(50)
+						Wait(5)
 					end
 
 					TaskPlayAnim(spawnedped, v.animDict, v.anim, 8.0, 0, -1, v.flag or 1, 0, 0, 0, 0)
@@ -802,7 +883,7 @@ function Functions.SpawnPed(data)
 			local networked = v.networked or false
 			RequestModel(v.model)
 			while not HasModelLoaded(v.model) do
-				Wait(50)
+				Wait(5)
 			end
 
 			if type(v.model) == 'string' then v.model = GetHashKey(v.model) end
@@ -828,7 +909,7 @@ function Functions.SpawnPed(data)
 			if v.animDict and v.anim then
 				RequestAnimDict(v.animDict)
 				while not HasAnimDictLoaded(v.animDict) do
-					Wait(50)
+					Wait(5)
 				end
 
 				TaskPlayAnim(spawnedped, v.animDict, v.anim, 8.0, 0, -1, v.flag or 1, 0, 0, 0, 0)
@@ -863,7 +944,7 @@ function Functions.SpawnPed(data)
 		local networked = data.networked or false
 		RequestModel(data.model)
 		while not HasModelLoaded(data.model) do
-			Wait(50)
+			Wait(5)
 		end
 
 		if type(data.model) == 'string' then data.model = GetHashKey(data.model) end
@@ -889,7 +970,7 @@ function Functions.SpawnPed(data)
 		if data.animDict and data.anim then
 			RequestAnimDict(data.animDict)
 			while not HasAnimDictLoaded(data.animDict) do
-				Wait(50)
+				Wait(5)
 			end
 
 			TaskPlayAnim(spawnedped, data.animDict, data.anim, 8.0, 0, -1, data.flag or 1, 0, 0, 0, 0)
@@ -1058,9 +1139,7 @@ RegisterNUICallback('selectTarget', function(option, cb)
                 TriggerEvent(data.event, data)
             end
         else
-            if Config.Debug then
-            	print("No trigger setup")
-            end
+            print("No trigger setup")
         end
     end)
 
@@ -1078,7 +1157,7 @@ end)
 CreateThread(function()
     RegisterCommand('+playerTarget', Functions.EnableTarget, false)
     RegisterCommand('-playerTarget', Functions.DisableTarget, false)
-    RegisterKeyMapping("+playerTarget", "Enable targeting~", "keyboard", "LMENU")
+    RegisterKeyMapping("+playerTarget", "Enable targeting~", "keyboard", Config.OpenKey)
     TriggerEvent("chat:removeSuggestion", "/+playerTarget")
     TriggerEvent("chat:removeSuggestion", "/-playerTarget")
 
@@ -1169,32 +1248,9 @@ end)
 
 -- Events
 
--- This makes sure that only when you are logged in that you can access the target
-RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-	PlayerData = QBCore.Functions.GetPlayerData()
-	Functions.SpawnPeds()
-end)
-
--- This will make sure everything resets and the player can't access the target when they are logged out
-RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
-	PlayerData = {}
-	Functions.DeletePeds()
-end)
-
--- This will update the job when a new job has been assigned to a player
-RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)
-	PlayerData.job = JobInfo
-end)
-
--- Updates the PlayerData to make sure it doesn't 'stay behind'
-RegisterNetEvent('QBCore:Client:SetPlayerData', function(val)
-	PlayerData = val
-end)
-
--- This is to make sure you can restart the resource manually without having to log-out.
+-- This is to make sure the peds spawn on restart too instead of only when you load/log-in.
 AddEventHandler('onResourceStart', function(resource)
 	if resource == CurrentResourceName then
-		PlayerData = QBCore.Functions.GetPlayerData()
 		Functions.SpawnPeds()
 	end
 end)
