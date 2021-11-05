@@ -1,11 +1,11 @@
-# These are Templates for all the functions in qb-target
+# These are Templates for all the functions in berkie-target
 
 ## AddCircleZone
 
 ### Function Format
 
 ```lua
--- This is the function from how you would use it inside qb-target/client/main.lua
+-- This is the function from how you would use it inside berkie-target/client/main.lua
 Functions.AddCircleZone(name: string, center: vector3, radius: float, options: table, targetoptions: table)
 
 options = {
@@ -64,11 +64,11 @@ targetoptions = {
   },
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 CreateThread(function()
-  exports['qb-target']:AddCircleZone("name", vector3(x, y, z), 1.5, { -- The name has to be unique, the coords a vector3 as shown and the 1.5 is the radius which has to be a float value
+  exports['berkie-target']:AddCircleZone("name", vector3(x, y, z), 1.5, { -- The name has to be unique, the coords a vector3 as shown and the 1.5 is the radius which has to be a float value
     name = "name", -- This is the name of the zone recognized by PolyZone, this has to be unique so it doesn't mess up with other zones
     debugPoly = false, -- This is for enabling/disabling the drawing of the box, it accepts only a boolean value (true or false), when true it will draw the polyzone in green
   }, {
@@ -102,7 +102,7 @@ end)
 ### Function Format
 
 ```lua
--- This is the function from how you would use it inside qb-target/client/main.lua
+-- This is the function from how you would use it inside berkie-target/client/main.lua
 Functions.AddBoxZone(name: string, center: vector3, length: float, width: float, options: table, targetoptions: table)
 
 options = {
@@ -168,11 +168,11 @@ targetoptions = {
   },
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 CreateThread(function()
-  exports['qb-target']:AddBoxZone("name", vector3(x, y, z), 1.5, 1.6, { -- The name has to be unique, the coords a vector3 as shown, the 1.5 is the length of the boxzone and the 1.6 is the width of the boxzone, the length and width have to be float values
+  exports['berkie-target']:AddBoxZone("name", vector3(x, y, z), 1.5, 1.6, { -- The name has to be unique, the coords a vector3 as shown, the 1.5 is the length of the boxzone and the 1.6 is the width of the boxzone, the length and width have to be float values
     name = "name", -- This is the name of the zone recognized by PolyZone, this has to be unique so it doesn't mess up with other zones
     heading = 12.0, -- The heading of the boxzone, this has to be a float value
     debugPoly = false, -- This is for enabling/disabling the drawing of the box, it accepts only a boolean value (true or false), when true it will draw the polyzone in green
@@ -209,7 +209,7 @@ end)
 ### Function Format
 
 ```lua
--- This is the function from how you would use it inside qb-target/client/main.lua
+-- This is the function from how you would use it inside berkie-target/client/main.lua
 Functions.AddPolyZone(name: string, points: table, options: table, targetoptions: table)
 
 points = {
@@ -277,14 +277,14 @@ targetoptions = {
   },
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 CreateThread(function()
   local points = {
     vector2(x, y, z), vector2(x, y, z), vector2(x, y, z)
   }
-  exports['qb-target']:AddPolyZone("name", points, {
+  exports['berkie-target']:AddPolyZone("name", points, {
     name = "name", -- This is the name of the zone recognized by PolyZone, this has to be unique so it doesn't mess up with other zones
     debugPoly = false, -- This is for enabling/disabling the drawing of the box, it accepts only a boolean value (true or false), when true it will draw the polyzone in green
     minZ = 36.7, -- This is the bottom of the polyzone, this can be different from the Z value in the coords, this has to be a float value
@@ -320,7 +320,7 @@ end)
 ### Function Format
 
 ```lua
--- This is the function from how you would use it inside qb-target/client/main.lua
+-- This is the function from how you would use it inside berkie-target/client/main.lua
 Functions.AddComboZone(zones: table, options: table, targetoptions: table)
 
 zones = {zone1: zone, zone2: zone} -- Minimum of 2 zones
@@ -349,7 +349,7 @@ targetoptions = {
 }
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 CreateThread(function()
@@ -362,7 +362,7 @@ CreateThread(function()
     debugPoly = false
   })
   local zones = {zone1, zone2}
-  exports['qb-target']:AddComboZone(zones, {
+  exports['berkie-target']:AddComboZone(zones, {
     name = "name", -- This is the name of the zone recognized by PolyZone, this has to be unique so it doesn't mess up with other zones
     debugPoly = false, -- This is for enabling/disabling the drawing of the box, it accepts only a boolean value (true or false), when true it will draw the polyzone in green
   }, {
@@ -396,7 +396,7 @@ end)
 ### Function Format
 
 ```lua
--- This is the function from how you would use it inside qb-target/client/main.lua
+-- This is the function from how you would use it inside berkie-target/client/main.lua
 Functions.AddTargetBone(bones: table or string, parameters: table)
 
 parameters = {
@@ -447,7 +447,7 @@ parameters = {
   },
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 CreateThread(function()
@@ -455,7 +455,7 @@ CreateThread(function()
     'boot',
     'bonnet'
   }
-  exports['qb-target']:AddTargetBone(bones, { -- The bones can be a string or a table
+  exports['berkie-target']:AddTargetBone(bones, { -- The bones can be a string or a table
     options = {
       { -- This is the first table with options, you can make as many options inside the options table as you want
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
@@ -536,12 +536,12 @@ parameters = {
   },
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 CreateThread(function()
   local entity = CreatePed(2, `a_m_m_indian_01`, 500.0, 500.0, 100.0, 12.0, true, false)
-  exports['qb-target']:AddTargetEntity(entity, { -- The specified entity number
+  exports['berkie-target']:AddTargetEntity(entity, { -- The specified entity number
     options = {
       { -- This is the first table with options, you can make as many options inside the options table as you want
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
@@ -629,12 +629,12 @@ targetoptions = {
   },
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 CreateThread(function()
   local entity = CreatePed(2, `a_m_m_indian_01`, 500.0, 500.0, 100.0, 12.0, true, false)
-  exports['qb-target']:AddEntityZone("name", entity, { -- The specified entity number
+  exports['berkie-target']:AddEntityZone("name", entity, { -- The specified entity number
     {
       name = "name", -- This is the name of the zone recognized by PolyZone, this has to be unique so it doesn't mess up with other zones
       debugPoly = false, -- This is for enabling/disabling the drawing of the box, it accepts only a boolean value (true or false), when true it will draw the polyzone in green  
@@ -722,14 +722,14 @@ parameters = {
   },
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 CreateThread(function()
   local models = {
     'a_m_m_indian_01',
   }
-  exports['qb-target']:AddTargetModel(models, { -- This defines the models, can be a string or a table
+  exports['berkie-target']:AddTargetModel(models, { -- This defines the models, can be a string or a table
       options = {
         { -- This is the first table with options, you can make as many options inside the options table as you want
           type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
@@ -764,11 +764,11 @@ end)
 Functions.RemoveZone(name: string)
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 CreateThread(function()
-  exports['qb-target']:RemoveZone("name")
+  exports['berkie-target']:RemoveZone("name")
 end)
 ```
 
@@ -780,11 +780,11 @@ end)
 Functions.RemoveTargetBone(bones: table or string, labels: table or string)
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 CreateThread(function()
-  exports['qb-target']:RemoveTargetBone('bonnet', 'Test')
+  exports['berkie-target']:RemoveTargetBone('bonnet', 'Test')
 end)
 ```
 
@@ -796,11 +796,11 @@ end)
 Functions.RemoveTargetModel(models: table or string, labels: table or string)
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 CreateThread(function()
-  exports['qb-target']:RemoveTargetModel('a_m_m_indian_01', 'Test')
+  exports['berkie-target']:RemoveTargetModel('a_m_m_indian_01', 'Test')
 end)
 ```
 
@@ -812,11 +812,11 @@ end)
 Functions.RemoveTargetEntity(entity: integer or table, labels: table or string)
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 CreateThread(function()
-  exports['qb-target']:RemoveTargetEntity(entity, 'Test')
+  exports['berkie-target']:RemoveTargetEntity(entity, 'Test')
 end)
 ```
 
@@ -846,11 +846,11 @@ parameters = {
 }
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 CreateThread(function()
-  local Targeting = exports['qb-target']:FetchFunctions()
+  local Targeting = exports['berkie-target']:FetchFunctions()
   Targeting.AddGlobalType(1, { -- 1 stands for ped types
     options = {
       { -- This is the first table with options, you can make as many options inside the options table as you want
@@ -929,11 +929,11 @@ parameters = {
   distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 CreateThread(function()
-  exports['qb-target']:AddGlobalPed({
+  exports['berkie-target']:AddGlobalPed({
     options = {
       { -- This is the first table with options, you can make as many options inside the options table as you want
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
@@ -1011,11 +1011,11 @@ parameters = {
   distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 CreateThread(function()
-  exports['qb-target']:AddGlobalVehicle({
+  exports['berkie-target']:AddGlobalVehicle({
     options = {
       { -- This is the first table with options, you can make as many options inside the options table as you want
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
@@ -1093,11 +1093,11 @@ parameters = {
   distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 CreateThread(function()
-  exports['qb-target']:AddGlobalObject({
+  exports['berkie-target']:AddGlobalObject({
     options = {
       { -- This is the first table with options, you can make as many options inside the options table as you want
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
@@ -1175,11 +1175,11 @@ parameters = {
   distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 CreateThread(function()
-  exports['qb-target']:AddGlobalPlayer({
+  exports['berkie-target']:AddGlobalPlayer({
     options = {
       { -- This is the first table with options, you can make as many options inside the options table as you want
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
@@ -1213,11 +1213,11 @@ end)
 Functions.RemoveGlobalTypeOptions(type: integer, labels: table or string)
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 CreateThread(function()
-  exports['qb-target']:RemoveType(1, 'Test') -- 1 is for peds
+  exports['berkie-target']:RemoveType(1, 'Test') -- 1 is for peds
 end)
 ```
 
@@ -1229,11 +1229,11 @@ end)
 Functions.RemoveGlobalPedOptions(labels: table or string)
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 CreateThread(function()
-  exports['qb-target']:RemovePed('Test')
+  exports['berkie-target']:RemovePed('Test')
 end)
 ```
 
@@ -1245,11 +1245,11 @@ end)
 Functions.RemoveGlobalVehicleOptions(labels: table or string)
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 CreateThread(function()
-  exports['qb-target']:RemoveVehicle('Test')
+  exports['berkie-target']:RemoveVehicle('Test')
 end)
 ```
 
@@ -1261,11 +1261,11 @@ end)
 Functions.RemoveGlobalObjectOptions(labels: table or string)
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 CreateThread(function()
-  exports['qb-target']:RemoveObject('Test')
+  exports['berkie-target']:RemoveObject('Test')
 end)
 ```
 
@@ -1277,11 +1277,11 @@ end)
 Functions.RemoveGlobalPlayerOptions(labels: table or string)
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 CreateThread(function()
-  exports['qb-target']:RemovePlayer('Test')
+  exports['berkie-target']:RemovePlayer('Test')
 end)
 ```
 
@@ -1293,10 +1293,10 @@ end)
 Functions.RaycastCamera(flag: integer) -- Preferably 30 or -1, -1 will not interact with any hashes higher than 32 bit and 30 will not interact with polyzones
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
-local Targeting = exports['qb-target']:FetchFunctions()
+local Targeting = exports['berkie-target']:FetchFunctions()
 CreateThread(function()
     while true do
         local curFlag = 30
@@ -1316,10 +1316,10 @@ end)
 Functions.CloneTable(table: table)
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
-local Targeting = exports['qb-target']:FetchFunctions()
+local Targeting = exports['berkie-target']:FetchFunctions()
 CreateThread(function()
   local table = {
     [1] = "something eh",
@@ -1449,11 +1449,11 @@ datatable = {
 },
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 -- This is for 1 ped only
-exports['qb-target']:SpawnPed({
+exports['berkie-target']:SpawnPed({
   model = 'a_m_m_indian_01', -- This is the ped model that is going to be spawning at the given coords
   coords = vector4(x, y, z, w), -- This is the coords that the ped is going to spawn at, always has to be a vector4 and the w value is the heading
   minusOne = true, -- Set this to true if your ped is hovering above the ground but you want it on the ground (OPTIONAL)
@@ -1491,7 +1491,7 @@ exports['qb-target']:SpawnPed({
 })
 
 -- This is for multiple peds, here I used 2 of the same peds
-exports['qb-target']:SpawnPed({
+exports['berkie-target']:SpawnPed({
   [1] = { -- This has to be a number otherwise it can't delete the ped afterwards
     model = 'a_m_m_indian_01', -- This is the ped model that is going to be spawning at the given coords
     coords = vector4(x, y, z, w), -- This is the coords that the ped is going to spawn at, always has to be a vector4 and the w value is the heading
@@ -1575,10 +1575,10 @@ exports['qb-target']:SpawnPed({
 Functions.AllowTargeting(allow: bool)
 ```
 
-### Export option, this will go into any client side resource file aside from qb-target's one
+### Export option, this will go into any client side resource file aside from berkie-target's one
 
 ```lua
 if IsEntityDead(PlayerPedId()) then
-    exports['qb-target']:AllowTargeting(false)
+    exports['berkie-target']:AllowTargeting(false)
 end
 ```
