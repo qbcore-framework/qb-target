@@ -5,19 +5,27 @@ local playerPed, targetActive, hasFocus, success, PedsReady, AllowTarget, curFla
 
 -- Functions
 function Functions.AddCircleZone(name, center, radius, options, targetoptions)
+	center = type(center) == 'table' and vector3(center.x, center.y, center.z) or center
 	Zones[name] = CircleZone:Create(center, radius, options)
 	if targetoptions.distance == nil then targetoptions.distance = Config.MaxDistance end
 	Zones[name].targetoptions = targetoptions
 end
 
 function Functions.AddBoxZone(name, center, length, width, options, targetoptions)
+	center = type(center) == 'table' and vector3(center.x, center.y, center.z) or center
 	Zones[name] = BoxZone:Create(center, length, width, options)
 	if targetoptions.distance == nil then targetoptions.distance = Config.MaxDistance end
 	Zones[name].targetoptions = targetoptions
 end
 
 function Functions.AddPolyZone(name, points, options, targetoptions)
-	Zones[name] = PolyZone:Create(points, options)
+	local _points = {}
+	if type(points[1]) == 'table' then
+		for i = 1, #points do
+			_points[i] = vector3(points[i].x, points[i].y)
+		end
+	end 
+	Zones[name] = PolyZone:Create(#_points > 0 and _points or points, options)
 	if targetoptions.distance == nil then targetoptions.distance = Config.MaxDistance end
 	Zones[name].targetoptions = targetoptions
 end
