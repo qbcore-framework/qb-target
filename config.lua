@@ -8,8 +8,8 @@ Config.VehicleBones = {'chassis', 'chassis_lowlod', 'chassis_dummy', 'seat_dside
 -- Settings
 ----------------------------------------------------------------------------------------
 
--- The current used framework dependant on your server
-Config.Framework = 'none' -- Can be 'none', 'QBCore' or 'ESX'
+-- Set to true to enable standalone functionality
+Config.Standalone = false
 
 -- It's possible to interact with entities through walls so this should be low
 Config.MaxDistance = 3.0

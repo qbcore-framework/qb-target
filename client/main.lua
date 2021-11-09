@@ -1,9 +1,9 @@
 local CurrentResourceName = GetCurrentResourceName()
-local QBCore, ESX, PlayerLoaded, PlayerData
+local QBCore, PlayerData
 local Config, Types, Bones, Players, Entities, Models, Zones, Functions = Config, Types, Bones, {}, {}, {}, {}, {}
 local playerPed, curFlag, targetActive, hasFocus, success, PedsReady, AllowTarget, sendData = PlayerPedId(), 30, false, false, false, false, true, nil
 
-if Config.Framework == 'QBCore' then
+if not Config.Standalone then
 	QBCore = exports['qb-core']:GetCoreObject()
 	PlayerData = QBCore.Functions.GetPlayerData()
 
@@ -38,6 +38,7 @@ if Config.Framework == 'QBCore' then
 		if (not data.distance or distance <= data.distance)
 		and (not data.job or data.job == PlayerData.job.name or (data.job[PlayerData.job.name] and data.job[PlayerData.job.name] <= PlayerData.job.grade.level))
 		and (not data.gang or data.gang == PlayerData.gang.name or (data.gang[PlayerData.gang.name] and data.gang[PlayerData.gang.name] <= PlayerData.gang.grade.level))
+		and (not data.citizenid or data.citizenid == PlayerData.citizenid or data.citizenid[PlayerData.citizenid])
 		and (not data.item or data.item and Functions.ItemCount(data.item) > 0)
 		and (not data.canInteract or data.canInteract(entity, distance, data)) then return true
 		end
@@ -52,52 +53,15 @@ if Config.Framework == 'QBCore' then
 		end
 		return 0
 	end
-elseif Config.Framework == 'ESX' then
-	ESX = exports['es_extended']:getSharedObject()
-	PlayerData = ESX.GetPlayerData()
-
-	-- This makes sure that peds only spawn when you are spawned and your PlayerData gets set when you have access to the target
-	RegisterNetEvent('esx:playerLoaded', function(xPlayer)
-		PlayerData = xPlayer
-		Functions.SpawnPeds()
-		PlayerLoaded = true
-	end)
-
-	-- This will make sure everything resets and despawns after you logout/disconnect
-	RegisterNetEvent('esx:onPlayerLogout', function()
-		PlayerData = {}
-		Functions.DeletePeds()
-		PlayerLoaded = false
-	end)
-
-	-- This will update the job when a new job has been assigned to a player
-	RegisterNetEvent('esx:setJob', function(job)
-		PlayerData.job = job
-	end)
-
-	-- This will make sure all the PlayerData stays updated
-	RegisterNetEvent('esx:setPlayerData', function(key, val)
-		PlayerData[key] = val
-	end)
-
-	function Functions.CheckOptions(data, entity, distance)
-		if (not data.distance or distance <= data.distance)
-		and (not data.job or data.job == PlayerData.job.name or (data.job[PlayerData.job.name] and data.job[PlayerData.job.name] <= PlayerData.job.grade))
-		and (not data.item or data.item and Functions.ItemCount(data.item) > 0)
-		and (not data.canInteract or data.canInteract(entity, distance, data)) then return true
+else
+	local firstSpawn = false
+	AddEventHandler('playerSpawned', function()
+		if not firstSpawn then
+			Functions.SpawnPeds()
+			firstSpawn = true
 		end
-		return false
-	end
+	end)
 
-	function Functions.ItemCount(item)
-		for k, v in pairs(PlayerData.inventory) do
-			if v.name == item then
-				return v.count
-			end
-		end
-		return 0
-	end
-elseif Config.Framework == 'none' then
 	function Functions.CheckOptions(data, entity, distance)
 		if (not data.distance or distance <= data.distance)
 		and (not data.canInteract or data.canInteract(entity, distance, data)) then return true
@@ -127,7 +91,7 @@ function Functions.AddPolyZone(name, points, options, targetoptions)
 		for i = 1, #points do
 			_points[i] = vector3(points[i].x, points[i].y)
 		end
-	end 
+	end
 	Zones[name] = PolyZone:Create(#_points > 0 and _points or points, options)
 	targetoptions.distance = targetoptions.distance or Config.MaxDistance
 	Zones[name].targetoptions = targetoptions
@@ -487,7 +451,7 @@ function Functions.switch()
 end
 
 function Functions.EnableTarget()
-	if not AllowTarget or success or (Config.Framework == 'QBCore' and not LocalPlayer.state['isLoggedIn']) or (Config.Framework == 'ESX' and not PlayerLoaded) then return end
+	if not AllowTarget or success or (not Config.Standalone and not LocalPlayer.state['isLoggedIn']) then return end
 	if not targetActive then
 		targetActive = true
 		SendNUIMessage({response = "openTarget"})
@@ -558,7 +522,7 @@ function Functions.EnableTarget()
 							Functions.DrawOutlineEntity(entity, true)
 							while targetActive and success do
 								local _, coords, entity2 = Functions.RaycastCamera(hit)
-								if hit and entity == entity2 then
+								if entity == entity2 then
 									local playerCoords = GetEntityCoords(playerPed)
 									local closestBone2 = Functions.CheckBones(coords, entity, Config.VehicleBones)
 									local dist = #(playerCoords - coords)

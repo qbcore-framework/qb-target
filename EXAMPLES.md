@@ -11,12 +11,12 @@ Then, in the actual options themselves, we define 'police' as our required job.
 This is an example using **exports**
 
 ```lua
-exports['berkie-target']:AddBoxZone("MissionRowDutyClipboard", vector3(441.7989, -982.0529, 30.67834), 0.45, 0.35, {
-	name="MissionRowDutyClipboard",
-	heading=11.0,
-	debugPoly=false,
-	minZ=30.77834,
-	maxZ=30.87834,
+exports['qb-target']:AddBoxZone("MissionRowDutyClipboard", vector3(441.7989, -982.0529, 30.67834), 0.45, 0.35, {
+	name = "MissionRowDutyClipboard",
+	heading = 11.0,
+	debugPoly = false,
+	minZ = 30.77834,
+	maxZ = 30.87834,
 	}, {
 		options = {
 			{
@@ -27,10 +27,10 @@ exports['berkie-target']:AddBoxZone("MissionRowDutyClipboard", vector3(441.7989,
 				job = "police",
 			},
 		},
-		distance = 3.5
+		distance = 2.5
 })
 
--- This event is only for the QBCore resource qb-policejob
+-- This event is only for the QBCore resource qb-policejob, goes inside @qb-policejob/client/job.lua
 RegisterNetEvent('Toggle:Duty', function()
     onDuty = not onDuty
     TriggerServerEvent("police:server:UpdateCurrentCops")
@@ -61,11 +61,11 @@ Config.BoxZones = {
               job = "police",
             },
         },
-        distance = 3.5
+        distance = 2.5
     },
 }
 
--- This event is only for the QBCore resource qb-policejob
+-- This event is only for the QBCore resource qb-policejob, goes inside @qb-policejob/client/job.lua
 RegisterNetEvent('Toggle:Duty', function()
     onDuty = not onDuty
     TriggerServerEvent("police:server:UpdateCurrentCops")
@@ -74,15 +74,30 @@ RegisterNetEvent('Toggle:Duty', function()
 end)
 ```
 
-There is only one way you can define the job though, but you can also provide a `[key] = value` table instead to enable checking for more jobs:
+There is only one way you can define the job though, but you can also provide a `[key] = value` table instead to enable checking for more jobs or gangs:
 
 ```lua
 job = {
 	["police"] = 5,
 	["ambulance"] = 0,
 }
+
+gang = {
+	["ballas"] = 5,
+	["thelostmc"] = 0,
+}
 ```
-When defining multiple jobs, you **must** provide a minimum grade, even if you don't need one. This is due to how key/value tables work. Just set the minimum grade to 0. 
+
+This also applies to citizenid's, but citizenid's don't have grades so we set them to true to allow them:
+
+```lua
+citizenid = {
+    ["JFJ94924"] = true,
+    ["KSD18372"] = true
+}
+```
+
+When defining multiple jobs or gangs, you **must** provide a minimum grade, even if you don't need one. This is due to how key/value tables work. Just set the minimum grade to 0. 
 
 ## AddTargetModel / item / canInteract()
 
@@ -95,7 +110,7 @@ Config.Peds = {
     "g_m_importexport_0",
     "g_m_m_armboss_01"
 }
-exports['berkie-target']:AddTargetModel(Config.Peds, {
+exports['qb-target']:AddTargetModel(Config.Peds, {
 	options = {
 		{
 			event = "request:CuffPed",
@@ -105,7 +120,7 @@ exports['berkie-target']:AddTargetModel(Config.Peds, {
 			job = "police"
 		},
 		{
-			event = "Rob:Player",
+			event = "Rob:Ped",
 			icon = "fas fa-sack-dollar",
 			label = "Rob",
 			canInteract = function(entity)
@@ -139,7 +154,7 @@ Config.TargetModels = {
             },
             {
                 type = "client",
-                event = "Rob:Player",
+                event = "Rob:Ped",
                 icon = "fas fa-sack-dollar",
                 label = "Rob",
                 canInteract = function(entity)
@@ -160,7 +175,7 @@ This is an example from a postop resource. Players can rent delivery vehicles in
 This is an example using **exports**
 
 ```lua
-exports['berkie-target']:AddTargetEntity('mule2', {
+exports['qb-target']:AddTargetEntity('mule2', {
     options = {
         {
             type = "client",
@@ -195,13 +210,13 @@ Config.TargetEntities = {
 ```
 
 ## Passing Item Data
-In this example, we define the model of the coffee machines you see around the map, and allow players to purchase a coffee. You'll have to provide your own logic for the purchase, but this is how you would handle it with berkie-target, and how you would pass data through to an event for future use. 
+In this example, we define the model of the coffee machines you see around the map, and allow players to purchase a coffee. You'll have to provide your own logic for the purchase, but this is how you would handle it with qb-target, and how you would pass data through to an event for future use. 
 
 This is an example using **exports**
 This example is **not** advised to use with the provided config
 
 ```lua
-exports['berkie-target']:AddTargetModel(690372739, {
+exports['qb-target']:AddTargetModel(690372739, {
     options = {
         {
             type = "client",
@@ -215,8 +230,8 @@ exports['berkie-target']:AddTargetModel(690372739, {
 })
 
 RegisterNetEvent('coffee:buy',function(data)
-    QBCore.Functions.Notify("You purchased a " .. data.label .. " for $" .. data.price .. ". Enjoy!", 'success')
     -- server event to buy the item here
+    QBCore.Functions.Notify("You purchased a " .. data.label .. " for $" .. data.price .. ". Enjoy!", 'success')
 end)
 ```
 
@@ -233,19 +248,19 @@ AddEventHandler('plantpotato',function()
 	model = `prop_plant_fern_02a`
 	RequestModel(model)
 	while not HasModelLoaded(model) do
-		Citizen.Wait(50)
+		Wait(0)
 	end
 	local plant = CreateObject(model, coords.x, coords.y, coords.z, true, true)
-	Citizen.Wait(50)
+	Wait(50)
 	PlaceObjectOnGroundProperly(plant)
 	SetEntityInvincible(plant, true)
 
 	-- Logic to handle growth, create a thread and loop, or do something else. Up to you.
 
-	exports['berkie-target']:AddEntityZone("potato-growing-"..plant, plant, {
+	exports['qb-target']:AddEntityZone("potato-growing-"..plant, plant, {
 		name = "potato-growing-"..plant,
-		heading=GetEntityHeading(plant),
-		debugPoly=false,
+		heading = GetEntityHeading(plant),
+		debugPoly = false,
 	}, {
 		options = {
 			{
@@ -264,7 +279,7 @@ AddEventHandler('plantpotato',function()
 				end,
 			},
 		},
-		distance = 3.5
+		distance = 2.5
   	})
 end)
 ```

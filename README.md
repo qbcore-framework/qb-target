@@ -1,30 +1,26 @@
-# berkie-target
+# qb-target
 
-berkie-target is a targeting solution that allows interaction with any predefined entity, model, entity type or polyzone. While activated you can easily and safely replace markers and distance checking, instead relying on intuitive design to improve player experiences and optimize interaction.
+qb-target is a targeting solution that allows interaction with any predefined entity, model, entity type or polyzone. While activated you can easily and safely replace markers and distance checking, instead relying on intuitive design to improve player experiences and optimize interaction.
 
 ## Credits
 
-* Lots of credits goes to [qtarget](https://github.com/QuantusRP/qtarget) for re-writing all of bt-target to make it more optimized and where this resource is based off of.
+* Lots of credits goes to [qtarget](https://github.com/QuantusRP/qtarget) for rewriting all of bt-target to make it more optimized and this resource is pretty much a fork of it.
 
-* All the credit goes to [bt-target](https://github.com/brentN5/bt-target) from brentN5 for making the target a thing!
+* Huge credit to [bt-target](https://github.com/brentN5/bt-target) from brentN5 for making the target a thing!
 
 * Credit to [ms-peds](https://github.com/MiddleSkillz/ms-peds) for allowing me to use their awesome ped spawner inside the target!
 
-## Dependencies
+## Dependency
 
 * [PolyZone](https://github.com/mkafrin/PolyZone)
 
-## Optional Dependencies
+## Optional Dependency
 
 * [QBCore](https://github.com/qbcore-framework/qb-core)
 
-* [ES Extended Legacy](https://github.com/esx-framework/esx-legacy)
-
 ## Information
 
-This repository was originally a fork and now it's own repository as it's basically qtarget but with lots of changes to it to make it better, most of the code comes from qtarget as I find their work awesome on this and what they've achieved with it.
-
-This version is for QBCore but can be used by any framework if you make your own changes to it.
+This repository was originally a direct fork and now it's own repository as it's basically qtarget but with lots of changes to it to make it better, most of the code comes from qtarget as I find their work awesome on this and what they've achieved with it.
 
 You are free to help through Pull Requests and leave as much suggestions or issues, I love some help!
 
@@ -39,7 +35,7 @@ The TEMPLATES.md and EXAMPLES.md are always being improved and new examples can 
 - Ability to redefine or remove options, and add new options without replacing old ones
 - Update option list when moving towards or away from a target with variable distances on their options
 - Support for entity bones, with builtin tables for opening doors
-- Support checking for job, items, or specific entities
+- Support checking for job, gang, citizenid, items, or specific entities
 - Utilise the `canInteract` function for advanced checks to show or hide an option based on any trigger
 - Ped spawner to spawn peds and assign target options to them all in one place
 

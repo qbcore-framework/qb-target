@@ -1,11 +1,11 @@
-# These are Templates for all the functions in berkie-target
+# These are Templates for all the functions in qb-target
 
 ## AddCircleZone
 
 ### Function Format
 
 ```lua
--- This is the function from how you would use it inside berkie-target/client/main.lua
+-- This is the function from how you would use it inside qb-target/client/main.lua
 Functions.AddCircleZone(name: string, center: vector3, radius: float, options: table, targetoptions: table)
 
 options = {
@@ -50,25 +50,26 @@ targetoptions = {
         item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
         action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          TriggerEvent('testing:event', 'test')
+          TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
         end,
         canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
-        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+        citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
       }
     },
     distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
   },
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
-  exports['berkie-target']:AddCircleZone("name", vector3(x, y, z), 1.5, { -- The name has to be unique, the coords a vector3 as shown and the 1.5 is the radius which has to be a float value
+  exports['qb-target']:AddCircleZone("name", vector3(x, y, z), 1.5, { -- The name has to be unique, the coords a vector3 as shown and the 1.5 is the radius which has to be a float value
     name = "name", -- This is the name of the zone recognized by PolyZone, this has to be unique so it doesn't mess up with other zones
     debugPoly = false, -- This is for enabling/disabling the drawing of the box, it accepts only a boolean value (true or false), when true it will draw the polyzone in green
   }, {
@@ -82,14 +83,15 @@ CreateThread(function()
         item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
         action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          TriggerEvent('testing:event', 'test')
+          TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
         end,
         canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
-        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+        citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
       }
     },
     distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
@@ -102,7 +104,7 @@ end)
 ### Function Format
 
 ```lua
--- This is the function from how you would use it inside berkie-target/client/main.lua
+-- This is the function from how you would use it inside qb-target/client/main.lua
 Functions.AddBoxZone(name: string, center: vector3, length: float, width: float, options: table, targetoptions: table)
 
 options = {
@@ -154,25 +156,26 @@ targetoptions = {
         item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
         action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          TriggerEvent('testing:event', 'test')
+          TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
         end,
         canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
-        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+        citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
       }
     },
     distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
   },
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
-  exports['berkie-target']:AddBoxZone("name", vector3(x, y, z), 1.5, 1.6, { -- The name has to be unique, the coords a vector3 as shown, the 1.5 is the length of the boxzone and the 1.6 is the width of the boxzone, the length and width have to be float values
+  exports['qb-target']:AddBoxZone("name", vector3(x, y, z), 1.5, 1.6, { -- The name has to be unique, the coords a vector3 as shown, the 1.5 is the length of the boxzone and the 1.6 is the width of the boxzone, the length and width have to be float values
     name = "name", -- This is the name of the zone recognized by PolyZone, this has to be unique so it doesn't mess up with other zones
     heading = 12.0, -- The heading of the boxzone, this has to be a float value
     debugPoly = false, -- This is for enabling/disabling the drawing of the box, it accepts only a boolean value (true or false), when true it will draw the polyzone in green
@@ -189,14 +192,15 @@ CreateThread(function()
         item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
         action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          TriggerEvent('testing:event', 'test')
+          TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
         end,
         canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
-        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+        citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
       }
     },
     distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
@@ -209,7 +213,7 @@ end)
 ### Function Format
 
 ```lua
--- This is the function from how you would use it inside berkie-target/client/main.lua
+-- This is the function from how you would use it inside qb-target/client/main.lua
 Functions.AddPolyZone(name: string, points: table, options: table, targetoptions: table)
 
 points = {
@@ -263,28 +267,29 @@ targetoptions = {
         item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
         action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          TriggerEvent('testing:event', 'test')
+          TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
         end,
         canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
-        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+        citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
       }
     },
     distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
   },
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
   local points = {
     vector2(x, y, z), vector2(x, y, z), vector2(x, y, z)
   }
-  exports['berkie-target']:AddPolyZone("name", points, {
+  exports['qb-target']:AddPolyZone("name", points, {
     name = "name", -- This is the name of the zone recognized by PolyZone, this has to be unique so it doesn't mess up with other zones
     debugPoly = false, -- This is for enabling/disabling the drawing of the box, it accepts only a boolean value (true or false), when true it will draw the polyzone in green
     minZ = 36.7, -- This is the bottom of the polyzone, this can be different from the Z value in the coords, this has to be a float value
@@ -300,14 +305,15 @@ CreateThread(function()
         item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
         action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          TriggerEvent('testing:event', 'test')
+          TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
         end,
         canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
-        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+        citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
       }
     },
     distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
@@ -320,7 +326,7 @@ end)
 ### Function Format
 
 ```lua
--- This is the function from how you would use it inside berkie-target/client/main.lua
+-- This is the function from how you would use it inside qb-target/client/main.lua
 Functions.AddComboZone(zones: table, options: table, targetoptions: table)
 
 zones = {zone1: zone, zone2: zone} -- Minimum of 2 zones
@@ -349,7 +355,7 @@ targetoptions = {
 }
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
@@ -362,7 +368,7 @@ CreateThread(function()
     debugPoly = false
   })
   local zones = {zone1, zone2}
-  exports['berkie-target']:AddComboZone(zones, {
+  exports['qb-target']:AddComboZone(zones, {
     name = "name", -- This is the name of the zone recognized by PolyZone, this has to be unique so it doesn't mess up with other zones
     debugPoly = false, -- This is for enabling/disabling the drawing of the box, it accepts only a boolean value (true or false), when true it will draw the polyzone in green
   }, {
@@ -376,14 +382,15 @@ CreateThread(function()
         item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
         action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          TriggerEvent('testing:event', 'test')
+          TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
         end,
         canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
-        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+        citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
       }
     },
     distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
@@ -396,7 +403,7 @@ end)
 ### Function Format
 
 ```lua
--- This is the function from how you would use it inside berkie-target/client/main.lua
+-- This is the function from how you would use it inside qb-target/client/main.lua
 Functions.AddTargetBone(bones: table or string, parameters: table)
 
 parameters = {
@@ -433,21 +440,22 @@ parameters = {
         item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
         action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          TriggerEvent('testing:event', 'test')
+          TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
         end,
         canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
-        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+        citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
       }
     },
     distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
   },
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
@@ -455,8 +463,8 @@ CreateThread(function()
     'boot',
     'bonnet'
   }
-  exports['berkie-target']:AddTargetBone(bones, { -- The bones can be a string or a table
-    options = {
+  exports['qb-target']:AddTargetBone(bones, { -- The bones can be a string or a table
+    options = { -- This is your options table, in this table all the options will be specified for the target to accept
       { -- This is the first table with options, you can make as many options inside the options table as you want
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
         event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
@@ -466,14 +474,15 @@ CreateThread(function()
         item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
         action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          TriggerEvent('testing:event', 'test')
+          TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
         end,
         canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
-        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+        citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
       }
     },
     distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
@@ -522,27 +531,28 @@ parameters = {
         item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
         action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          TriggerEvent('testing:event', 'test')
+          TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
         end,
         canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
-        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+        citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
       }
     },
     distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
   },
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
   local entity = CreatePed(2, `a_m_m_indian_01`, 500.0, 500.0, 100.0, 12.0, true, false)
-  exports['berkie-target']:AddTargetEntity(entity, { -- The specified entity number
-    options = {
+  exports['qb-target']:AddTargetEntity(entity, { -- The specified entity number
+    options = { -- This is your options table, in this table all the options will be specified for the target to accept
       { -- This is the first table with options, you can make as many options inside the options table as you want
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
         event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
@@ -552,14 +562,15 @@ CreateThread(function()
         item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
         action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          TriggerEvent('testing:event', 'test')
+          TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
         end,
         canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
-        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+        citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
       }
     },
     distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
@@ -615,31 +626,32 @@ targetoptions = {
         item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
         action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          TriggerEvent('testing:event', 'test')
+          TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
         end,
         canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
-        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+        citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
       }
     },
     distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
   },
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
   local entity = CreatePed(2, `a_m_m_indian_01`, 500.0, 500.0, 100.0, 12.0, true, false)
-  exports['berkie-target']:AddEntityZone("name", entity, { -- The specified entity number
+  exports['qb-target']:AddEntityZone("name", entity, { -- The specified entity number
     {
       name = "name", -- This is the name of the zone recognized by PolyZone, this has to be unique so it doesn't mess up with other zones
       debugPoly = false, -- This is for enabling/disabling the drawing of the box, it accepts only a boolean value (true or false), when true it will draw the polyzone in green  
     }, {
-      options = {
+      options = { -- This is your options table, in this table all the options will be specified for the target to accept
         { -- This is the first table with options, you can make as many options inside the options table as you want
           type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
           event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
@@ -649,14 +661,15 @@ CreateThread(function()
           item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
           action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
             if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-            TriggerEvent('testing:event', 'test')
+            TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
           end,
           canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
             if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
             return true
           end,
-          job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-          gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+          job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+          gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+          citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
         }
       },
       distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
@@ -708,29 +721,30 @@ parameters = {
         item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
         action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          TriggerEvent('testing:event', 'test')
+          TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
         end,
         canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
-        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+        citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
       }
     },
     distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
   },
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
   local models = {
     'a_m_m_indian_01',
   }
-  exports['berkie-target']:AddTargetModel(models, { -- This defines the models, can be a string or a table
-      options = {
+  exports['qb-target']:AddTargetModel(models, { -- This defines the models, can be a string or a table
+      options = { -- This is your options table, in this table all the options will be specified for the target to accept
         { -- This is the first table with options, you can make as many options inside the options table as you want
           type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
           event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
@@ -740,14 +754,15 @@ CreateThread(function()
           item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
           action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
             if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-            TriggerEvent('testing:event', 'test')
+            TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
           end,
           canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
             if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
             return true
           end,
-          job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-          gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+          job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+          gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+          citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
         }
       },
       distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
@@ -764,11 +779,11 @@ end)
 Functions.RemoveZone(name: string)
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
-  exports['berkie-target']:RemoveZone("name")
+  exports['qb-target']:RemoveZone("name")
 end)
 ```
 
@@ -780,11 +795,11 @@ end)
 Functions.RemoveTargetBone(bones: table or string, labels: table or string)
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
-  exports['berkie-target']:RemoveTargetBone('bonnet', 'Test')
+  exports['qb-target']:RemoveTargetBone('bonnet', 'Test')
 end)
 ```
 
@@ -796,11 +811,11 @@ end)
 Functions.RemoveTargetModel(models: table or string, labels: table or string)
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
-  exports['berkie-target']:RemoveTargetModel('a_m_m_indian_01', 'Test')
+  exports['qb-target']:RemoveTargetModel('a_m_m_indian_01', 'Test')
 end)
 ```
 
@@ -812,11 +827,11 @@ end)
 Functions.RemoveTargetEntity(entity: integer or table, labels: table or string)
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
-  exports['berkie-target']:RemoveTargetEntity(entity, 'Test')
+  exports['qb-target']:RemoveTargetEntity(entity, 'Test')
 end)
 ```
 
@@ -846,13 +861,13 @@ parameters = {
 }
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
-  local Targeting = exports['berkie-target']:FetchFunctions()
+  local Targeting = exports['qb-target']:FetchFunctions()
   Targeting.AddGlobalType(1, { -- 1 stands for ped types
-    options = {
+    options = { -- This is your options table, in this table all the options will be specified for the target to accept
       { -- This is the first table with options, you can make as many options inside the options table as you want
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
         event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
@@ -862,14 +877,15 @@ CreateThread(function()
         item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
         action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          TriggerEvent('testing:event', 'test')
+          TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
         end,
         canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
-        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+        citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
       }
     },
     distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
@@ -906,7 +922,7 @@ parameters = {
 ### Config option, this will go into the Config.GlobalPedOptions table
 
 ```lua
-  options = {
+  options = { -- This is your options table, in this table all the options will be specified for the target to accept
     { -- This is the first table with options, you can make as many options inside the options table as you want
       type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
       event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
@@ -916,25 +932,26 @@ parameters = {
       item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
       action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
         if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-        TriggerEvent('testing:event', 'test')
+        TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
       end,
       canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
         if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
         return true
       end,
-      job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-      gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+      job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+      gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+      citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
     }
   },
   distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
-  exports['berkie-target']:AddGlobalPed({
-    options = {
+  exports['qb-target']:AddGlobalPed({
+    options = { -- This is your options table, in this table all the options will be specified for the target to accept
       { -- This is the first table with options, you can make as many options inside the options table as you want
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
         event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
@@ -944,14 +961,15 @@ CreateThread(function()
         item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
         action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          TriggerEvent('testing:event', 'test')
+          TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
         end,
         canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
-        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+        citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
       }
     },
     distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
@@ -988,7 +1006,7 @@ parameters = {
 ### Config option, this will go into the Config.GlobalVehicleOptions table
 
 ```lua
-  options = {
+  options = { -- This is your options table, in this table all the options will be specified for the target to accept
     { -- This is the first table with options, you can make as many options inside the options table as you want
       type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
       event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
@@ -998,25 +1016,26 @@ parameters = {
       item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
       action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
         if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-        TriggerEvent('testing:event', 'test')
+        TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
       end,
       canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
         if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
         return true
       end,
-      job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-      gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+      job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+      gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+      citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
     }
   },
   distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
-  exports['berkie-target']:AddGlobalVehicle({
-    options = {
+  exports['qb-target']:AddGlobalVehicle({
+    options = { -- This is your options table, in this table all the options will be specified for the target to accept
       { -- This is the first table with options, you can make as many options inside the options table as you want
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
         event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
@@ -1026,14 +1045,15 @@ CreateThread(function()
         item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
         action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          TriggerEvent('testing:event', 'test')
+          TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
         end,
         canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
-        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+        citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
       }
     },
     distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
@@ -1070,7 +1090,7 @@ parameters = {
 ### Config option, this will go into the Config.GlobalObjectOptions table
 
 ```lua
-  options = {
+  options = { -- This is your options table, in this table all the options will be specified for the target to accept
     { -- This is the first table with options, you can make as many options inside the options table as you want
       type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
       event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
@@ -1080,25 +1100,26 @@ parameters = {
       item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
       action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
         if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-        TriggerEvent('testing:event', 'test')
+        TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
       end,
       canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
         if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
         return true
       end,
-      job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-      gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+      job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+      gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+      citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
     }
   },
   distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
-  exports['berkie-target']:AddGlobalObject({
-    options = {
+  exports['qb-target']:AddGlobalObject({
+    options = { -- This is your options table, in this table all the options will be specified for the target to accept
       { -- This is the first table with options, you can make as many options inside the options table as you want
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
         event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
@@ -1108,14 +1129,15 @@ CreateThread(function()
         item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
         action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          TriggerEvent('testing:event', 'test')
-          return true
+          TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
         end,
         canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
+          return true
         end,
-        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+        citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
       }
     },
     distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
@@ -1152,7 +1174,7 @@ parameters = {
 ### Config option, this will go into the Config.GlobalPlayerOptions table
 
 ```lua
-  options = {
+  options = { -- This is your options table, in this table all the options will be specified for the target to accept
     { -- This is the first table with options, you can make as many options inside the options table as you want
       type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
       event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
@@ -1162,25 +1184,26 @@ parameters = {
       item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
       action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
         if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-        TriggerEvent('testing:event', 'test')
+        TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
       end,
       canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
         if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
         return true
       end,
-      job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-      gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+      job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+      gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+      citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
     }
   },
   distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
-  exports['berkie-target']:AddGlobalPlayer({
-    options = {
+  exports['qb-target']:AddGlobalPlayer({
+    options = { -- This is your options table, in this table all the options will be specified for the target to accept
       { -- This is the first table with options, you can make as many options inside the options table as you want
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
         event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
@@ -1190,14 +1213,15 @@ CreateThread(function()
         item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
         action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          TriggerEvent('testing:event', 'test')
+          TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
         end,
         canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
-        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+        citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
       }
     },
     distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
@@ -1213,11 +1237,11 @@ end)
 Functions.RemoveGlobalTypeOptions(type: integer, labels: table or string)
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
-  exports['berkie-target']:RemoveType(1, 'Test') -- 1 is for peds
+  exports['qb-target']:RemoveType(1, 'Test') -- 1 is for peds
 end)
 ```
 
@@ -1229,11 +1253,11 @@ end)
 Functions.RemoveGlobalPedOptions(labels: table or string)
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
-  exports['berkie-target']:RemovePed('Test')
+  exports['qb-target']:RemovePed('Test')
 end)
 ```
 
@@ -1245,11 +1269,11 @@ end)
 Functions.RemoveGlobalVehicleOptions(labels: table or string)
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
-  exports['berkie-target']:RemoveVehicle('Test')
+  exports['qb-target']:RemoveVehicle('Test')
 end)
 ```
 
@@ -1261,11 +1285,11 @@ end)
 Functions.RemoveGlobalObjectOptions(labels: table or string)
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
-  exports['berkie-target']:RemoveObject('Test')
+  exports['qb-target']:RemoveObject('Test')
 end)
 ```
 
@@ -1277,11 +1301,11 @@ end)
 Functions.RemoveGlobalPlayerOptions(labels: table or string)
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
-  exports['berkie-target']:RemovePlayer('Test')
+  exports['qb-target']:RemovePlayer('Test')
 end)
 ```
 
@@ -1293,10 +1317,10 @@ end)
 Functions.RaycastCamera(flag: integer) -- Preferably 30 or -1, -1 will not interact with any hashes higher than 32 bit and 30 will not interact with polyzones
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
-local Targeting = exports['berkie-target']:FetchFunctions()
+local Targeting = exports['qb-target']:FetchFunctions()
 CreateThread(function()
     while true do
         local curFlag = 30
@@ -1316,10 +1340,10 @@ end)
 Functions.CloneTable(table: table)
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
-local Targeting = exports['berkie-target']:FetchFunctions()
+local Targeting = exports['qb-target']:FetchFunctions()
 CreateThread(function()
   local table = {
     [1] = "something eh",
@@ -1423,7 +1447,7 @@ datatable = {
   flag = 1, -- This is the flag of the animation to play, for all the flags, check the TaskPlayAnim native here https://docs.fivem.net/natives/?_0x5AB552C6 (OPTIONAL)
   scenario = 'WORLD_HUMAN_AA_COFFEE', -- This is the scenario that will play the whole time the ped is spawned, this cannot pair with anim and animDict (OPTIONAL)
   target = { -- This is the target options table, here you can specify all the options to display when targeting the ped (OPTIONAL)
-    options = {
+    options = { -- This is your options table, in this table all the options will be specified for the target to accept
       { -- This is the first table with options, you can make as many options inside the options table as you want
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
         event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
@@ -1433,14 +1457,15 @@ datatable = {
         item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
         action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          TriggerEvent('testing:event', 'test')
+          TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
         end,
         canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
-        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+        citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
       }
     },
     distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
@@ -1449,11 +1474,11 @@ datatable = {
 },
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 -- This is for 1 ped only
-exports['berkie-target']:SpawnPed({
+exports['qb-target']:SpawnPed({
   model = 'a_m_m_indian_01', -- This is the ped model that is going to be spawning at the given coords
   coords = vector4(x, y, z, w), -- This is the coords that the ped is going to spawn at, always has to be a vector4 and the w value is the heading
   minusOne = true, -- Set this to true if your ped is hovering above the ground but you want it on the ground (OPTIONAL)
@@ -1465,7 +1490,7 @@ exports['berkie-target']:SpawnPed({
   flag = 1, -- This is the flag of the animation to play, for all the flags, check the TaskPlayAnim native here https://docs.fivem.net/natives/?_0x5AB552C6 (OPTIONAL)
   scenario = 'WORLD_HUMAN_AA_COFFEE', -- This is the scenario that will play the whole time the ped is spawned, this cannot pair with anim and animDict (OPTIONAL)
   target = { -- This is the target options table, here you can specify all the options to display when targeting the ped (OPTIONAL)
-    options = {
+    options = { -- This is your options table, in this table all the options will be specified for the target to accept
       { -- This is the first table with options, you can make as many options inside the options table as you want
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
         event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
@@ -1475,14 +1500,15 @@ exports['berkie-target']:SpawnPed({
         item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
         action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          TriggerEvent('testing:event', 'test')
+          TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
         end,
         canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
           if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
           return true
         end,
-        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+        citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
       }
     },
     distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
@@ -1491,7 +1517,7 @@ exports['berkie-target']:SpawnPed({
 })
 
 -- This is for multiple peds, here I used 2 of the same peds
-exports['berkie-target']:SpawnPed({
+exports['qb-target']:SpawnPed({
   [1] = { -- This has to be a number otherwise it can't delete the ped afterwards
     model = 'a_m_m_indian_01', -- This is the ped model that is going to be spawning at the given coords
     coords = vector4(x, y, z, w), -- This is the coords that the ped is going to spawn at, always has to be a vector4 and the w value is the heading
@@ -1504,7 +1530,7 @@ exports['berkie-target']:SpawnPed({
     flag = 1, -- This is the flag of the animation to play, for all the flags, check the TaskPlayAnim native here https://docs.fivem.net/natives/?_0x5AB552C6 (OPTIONAL)
     scenario = 'WORLD_HUMAN_AA_COFFEE', -- This is the scenario that will play the whole time the ped is spawned, this cannot pair with anim and animDict (OPTIONAL)
     target = { -- This is the target options table, here you can specify all the options to display when targeting the ped (OPTIONAL)
-      options = {
+      options = { -- This is your options table, in this table all the options will be specified for the target to accept
         { -- This is the first table with options, you can make as many options inside the options table as you want
           type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
           event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
@@ -1514,14 +1540,15 @@ exports['berkie-target']:SpawnPed({
           item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
           action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
             if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-            TriggerEvent('testing:event', 'test')
+            TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
           end,
           canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
             if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
             return true
           end,
-          job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-          gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+          job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+          gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+          citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
         }
       },
       distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
@@ -1540,7 +1567,7 @@ exports['berkie-target']:SpawnPed({
     flag = 1, -- This is the flag of the animation to play, for all the flags, check the TaskPlayAnim native here https://docs.fivem.net/natives/?_0x5AB552C6 (OPTIONAL)
     scenario = 'WORLD_HUMAN_AA_COFFEE', -- This is the scenario that will play the whole time the ped is spawned, this cannot pair with anim and animDict (OPTIONAL)
     target = { -- This is the target options table, here you can specify all the options to display when targeting the ped (OPTIONAL)
-      options = {
+      options = { -- This is your options table, in this table all the options will be specified for the target to accept
         { -- This is the first table with options, you can make as many options inside the options table as you want
           type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
           event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
@@ -1550,14 +1577,15 @@ exports['berkie-target']:SpawnPed({
           item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
           action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
             if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-            TriggerEvent('testing:event', 'test')
+            TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
           end,
           canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
             if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
             return true
           end,
-          job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2}
-          gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2}
+          job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
+          gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
+          citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
         }
       },
       distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
@@ -1575,10 +1603,10 @@ exports['berkie-target']:SpawnPed({
 Functions.AllowTargeting(allow: bool)
 ```
 
-### Export option, this will go into any client side resource file aside from berkie-target's one
+### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 if IsEntityDead(PlayerPedId()) then
-    exports['berkie-target']:AllowTargeting(false)
+    exports['qb-target']:AllowTargeting(false)
 end
 ```
