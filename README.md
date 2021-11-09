@@ -4,7 +4,7 @@ qb-target is a targeting solution that allows interaction with any predefined en
 
 ## Credits
 
-* Lots of credits goes to [qtarget](https://github.com/QuantusRP/qtarget) for rewriting all of bt-target to make it more optimized and this resource is pretty much a fork of it.
+* Lots of credits goes to [qtarget](https://github.com/overextended/qtarget) for rewriting all of bt-target to make it more optimized and this resource is pretty much a fork of it.
 
 * Huge credit to [bt-target](https://github.com/brentN5/bt-target) from brentN5 for making the target a thing!
 
