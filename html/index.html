@@ -31,7 +31,7 @@
 
 <body>
     <div id="target-wrapper">
-        <img :src="CurrentIcon" id="target-eye" v-show="Show"></img>
+        <img :src="CurrentIcon" id="target-eye" v-show="Show"></img> <!-- All that's different here is I'm redirecting CurrentIcon with source image to javascript -->
         <div id="target-label-wrapper">
             <div id="target-label" v-html="TargetHTML"></div>
         </div>
