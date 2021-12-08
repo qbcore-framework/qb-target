@@ -1,0 +1,43 @@
+body {
+    overflow: hidden;
+}
+
+#target-eye {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateY(-50%) translateX(-50%);
+    font-size: 3vh;
+    text-shadow: 0.2vh 0.2vh 0.2vh #000000;
+    width: 4.6vh;
+    height: 1.36vw;
+}
+
+#target-label-wrapper {
+    position: absolute;
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-direction: row;
+    left: 87vh;
+    width: fit-content;
+    height: 100%;
+    top: 52%;
+}
+
+#target-label {
+    list-style: none;
+    font-size: 1.7vh;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 0;
+    letter-spacing: 0.1px;
+    font-weight: 600;
+    text-decoration: none;
+    font-style: normal;
+    font-variant: small-caps;
+    text-transform: none;
+    color: #fff;
+    user-select: none;
+    white-space: nowrap;
+    text-shadow: 0.1vh 0.1vh 0.1vh #000000;
+}
