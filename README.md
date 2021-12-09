@@ -1,4 +1,8 @@
-# qb-target
+![qbtarget edit](https://user-images.githubusercontent.com/91661118/145321440-bcbe4cb8-7a9b-4922-868b-5181ee593b42.png)
+
+Modified version of qb-target bringing the most accurate NoPixel 3.0 style possible
+
+![qb-target](https://user-images.githubusercontent.com/91661118/145322394-da0f5905-bbe7-412e-9249-e9d9e6a0b74d.png)
 
 qb-target is a targeting solution that allows interaction with any predefined entity, model, entity type or polyzone. While activated you can easily and safely replace markers and distance checking, instead relying on intuitive design to improve player experiences and optimize interaction.
 
