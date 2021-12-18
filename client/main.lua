@@ -899,10 +899,8 @@ function Functions.SpawnPed(data)
 			end
 			v.currentpednumber = spawnedped
 
-			local nextnumber = #Config.Peds + 1
-			if nextnumber <= 0 then
-				nextnumber = 1
-			end
+            local nextnumber = #Config.Peds
+            nextnumber = nextnumber <= 0 and 1 or nextnumber + 1
 
 			Config.Peds[nextnumber] = v
 		end
