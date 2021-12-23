@@ -54,11 +54,11 @@ Config.BoxZones = {
         maxZ = 30.87834,
         options = {
             {
-              type = "client",
-              event = "Toggle:Duty",
-              icon = "fas fa-sign-in-alt",
-              label = "Sign In",
-              job = "police",
+                type = "client",
+                event = "Toggle:Duty",
+                icon = "fas fa-sign-in-alt",
+                label = "Sign In",
+                job = "police",
             },
         },
         distance = 2.5

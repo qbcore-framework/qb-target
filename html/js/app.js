@@ -1,3 +1,5 @@
+const { useQuasar } = Quasar;
+
 const Targeting = Vue.createApp({
     data() {
         return {
@@ -5,7 +7,7 @@ const Targeting = Vue.createApp({
             ChangeTextIconColor: false, // This is if you want to change the color of the icon next to the option text with the text color
             StandardEyeIcon: "far fa-eye",
             CurrentIcon: "far fa-eye",
-            SuccessColor: "rgb(30,144,255)",
+            SuccessColor: "rgb(30, 144, 255)",
             StandardColor: "white",
             TargetHTML: "",
             TargetEyeStyleObject: {
@@ -43,21 +45,33 @@ const Targeting = Vue.createApp({
             let element = event.target;
             let split = element.id.split("-");
             if (split[0] === 'target' && split[1] !== 'eye') {
-                $.post(`https://${GetParentResourceName()}/selectTarget`, JSON.stringify(Number(split[1]) + 1));
+                fetch(`https://${GetParentResourceName()}/selectTarget`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json; charset=UTF-8', },
+                    body: JSON.stringify(Number(split[1]) + 1)
+                }).then(resp => resp.json()).then(resp => cb(resp));
                 this.TargetHTML = "";
                 this.Show = false;
             }
 
             if (event.button == 2) {
                 this.CloseTarget();
-                $.post(`https://${GetParentResourceName()}/closeTarget`);
+                fetch(`https://${GetParentResourceName()}/closeTarget`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json; charset=UTF-8', },
+                    body: ''
+                }).then(resp => resp.json()).then(resp => cb(resp));
             }
         });
 
         this.keyListener = window.addEventListener("keydown", (event) => {
             if (event.key == 'Escape' || event.key == 'Backspace') {
                 this.CloseTarget();
-                $.post(`https://${GetParentResourceName()}/closeTarget`);
+                fetch(`https://${GetParentResourceName()}/closeTarget`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json; charset=UTF-8', },
+                    body: ''
+                }).then(resp => resp.json()).then(resp => cb(resp));
             }
         });
     },
@@ -126,9 +140,5 @@ const Targeting = Vue.createApp({
     }
 });
 
-Targeting.use(Quasar, {
-    config: {
-        loadingBar: { skipHijack: true }
-    }
-});
+Targeting.use(Quasar, { config: {} });
 Targeting.mount("#target-wrapper");
