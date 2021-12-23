@@ -1,5 +1,3 @@
-const { useQuasar } = Quasar;
-
 const Targeting = Vue.createApp({
     data() {
         return {
