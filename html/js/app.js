@@ -47,7 +47,7 @@ const Targeting = Vue.createApp({
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json; charset=UTF-8', },
                     body: JSON.stringify(Number(split[1]) + 1)
-                }).then(resp => resp.json()).then(resp => cb(resp));
+                }).then(resp => resp.json()).then(resp => {});
                 this.TargetHTML = "";
                 this.Show = false;
             }
@@ -58,7 +58,7 @@ const Targeting = Vue.createApp({
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json; charset=UTF-8', },
                     body: ''
-                }).then(resp => resp.json()).then(resp => cb(resp));
+                }).then(resp => resp.json()).then(resp => {});
             }
         });
 
@@ -69,7 +69,7 @@ const Targeting = Vue.createApp({
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json; charset=UTF-8', },
                     body: ''
-                }).then(resp => resp.json()).then(resp => cb(resp));
+                }).then(resp => resp.json()).then(resp => {});
             }
         });
     },
