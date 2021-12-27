@@ -74,6 +74,16 @@ if Config.EnableDefaultOptions then
             action = function(entity)
                 ToggleDoor(entity, 4)
             end,
+            distance = 1.0
+        }
+    }
+    Bones.Options['boot'] = {
+        ["Toggle Trunk"] = {
+            icon = "fas fa-truck-ramp-box",
+            label = "Toggle Trunk",
+            action = function(entity)
+                ToggleDoor(entity, 5)
+            end,
             distance = 0.9
         }
     }
