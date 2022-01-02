@@ -929,22 +929,24 @@ RegisterNUICallback('selectTarget', function(option, cb)
 		table_wipe(sendData)
 		CreateThread(function()
 			Wait(0)
-			if data.action then
-				data.action(data.entity)
-			elseif data.event then
-				if data.type == "client" then
-					TriggerEvent(data.event, data)
-				elseif data.type == "server" then
-					TriggerServerEvent(data.event, data)
-				elseif data.type == "command" then
-					ExecuteCommand(data.event)
-				elseif data.type == "qbcommand" then
-					TriggerServerEvent('QBCore:CallCommand', data.event, data)
+			if data then
+				if data.action then
+					data.action(data.entity)
+				elseif data.event then
+					if data.type == "client" then
+						TriggerEvent(data.event, data)
+					elseif data.type == "server" then
+						TriggerServerEvent(data.event, data)
+					elseif data.type == "command" then
+						ExecuteCommand(data.event)
+					elseif data.type == "qbcommand" then
+						TriggerServerEvent('QBCore:CallCommand', data.event, data)
+					else
+						TriggerEvent(data.event, data)
+					end
 				else
-					TriggerEvent(data.event, data)
+					print("No trigger setup")
 				end
-			else
-				print("No trigger setup")
 			end
 		end)
 	end
