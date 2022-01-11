@@ -35,6 +35,21 @@ local function ScreenPositionToCameraRay()
         0, 0
     )
 end
+
+-- Assists sorting of options by a specified position, or the next available position dynamically.
+
+local function DeterminePosition(targetType, unpackedTarget, userPos, dynamicPos)
+	if not userPos and not targetType[unpackedTarget][dynamicPos] then 
+		userPos = dynamicPos 
+	else
+		dynamicPos = 1
+		while targetType[unpackedTarget][dynamicPos] ~= nil do
+			dynamicPos += 1
+		end
+		userPos = dynamicPos
+	end
+	return userPos
+end
 ---------------------------------------
 
 -- Functions
@@ -121,9 +136,9 @@ local function CheckEntity(hit, datatable, entity, distance)
 		for o, data in pairs(datatable) do
 			if CheckOptions(data, entity, distance) then
 				slot += 1
-				sendData[slot] = data
-				sendData[slot].entity = entity
-				nuiData[slot] = {
+				sendData[data.position] = data
+				sendData[data.position].entity = entity
+				nuiData[data.position] = {
 					icon = data.icon,
 					label = data.label
 				}
@@ -252,9 +267,9 @@ local function EnableTarget()
 								for o, data in pairs(datatable) do
 									if CheckOptions(data, entity, #(coords - closestPos)) then
 										slot += 1
-										sendData[slot] = data
-										sendData[slot].entity = entity
-										nuiData[slot] = {
+										sendData[data.position] = data
+										sendData[data.position].entity = entity
+										nuiData[data.position] = {
 											icon = data.icon,
 											label = data.label
 										}
@@ -336,9 +351,9 @@ local function EnableTarget()
 						for o, data in pairs(closestZone.targetoptions.options) do
 							if CheckOptions(data, entity, distance) then
 								slot += 1
-								sendData[slot] = data
-								sendData[slot].entity = entity
-								nuiData[slot] = {
+								sendData[data.position] = data
+								sendData[data.position].entity = entity
+								nuiData[data.position] = {
 									icon = data.icon,
 									label = data.label
 								}
@@ -423,16 +438,22 @@ local function AddTargetBone(bones, parameters)
 	if type(bones) == 'table' then
 		for _, bone in pairs(bones) do
 			if not Bones.Options[bone] then Bones.Options[bone] = {} end
+			local position = 0
 			for k, v in pairs(options) do
+				position += 1
 				if not v.distance or v.distance > distance then v.distance = distance end
+				v.position = DeterminePosition(Bones.Options, bone, v.position, position)
 				Bones.Options[bone][v.label] = v
 			end
 		end
 	elseif type(bones) == 'string' then
 		if not Bones.Options[bones] then Bones.Options[bones] = {} end
+		local position = 0
 		for k, v in pairs(options) do
+			position += 1
 			if not v.distance or v.distance > distance then v.distance = distance end
-			Bones.Options[bones][v.label] = v
+			v.position = DeterminePosition(Bones.Options, bones, v.position, position)
+			Bones.Options[bones][v.position] = v
 		end
 	end
 end
@@ -446,9 +467,12 @@ local function AddTargetEntity(entities, parameters)
 			entity = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity) or false
 			if entity then
 				if not Entities[entity] then Entities[entity] = {} end
+				local position = 0
 				for k, v in pairs(options) do
+					position += 1
 					if not v.distance or v.distance > distance then v.distance = distance end
-					Entities[entity][v.label] = v
+					v.position = DeterminePosition(Entities, entity, v.position, position)
+					Entities[entity][v.position] = v
 				end
 			end
 		end
@@ -456,9 +480,12 @@ local function AddTargetEntity(entities, parameters)
 		local entity = NetworkGetEntityIsNetworked(entities) and NetworkGetNetworkIdFromEntity(entities) or false
 		if entity then
 			if not Entities[entity] then Entities[entity] = {} end
+			local position = 0
 			for k, v in pairs(options) do
+				position += 1
 				if not v.distance or v.distance > distance then v.distance = distance end
-				Entities[entity][v.label] = v
+				v.position = DeterminePosition(Entities, entity, v.position, position)
+				Entities[entity][v.position] = v
 			end
 		end
 	end
@@ -480,17 +507,23 @@ local function AddTargetModel(models, parameters)
 		for _, model in pairs(models) do
 			if type(model) == 'string' then model = GetHashKey(model) end
 			if not Models[model] then Models[model] = {} end
+			local position = 0
 			for k, v in pairs(options) do
+				position += 1
 				if not v.distance or v.distance > distance then v.distance = distance end
-				Models[model][v.label] = v
+				v.position = DeterminePosition(Models, model, v.position, position)
+				Models[model][v.position] = v
 			end
 		end
 	else
 		if type(models) == 'string' then models = GetHashKey(models) end
 		if not Models[models] then Models[models] = {} end
+		local position = 0
 		for k, v in pairs(options) do
+			position += 1
 			if not v.distance or v.distance > distance then v.distance = distance end
-			Models[models][v.label] = v
+			v.position = DeterminePosition(Models, models, v.position, position)
+			Models[models][v.position] = v
 		end
 	end
 end
@@ -919,7 +952,7 @@ exports("AllowTargeting", function(bool) AllowTarget = bool end)
 
 -- NUI Callbacks
 
-RegisterNUICallback('selectTarget', function(option, cb)
+RegisterNUICallback('selectTarget', function(option)
     SetNuiFocus(false, false)
     SetNuiFocusKeepInput(false)
 	Wait(100)
@@ -946,7 +979,7 @@ RegisterNUICallback('selectTarget', function(option, cb)
 					end
 				else
 					print("No trigger setup")
-				end
+				end				
 			end
 		end)
 	end
