@@ -952,7 +952,7 @@ exports("AllowTargeting", function(bool) AllowTarget = bool end)
 
 -- NUI Callbacks
 
-RegisterNUICallback('selectTarget', function(option)
+RegisterNUICallback('selectTarget', function(option, cb)
     SetNuiFocus(false, false)
     SetNuiFocusKeepInput(false)
 	Wait(100)
@@ -979,7 +979,7 @@ RegisterNUICallback('selectTarget', function(option)
 					end
 				else
 					print("No trigger setup")
-				end				
+				end
 			end
 		end)
 	end
