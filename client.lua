@@ -45,7 +45,7 @@ local function RaycastCamera(flag, playerCoords)
 	local destination = rayPos + 10000 * rayDir
 	local rayHandle = StartShapeTestLosProbe(rayPos.x, rayPos.y, rayPos.z, destination.x, destination.y, destination.z, flag or -1, playerPed, 0)
 	while true do
-		local result, hit, endCoords, _, entityHit = GetShapeTestResult(rayHandle)
+		local result, _, endCoords, _, entityHit = GetShapeTestResult(rayHandle)
 		if Config.Debug then
 			DrawLine(playerCoords.x, playerCoords.y, playerCoords.z, destination.x, destination.y, destination.z, 255, 0, 255, 255)
 			DrawLine(destination.x, destination.y, destination.z, endCoords.x, endCoords.y, endCoords.z, 255, 0, 255, 255)
@@ -70,13 +70,12 @@ end
 exports('DisableNUI', DisableNUI)
 
 local function EnableNUI(options)
-	if targetActive and not hasFocus then
-		SetCursorLocation(0.5, 0.5)
-		SetNuiFocus(true, true)
-		SetNuiFocusKeepInput(true)
-		hasFocus = true
-		SendNUIMessage({response = "validTarget", data = options})
-	end
+	if not targetActive or hasFocus then return end
+	SetCursorLocation(0.5, 0.5)
+	SetNuiFocus(true, true)
+	SetNuiFocusKeepInput(true)
+	hasFocus = true
+	SendNUIMessage({response = "validTarget", data = options})
 end
 
 exports('EnableNUI', EnableNUI)
@@ -92,72 +91,67 @@ end
 exports('LeftTarget', LeftTarget)
 
 local function DisableTarget(forcedisable)
-	if (targetActive and not hasFocus) or forcedisable then
-		SetNuiFocus(false, false)
-		SetNuiFocusKeepInput(false)
-		Wait(100)
-		targetActive, success, hasFocus = false, false, false
-		SendNUIMessage({response = "closeTarget"})
-	end
+	if not targetActive or hasFocus or not forcedisable then return end
+	SetNuiFocus(false, false)
+	SetNuiFocusKeepInput(false)
+	Wait(100)
+	targetActive, success, hasFocus = false, false, false
+	SendNUIMessage({response = "closeTarget"})
 end
 
 exports('DisableTarget', DisableTarget)
 
 local function DrawOutlineEntity(entity, bool)
-	if Config.EnableOutline then
-		if not IsEntityAPed(entity) then
-			SetEntityDrawOutline(entity, bool)
-		end
-	end
+	if not Config.EnableOutline or IsEntityAPed(entity) then return end
+	SetEntityDrawOutline(entity, bool)
 end
 
 exports('DrawOutlineEntity', DrawOutlineEntity)
 
 local function CheckEntity(hit, datatable, entity, distance)
-	if next(datatable) then
-		table_wipe(sendDistance)
-		table_wipe(nuiData)
-		local slot = 0
-		for o, data in pairs(datatable) do
-			if CheckOptions(data, entity, distance) then
-				slot += 1
-				sendData[slot] = data
-				sendData[slot].entity = entity
-				nuiData[slot] = {
-					icon = data.icon,
-					label = data.label
-				}
-				sendDistance[data.distance] = true
-			else sendDistance[data.distance] = false end
-		end
-		if nuiData[1] then
-			success = true
-			SendNUIMessage({response = "foundTarget", data = sendData[slot].targeticon})
-			DrawOutlineEntity(entity, true)
-			while targetActive and success do
-				local _, _, dist, entity2, _ = RaycastCamera(hit, GetEntityCoords(playerPed))
-				if entity ~= entity2 then
-					LeftTarget()
-					DrawOutlineEntity(entity, false)
-					break
-				elseif not hasFocus and (IsControlPressed(0, Config.MenuControlKey) or IsDisabledControlPressed(0, Config.MenuControlKey)) then
-					EnableNUI(nuiData)
-					DrawOutlineEntity(entity, false)
-				else
-					for k, v in pairs(sendDistance) do
-						if v and dist > k then
-							LeftTarget()
-							DrawOutlineEntity(entity, false)
-							break
-						end
+	if not next(datatable) then return end
+	table_wipe(sendDistance)
+	table_wipe(nuiData)
+	local slot = 0
+	for o, data in pairs(datatable) do
+		if CheckOptions(data, entity, distance) then
+			slot += 1
+			sendData[slot] = data
+			sendData[slot].entity = entity
+			nuiData[slot] = {
+				icon = data.icon,
+				label = data.label
+			}
+			sendDistance[data.distance] = true
+		else sendDistance[data.distance] = false end
+	end
+	if next(nuiData) then
+		success = true
+		SendNUIMessage({response = "foundTarget", data = sendData[slot].targeticon})
+		DrawOutlineEntity(entity, true)
+		while targetActive and success do
+			local _, _, dist, entity2, _ = RaycastCamera(hit, GetEntityCoords(playerPed))
+			if entity ~= entity2 then
+				LeftTarget()
+				DrawOutlineEntity(entity, false)
+				break
+			elseif not hasFocus and (IsControlPressed(0, Config.MenuControlKey) or IsDisabledControlPressed(0, Config.MenuControlKey)) then
+				EnableNUI(nuiData)
+				DrawOutlineEntity(entity, false)
+			else
+				for k, v in pairs(sendDistance) do
+					if v and dist > k then
+						LeftTarget()
+						DrawOutlineEntity(entity, false)
+						break
 					end
 				end
-				Wait(0)
 			end
+			Wait(0)
 		end
-		LeftTarget()
-		DrawOutlineEntity(entity, false)
 	end
+	LeftTarget()
+	DrawOutlineEntity(entity, false)
 end
 
 exports('CheckEntity', CheckEntity)
@@ -186,196 +180,189 @@ exports('CheckBones', CheckBones)
 local function EnableTarget()
 	if not AllowTarget or success or (not Config.Standalone and not LocalPlayer.state['isLoggedIn']) or IsNuiFocused() or (Config.DisableInVehicle and IsPedInAnyVehicle(playerPed or PlayerPedId(), false)) then return end
 	if not CheckOptions then CheckOptions = _ENV.CheckOptions end
-	if not targetActive and CheckOptions then
-		targetActive = true
-		SendNUIMessage({response = "openTarget"})
-		CreateThread(function()
-			local playerId = PlayerId()
-			repeat
-				SetPauseMenuActive(false)
-				if hasFocus then
-					DisableControlAction(0, 1, true)
-					DisableControlAction(0, 2, true)
+	if targetActive or not CheckOptions then return end
+	targetActive = true
+	SendNUIMessage({response = "openTarget"})
+	CreateThread(function()
+		local playerId = PlayerId()
+		repeat
+			SetPauseMenuActive(false)
+			if hasFocus then
+				DisableControlAction(0, 1, true)
+				DisableControlAction(0, 2, true)
+			end
+			DisablePlayerFiring(playerId, true)
+			DisableControlAction(0, 24, true)
+			DisableControlAction(0, 25, true)
+			DisableControlAction(0, 37, true)
+			DisableControlAction(0, 47, true)
+			DisableControlAction(0, 58, true)
+			DisableControlAction(0, 140, true)
+			DisableControlAction(0, 141, true)
+			DisableControlAction(0, 142, true)
+			DisableControlAction(0, 143, true)
+			DisableControlAction(0, 257, true)
+			DisableControlAction(0, 263, true)
+			DisableControlAction(0, 264, true)
+			Wait(0)
+		until not targetActive
+	end)
+	playerPed = PlayerPedId()
+	screen.ratio = GetAspectRatio(true)
+	screen.fov = GetFinalRenderedCamFov()
+	local curFlag = 30
+	while targetActive do
+		local sleep = 0
+		local hit, coords, distance, entity, entityType = RaycastCamera(curFlag, GetEntityCoords(playerPed))
+		if curFlag == 30 then curFlag = -1 else curFlag = 30 end
+		if distance <= Config.MaxDistance then
+			if entityType > 0 then
+				-- Entity targets
+				local data = Entities[entity]
+				if data then
+					CheckEntity(hit, data, entity, distance)
 				end
-				DisablePlayerFiring(playerId, true)
-				DisableControlAction(0, 24, true)
-				DisableControlAction(0, 25, true)
-				DisableControlAction(0, 37, true)
-				DisableControlAction(0, 47, true)
-				DisableControlAction(0, 58, true)
-				DisableControlAction(0, 140, true)
-				DisableControlAction(0, 141, true)
-				DisableControlAction(0, 142, true)
-				DisableControlAction(0, 143, true)
-				DisableControlAction(0, 257, true)
-				DisableControlAction(0, 263, true)
-				DisableControlAction(0, 264, true)
-				Wait(0)
-			until not targetActive
-		end)
-		playerPed = PlayerPedId()
-		screen.ratio = GetAspectRatio(true)
-		screen.fov = GetFinalRenderedCamFov()
-		local curFlag = 30
 
-		while targetActive do
-			local sleep = 0
-			local hit, coords, distance, entity, entityType = RaycastCamera(curFlag, GetEntityCoords(playerPed))
-			if curFlag == 30 then curFlag = -1 else curFlag = 30 end
-			if distance <= Config.MaxDistance then
-				if entityType > 0 then
-					-- Owned entity targets
-					if NetworkGetEntityIsNetworked(entity) then
-						local data = Entities[NetworkGetNetworkIdFromEntity(entity)]
-						if data ~= nil then
-							CheckEntity(hit, data, entity, distance)
-						end
+				-- Player and Ped targets
+				if entityType == 1 then
+					local data = Models[GetEntityModel(entity)]
+					if IsPedAPlayer(entity) then data = Players end
+					if data and next(data) then
+						CheckEntity(hit, data, entity, distance)
 					end
 
-					-- Player and Ped targets
-					if entityType == 1 then
-						local data = Models[GetEntityModel(entity)]
-						if IsPedAPlayer(entity) then data = Players end
-						if data ~= nil then
-							CheckEntity(hit, data, entity, distance)
-						end
-
-					-- Vehicle bones
-					elseif entityType == 2 then
-						local closestBone, closestPos, closestBoneName = CheckBones(coords, entity, Bones.Vehicle)
-						local datatable = Bones.Options[closestBoneName]
-						if datatable ~= nil then
-							if closestBone then
-								table_wipe(sendDistance)
-								table_wipe(nuiData)
-								local slot = 0
-								for o, data in pairs(datatable) do
-									if CheckOptions(data, entity, #(coords - closestPos)) then
-										slot += 1
-										sendData[slot] = data
-										sendData[slot].entity = entity
-										nuiData[slot] = {
-											icon = data.icon,
-											label = data.label
-										}
-										sendDistance[data.distance] = true
-									else sendDistance[data.distance] = false end
-								end
-								if nuiData[1] then
-									success = true
-									SendNUIMessage({response = "foundTarget", data = sendData[slot].targeticon})
-									DrawOutlineEntity(entity, true)
-									while targetActive and success do
-										local _, _, dist, entity2, _ = RaycastCamera(hit, GetEntityCoords(playerPed))
-										if entity == entity2 then
-											local closestBone2 = CheckBones(coords, entity, Bones.Vehicle)
-											if closestBone ~= closestBone2 then
-												LeftTarget()
-												DrawOutlineEntity(entity, false)
-												break
-											elseif not hasFocus and (IsControlPressed(0, Config.MenuControlKey) or IsDisabledControlPressed(0, Config.MenuControlKey)) then
-												EnableNUI(nuiData)
-												DrawOutlineEntity(entity, false)
-											else
-												for k, v in pairs(sendDistance) do
-													if v and dist > k then
-														LeftTarget()
-														DrawOutlineEntity(entity, false)
-														break
-													end
-												end
-											end
-										else
+				-- Vehicle bones
+				elseif entityType == 2 then
+					local closestBone, closestPos, closestBoneName = CheckBones(coords, entity, Bones.Vehicle)
+					local datatable = Bones.Options[closestBoneName]
+					if datatable and next(datatable) then
+						if closestBone then
+							table_wipe(sendDistance)
+							table_wipe(nuiData)
+							local slot = 0
+							for o, data in pairs(datatable) do
+								if CheckOptions(data, entity, #(coords - closestPos)) then
+									slot += 1
+									sendData[slot] = data
+									sendData[slot].entity = entity
+									nuiData[slot] = {
+										icon = data.icon,
+										label = data.label
+									}
+									sendDistance[data.distance] = true
+								else sendDistance[data.distance] = false end
+							end
+							if next(nuiData) then
+								success = true
+								SendNUIMessage({response = "foundTarget", data = sendData[slot].targeticon})
+								DrawOutlineEntity(entity, true)
+								while targetActive and success do
+									local _, _, dist, entity2 = RaycastCamera(hit, GetEntityCoords(playerPed))
+									if entity == entity2 then
+										local closestBone2 = CheckBones(coords, entity, Bones.Vehicle)
+										if closestBone ~= closestBone2 then
 											LeftTarget()
 											DrawOutlineEntity(entity, false)
 											break
+										elseif not hasFocus and (IsControlPressed(0, Config.MenuControlKey) or IsDisabledControlPressed(0, Config.MenuControlKey)) then
+											EnableNUI(nuiData)
+											DrawOutlineEntity(entity, false)
+										else
+											for k, v in pairs(sendDistance) do
+												if v and dist > k then
+													LeftTarget()
+													DrawOutlineEntity(entity, false)
+													break
+												end
+											end
 										end
-										Wait(0)
+									else
+										LeftTarget()
+										DrawOutlineEntity(entity, false)
+										break
 									end
-									LeftTarget()
-									DrawOutlineEntity(entity, false)
+									Wait(0)
 								end
-							end
-						else
-							-- Specific Vehicle targets
-							local data = Models[GetEntityModel(entity)]
-							if data ~= nil then
-								CheckEntity(hit, data, entity, distance)
+								LeftTarget()
+								DrawOutlineEntity(entity, false)
 							end
 						end
-
-					-- Entity targets
-					elseif entityType > 2 then
+					else
+						-- Specific Vehicle targets
 						local data = Models[GetEntityModel(entity)]
-						if data ~= nil then
+						if data then
 							CheckEntity(hit, data, entity, distance)
 						end
 					end
 
-					-- Generic targets
-					if not success then
-						local data = Types[entityType]
-						if data ~= nil then
-							CheckEntity(hit, data, entity, distance)
-						end
+				-- Entity targets
+				elseif entityType > 2 then
+					local data = Models[GetEntityModel(entity)]
+					if data then
+						CheckEntity(hit, data, entity, distance)
 					end
-				else sleep += 20 end
+				end
+
+				-- Generic targets
 				if not success then
-					-- Zone targets
-					local closestDis, closestZone
-					for _, zone in pairs(Zones) do
-						if distance < (closestDis or Config.MaxDistance) and distance <= zone.targetoptions.distance and zone:isPointInside(coords) then
-							closestDis = distance
-							closestZone = zone
-						end
+					local data = Types[entityType]
+					if data and next(data) then
+						CheckEntity(hit, data, entity, distance)
 					end
-
-					if closestZone then
-						table_wipe(nuiData)
-						local slot = 0
-						for o, data in pairs(closestZone.targetoptions.options) do
-							if CheckOptions(data, entity, distance) then
-								slot += 1
-								sendData[slot] = data
-								sendData[slot].entity = entity
-								nuiData[slot] = {
-									icon = data.icon,
-									label = data.label
-								}
-							end
-						end
-						if nuiData[1] then
-							TriggerEvent(CurrentResourceName..':client:enterPolyZone', sendData[slot])
-							TriggerServerEvent(CurrentResourceName..':server:enterPolyZone', sendData[slot])
-							success = true
-							SendNUIMessage({response = "foundTarget", data = sendData[slot].targeticon})
-							DrawOutlineEntity(entity, true)
-							while targetActive and success do
-								_, coords, distance, _, _ = RaycastCamera(hit, GetEntityCoords(playerPed))
-								if not closestZone:isPointInside(coords) or distance > closestZone.targetoptions.distance then
-									LeftTarget()
-									DrawOutlineEntity(entity, false)
-								elseif not hasFocus and (IsControlPressed(0, Config.MenuControlKey) or IsDisabledControlPressed(0, Config.MenuControlKey)) then
-									EnableNUI(nuiData)
-									DrawOutlineEntity(entity, false)
-								end
-								Wait(0)
-							end
-							LeftTarget()
-							TriggerEvent(CurrentResourceName..':client:exitPolyZone', sendData[slot])
-							TriggerServerEvent(CurrentResourceName..':server:exitPolyZone', sendData[slot])
-							DrawOutlineEntity(entity, false)
-						end
-					else sleep += 20 end
-				else
-					LeftTarget()
-					DrawOutlineEntity(entity, false)
 				end
 			else sleep += 20 end
-			Wait(sleep)
-		end
-		DisableTarget(false)
+			if not success then
+				-- Zone targets
+				local closestDis, closestZone
+				for _, zone in pairs(Zones) do
+					if distance < (closestDis or Config.MaxDistance) and distance <= zone.targetoptions.distance and zone:isPointInside(coords) then
+						closestDis = distance
+						closestZone = zone
+					end
+				end
+
+				if closestZone then
+					table_wipe(nuiData)
+					local slot = 0
+					for o, data in pairs(closestZone.targetoptions.options) do
+						if CheckOptions(data, entity, distance) then
+							slot += 1
+							sendData[slot] = data
+							sendData[slot].entity = entity
+							nuiData[slot] = {
+								icon = data.icon,
+								label = data.label
+							}
+						end
+					end
+					if next(nuiData) then
+						TriggerEvent(CurrentResourceName..':client:enterPolyZone', sendData[slot])
+						TriggerServerEvent(CurrentResourceName..':server:enterPolyZone', sendData[slot])
+						success = true
+						SendNUIMessage({response = "foundTarget", data = sendData[slot].targeticon})
+						DrawOutlineEntity(entity, true)
+						while targetActive and success do
+							local _, coords, distance = RaycastCamera(hit, GetEntityCoords(playerPed))
+							if not closestZone:isPointInside(coords) or distance > closestZone.targetoptions.distance then
+								LeftTarget()
+								DrawOutlineEntity(entity, false)
+							elseif not hasFocus and (IsControlPressed(0, Config.MenuControlKey) or IsDisabledControlPressed(0, Config.MenuControlKey)) then
+								EnableNUI(nuiData)
+								DrawOutlineEntity(entity, false)
+							end
+							Wait(0)
+						end
+						LeftTarget()
+						TriggerEvent(CurrentResourceName..':client:exitPolyZone', sendData[slot])
+						TriggerServerEvent(CurrentResourceName..':server:exitPolyZone', sendData[slot])
+						DrawOutlineEntity(entity, false)
+					end
+				else sleep += 20 end
+			else LeftTarget() DrawOutlineEntity(entity, false) end
+		else sleep += 20 end
+		Wait(sleep)
 	end
+	DisableTarget(false)
 end
 
 local function AddCircleZone(name, center, radius, options, targetoptions)
@@ -383,6 +370,7 @@ local function AddCircleZone(name, center, radius, options, targetoptions)
 	Zones[name] = CircleZone:Create(center, radius, options)
 	targetoptions.distance = targetoptions.distance or Config.MaxDistance
 	Zones[name].targetoptions = targetoptions
+	return Zones[name]
 end
 
 exports("AddCircleZone", AddCircleZone)
@@ -392,6 +380,7 @@ local function AddBoxZone(name, center, length, width, options, targetoptions)
 	Zones[name] = BoxZone:Create(center, length, width, options)
 	targetoptions.distance = targetoptions.distance or Config.MaxDistance
 	Zones[name].targetoptions = targetoptions
+	return Zones[name]
 end
 
 exports("AddBoxZone", AddBoxZone)
@@ -406,6 +395,7 @@ local function AddPolyZone(name, points, options, targetoptions)
 	Zones[name] = PolyZone:Create(#_points > 0 and _points or points, options)
 	targetoptions.distance = targetoptions.distance or Config.MaxDistance
 	Zones[name].targetoptions = targetoptions
+	return Zones[name]
 end
 
 exports("AddPolyZone", AddPolyZone)
@@ -414,6 +404,7 @@ local function AddComboZone(zones, options, targetoptions)
 	Zones[name] = ComboZone:Create(zones, options)
 	targetoptions.distance = targetoptions.distance or Config.MaxDistance
 	Zones[name].targetoptions = targetoptions
+	return Zones[name]
 end
 
 exports("AddComboZone", AddComboZone)
@@ -443,23 +434,17 @@ local function AddTargetEntity(entities, parameters)
 	local distance, options = parameters.distance or Config.MaxDistance, parameters.options
 	if type(entities) == 'table' then
 		for _, entity in pairs(entities) do
-			entity = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity) or false
-			if entity then
-				if not Entities[entity] then Entities[entity] = {} end
-				for k, v in pairs(options) do
-					if not v.distance or v.distance > distance then v.distance = distance end
-					Entities[entity][v.label] = v
-				end
-			end
-		end
-	elseif type(entities) == 'number' then
-		local entity = NetworkGetEntityIsNetworked(entities) and NetworkGetNetworkIdFromEntity(entities) or false
-		if entity then
 			if not Entities[entity] then Entities[entity] = {} end
 			for k, v in pairs(options) do
 				if not v.distance or v.distance > distance then v.distance = distance end
 				Entities[entity][v.label] = v
 			end
+		end
+	elseif type(entities) == 'number' then
+		if not Entities[entities] then Entities[entities] = {} end
+		for k, v in pairs(options) do
+			if not v.distance or v.distance > distance then v.distance = distance end
+			Entities[entities][v.label] = v
 		end
 	end
 end
@@ -470,6 +455,7 @@ local function AddEntityZone(name, entity, options, targetoptions)
 	Zones[name] = EntityZone:Create(entity, options)
 	targetoptions.distance = targetoptions.distance or Config.MaxDistance
 	Zones[name].targetoptions = targetoptions
+	return Zones[name]
 end
 
 exports("AddEntityZone", AddEntityZone)
@@ -499,9 +485,7 @@ exports("AddTargetModel", AddTargetModel)
 
 local function RemoveZone(name)
 	if not Zones[name] then return end
-	if Zones[name].destroy then
-		Zones[name]:destroy()
-	end
+	if Zones[name].destroy then Zones[name]:destroy() end
 	Zones[name] = nil
 end
 
@@ -576,24 +560,6 @@ exports("RemoveTargetModel", RemoveTargetModel)
 local function RemoveTargetEntity(entities, labels)
 	if type(entities) == 'table' then
 		for _, entity in pairs(entities) do
-			entity = NetworkGetEntityIsNetworked(entity) and NetworkGetNetworkIdFromEntity(entity) or false
-			if entity then
-				if type(labels) == 'table' then
-					for k, v in pairs(labels) do
-						if Entities[entity] then
-							Entities[entity][v] = nil
-						end
-					end
-				elseif type(labels) == 'string' then
-					if Entities[entity] then
-						Entities[entity][labels] = nil
-					end
-				end
-			end
-		end
-	elseif type(entities) == 'string' then
-		local entity = NetworkGetEntityIsNetworked(entities) and NetworkGetNetworkIdFromEntity(entities) or false
-		if entity then
 			if type(labels) == 'table' then
 				for k, v in pairs(labels) do
 					if Entities[entity] then
@@ -604,6 +570,18 @@ local function RemoveTargetEntity(entities, labels)
 				if Entities[entity] then
 					Entities[entity][labels] = nil
 				end
+			end
+		end
+	elseif type(entities) == 'string' then
+		if type(labels) == 'table' then
+			for k, v in pairs(labels) do
+				if Entities[entities] then
+					Entities[entities][v] = nil
+				end
+			end
+		elseif type(labels) == 'string' then
+			if Entities[entities] then
+				Entities[entities][labels] = nil
 			end
 		end
 	end
@@ -668,74 +646,68 @@ end
 exports("RemoveGlobalPlayer", RemoveGlobalPlayer)
 
 function SpawnPeds()
-	if not PedsReady then
-		if next(Config.Peds) then
-			for k, v in pairs(Config.Peds) do
-				if not v.currentpednumber or v.currentpednumber == 0 then
-					local spawnedped = 0
-					RequestModel(v.model)
-					while not HasModelLoaded(v.model) do
-						Wait(0)
-					end
-
-					if type(v.model) == 'string' then v.model = GetHashKey(v.model) end
-
-					if v.minusOne then
-						spawnedped = CreatePed(0, v.model, v.coords.x, v.coords.y, v.coords.z - 1.0, v.coords.w, v.networked or false, false)
-					else
-						spawnedped = CreatePed(0, v.model, v.coords.x, v.coords.y, v.coords.z, v.coords.w, v.networked or false, false)
-					end
-
-					if v.freeze then
-						FreezeEntityPosition(spawnedped, true)
-					end
-
-					if v.invincible then
-						SetEntityInvincible(spawnedped, true)
-					end
-
-					if v.blockevents then
-						SetBlockingOfNonTemporaryEvents(spawnedped, true)
-					end
-
-					if v.animDict and v.anim then
-						RequestAnimDict(v.animDict)
-						while not HasAnimDictLoaded(v.animDict) do
-							Wait(0)
-						end
-
-						TaskPlayAnim(spawnedped, v.animDict, v.anim, 8.0, 0, -1, v.flag or 1, 0, 0, 0, 0)
-					end
-
-					if v.scenario then
-						TaskStartScenarioInPlace(spawnedped, v.scenario, 0, true)
-					end
-
-					if v.target then
-						AddTargetModel(v.model, {
-							options = v.target.options,
-							distance = v.target.distance
-						})
-					end
-
-					Config.Peds[k].currentpednumber = spawnedped
-				end
+	if PedsReady or not next(Config.Peds) then return end
+	for k, v in pairs(Config.Peds) do
+		if not v.currentpednumber or v.currentpednumber == 0 then
+			local spawnedped = 0
+			RequestModel(v.model)
+			while not HasModelLoaded(v.model) do
+				Wait(0)
 			end
-			PedsReady = true
+
+			if type(v.model) == 'string' then v.model = GetHashKey(v.model) end
+
+			if v.minusOne then
+				spawnedped = CreatePed(0, v.model, v.coords.x, v.coords.y, v.coords.z - 1.0, v.coords.w, v.networked or false, false)
+			else
+				spawnedped = CreatePed(0, v.model, v.coords.x, v.coords.y, v.coords.z, v.coords.w, v.networked or false, false)
+			end
+
+			if v.freeze then
+				FreezeEntityPosition(spawnedped, true)
+			end
+
+			if v.invincible then
+				SetEntityInvincible(spawnedped, true)
+			end
+
+			if v.blockevents then
+				SetBlockingOfNonTemporaryEvents(spawnedped, true)
+			end
+
+			if v.animDict and v.anim then
+				RequestAnimDict(v.animDict)
+				while not HasAnimDictLoaded(v.animDict) do
+					Wait(0)
+				end
+
+				TaskPlayAnim(spawnedped, v.animDict, v.anim, 8.0, 0, -1, v.flag or 1, 0, 0, 0, 0)
+			end
+
+			if v.scenario then
+				TaskStartScenarioInPlace(spawnedped, v.scenario, 0, true)
+			end
+
+			if v.target then
+				AddTargetModel(v.model, {
+					options = v.target.options,
+					distance = v.target.distance
+				})
+			end
+
+			Config.Peds[k].currentpednumber = spawnedped
 		end
 	end
+	PedsReady = true
 end
 
 local function DeletePeds()
-	if PedsReady then
-		if next(Config.Peds) then
-			for k, v in pairs(Config.Peds) do
-				DeletePed(v.currentpednumber)
-				Config.Peds[k].currentpednumber = 0
-			end
-			PedsReady = false
-		end
+	if not PedsReady or not next(Config.Peds) then return end
+	for k, v in pairs(Config.Peds) do
+		DeletePed(v.currentpednumber)
+		Config.Peds[k].currentpednumber = 0
 	end
+	PedsReady = false
 end
 
 exports("DeletePeds", DeletePeds)
@@ -862,6 +834,19 @@ local function SpawnPed(data)
 end
 
 exports("SpawnPed", SpawnPed)
+
+local function RemovePed(peds)
+	if type(peds) == 'table' then
+		for k, v in pairs(peds) do
+			DeletePed(v)
+			if Config.Peds[k] then Config.Peds[k].currentpednumber = 0 end
+		end
+	elseif type(peds) == 'number' then
+		DeletePed(peds)
+	end
+end
+
+exports("RemoveSpawnedPed", RemovePed)
 
 -- Misc. Exports
 

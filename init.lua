@@ -108,10 +108,10 @@ CreateThread(function()
 		ItemCount = function(item)
 			for _, v in pairs(PlayerData.items) do
 				if v.name == item then
-					return v.amount
+					return true
 				end
 			end
-			return 0
+			return false
 		end
 
 		JobCheck = function(job)
@@ -139,7 +139,7 @@ CreateThread(function()
 		end
 
 		CitizenCheck = function(citizenid)
-			return (citizenid == PlayerData.citizenid or citizenid[PlayerData.citizenid])
+			return citizenid == PlayerData.citizenid or citizenid[PlayerData.citizenid]
 		end
 
 		RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
@@ -177,7 +177,7 @@ function CheckOptions(data, entity, distance)
 	if distance and data.distance and distance > data.distance then return false end
 	if data.job and not JobCheck(data.job) then return false end
 	if data.gang and not GangCheck(data.gang) then return false end
-	if data.item and ItemCount(data.item) < 1 then return false end
+	if data.item and not ItemCount(data.item) then return false end
 	if data.citizenid and not CitizenCheck(data.citizenid) then return false end
 	if data.canInteract and not data.canInteract(entity, distance, data) then return false end
 	return true

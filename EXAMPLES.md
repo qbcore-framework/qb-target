@@ -1,5 +1,7 @@
 # Examples
 
+The config is in the init.lua
+
 ### All the exports have to be on the client-side to work!
 
 ## AddBoxZone / Job Check
@@ -170,7 +172,7 @@ Config.TargetModels = {
 ```
 
 ## Add Target Entity
-This is an example from a postop resource. Players can rent delivery vehicles in order to make deliveries. When they rent a vehicle, we apply this target to that entity only, which allows them to "get packages" from the vehicle. Reminder that the entity must always be networked for it to be interacted with.
+This is an example from a postop resource. Players can rent delivery vehicles in order to make deliveries. When they rent a vehicle, we apply this target to that entity only, which allows them to "get packages" from the vehicle
 
 This is an example using **exports**
 
@@ -210,10 +212,11 @@ Config.TargetEntities = {
 ```
 
 ## Passing Item Data
-In this example, we define the model of the coffee machines you see around the map, and allow players to purchase a coffee. You'll have to provide your own logic for the purchase, but this is how you would handle it with qb-target, and how you would pass data through to an event for future use. 
+In this example, we define the model of the coffee machines you see around the map, and allow players to purchase a coffee. You'll have to provide your own logic for the purchase, but this is how you would handle it with qb-target, and how you would pass data through to an event for future use.
 
 This is an example using **exports**
-This example is **not** advised to use with the provided config
+
+The event should **not** go into the config, hence why it's not provided with the config example, it's meant for a client file
 
 ```lua
 exports['qb-target']:AddTargetModel(690372739, {
@@ -233,6 +236,26 @@ RegisterNetEvent('coffee:buy',function(data)
     -- server event to buy the item here
     QBCore.Functions.Notify("You purchased a " .. data.label .. " for $" .. data.price .. ". Enjoy!", 'success')
 end)
+```
+
+This is an example using the provided **config**
+
+```lua
+Config.TargetModels = {
+    ['buyCoffee'] = {
+        models = 690372739,
+        options = {
+            {
+                type = "client",
+                event = "coffee:buy",
+                icon = "fas fa-coffee",
+                label = "Coffee",
+                price = 5,
+            },
+        },
+        distance = 2.5
+    }
+}
 ```
 
 ### EntityZone / Add a target in an event
