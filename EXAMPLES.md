@@ -19,26 +19,18 @@ exports['qb-target']:AddBoxZone("MissionRowDutyClipboard", vector3(441.7989, -98
 	debugPoly = false,
 	minZ = 30.77834,
 	maxZ = 30.87834,
-	}, {
-		options = {
-			{
-            	type = "client",
-            	event = "Toggle:Duty",
-				icon = "fas fa-sign-in-alt",
-				label = "Sign In",
-				job = "police",
-			},
+}, {
+	options = {
+		{
+            type = "client",
+            event = "qb-policejob:ToggleDuty",
+			icon = "fas fa-sign-in-alt",
+			label = "Sign In",
+			job = "police",
 		},
-		distance = 2.5
+	},
+	distance = 2.5
 })
-
--- This event is only for the QBCore resource qb-policejob, goes inside @qb-policejob/client/job.lua
-RegisterNetEvent('Toggle:Duty', function()
-    onDuty = not onDuty
-    TriggerServerEvent("police:server:UpdateCurrentCops")
-    TriggerServerEvent("QBCore:ToggleDuty")
-    TriggerServerEvent("police:server:UpdateBlips")
-end)
 ```
 
 This is an example using the provided **config**
@@ -57,7 +49,7 @@ Config.BoxZones = {
         options = {
             {
                 type = "client",
-                event = "Toggle:Duty",
+                event = "qb-policejob:ToggleDuty",
                 icon = "fas fa-sign-in-alt",
                 label = "Sign In",
                 job = "police",
@@ -66,14 +58,6 @@ Config.BoxZones = {
         distance = 2.5
     },
 }
-
--- This event is only for the QBCore resource qb-policejob, goes inside @qb-policejob/client/job.lua
-RegisterNetEvent('Toggle:Duty', function()
-    onDuty = not onDuty
-    TriggerServerEvent("police:server:UpdateCurrentCops")
-    TriggerServerEvent("QBCore:ToggleDuty")
-    TriggerServerEvent("police:server:UpdateBlips")
-end)
 ```
 
 There is only one way you can define the job though, but you can also provide a `[key] = value` table instead to enable checking for more jobs or gangs:
@@ -95,15 +79,15 @@ This also applies to citizenid's, but citizenid's don't have grades so we set th
 ```lua
 citizenid = {
     ["JFJ94924"] = true,
-    ["KSD18372"] = true
+    ["KSD18372"] = true,
 }
 ```
 
-When defining multiple jobs or gangs, you **must** provide a minimum grade, even if you don't need one. This is due to how key/value tables work. Just set the minimum grade to 0. 
+When defining multiple jobs or gangs, you **must** provide a minimum grade, even if you don't need one. This is due to how key/value tables work. Set the minimum grade to the minimum grade of the job if you want everyone to access it. 
 
 ## AddTargetModel / item / canInteract()
 
-This is an example for ped interaction. It utilizes both the `item` parameter and `canInteract()` function.
+This is an example for ped interaction. It utilizes both the `item` parameter and `canInteract` function.
 
 This is an example using **exports**
 
@@ -126,10 +110,10 @@ exports['qb-target']:AddTargetModel(Config.Peds, {
 			icon = "fas fa-sack-dollar",
 			label = "Rob",
 			canInteract = function(entity)
-				if not IsPedAPlayer(entity) then 
+				if not IsPedAPlayer(entity) then
 					return IsEntityDead(entity)
 				end
-			end, 
+			end,
 		},
 	},
 	distance = 2.5,
@@ -160,10 +144,10 @@ Config.TargetModels = {
                 icon = "fas fa-sack-dollar",
                 label = "Rob",
                 canInteract = function(entity)
-			        if not IsPedAPlayer(entity) then 
+			        if not IsPedAPlayer(entity) then
 				        return IsEntityDead(entity)
 			        end
-		        end, 
+		        end,
             },
         },
         distance = 2.5,
@@ -294,11 +278,7 @@ AddEventHandler('plantpotato',function()
 				plant = plant,
 				job = "farmer",
 				canInteract = function(entity)
-					if Entity(entity).state.growth >= 100 then 
-						  return true
-					else 
-						  return false
-					end 
+					return Entity(entity).state.growth >= 100
 				end,
 			},
 		},
