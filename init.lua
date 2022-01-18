@@ -117,7 +117,7 @@ CreateThread(function()
 		JobCheck = function(job)
 			if type(job) == 'table' then
 				job = job[PlayerData.job.name]
-				if PlayerData.job.grade.level >= job then
+				if job and PlayerData.job.grade.level >= job then
 					return true
 				end
 			elseif job == 'all' or job == PlayerData.job.name then
@@ -129,7 +129,7 @@ CreateThread(function()
 		GangCheck = function(gang)
 			if type(gang) == 'table' then
 				gang = gang[PlayerData.gang.name]
-				if PlayerData.gang.grade.level >= gang then
+				if gang and PlayerData.gang.grade.level >= gang then
 					return true
 				end
 			elseif gang == 'all' or gang == PlayerData.gang.name then
@@ -149,6 +149,7 @@ CreateThread(function()
 
 		RegisterNetEvent('QBCore:Client:OnPlayerUnload', function()
 			PlayerData = {}
+			DeletePeds()
 		end)
 
 		RegisterNetEvent('QBCore:Client:OnJobUpdate', function(JobInfo)

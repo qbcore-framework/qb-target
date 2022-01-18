@@ -701,7 +701,7 @@ function SpawnPeds()
 	PedsReady = true
 end
 
-local function DeletePeds()
+function DeletePeds()
 	if not PedsReady or not next(Config.Peds) then return end
 	for k, v in pairs(Config.Peds) do
 		DeletePed(v.currentpednumber)
