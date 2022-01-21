@@ -572,7 +572,7 @@ local function RemoveTargetEntity(entities, labels)
 				end
 			end
 		end
-	elseif type(entities) == 'string' then
+	elseif type(entities) == 'number' then
 		if type(labels) == 'table' then
 			for k, v in pairs(labels) do
 				if Entities[entities] then
