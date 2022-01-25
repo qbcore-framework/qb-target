@@ -35,6 +35,17 @@ local function ScreenPositionToCameraRay()
         0, 0
     )
 end
+
+-- Assists sorting of options by a specified position, or alphabetically.
+
+local function compare(a,b)
+    if a.position ~= nil and b.position ~= nil then
+        return a.position < b.position
+    else
+        return a.label < b.label
+    end
+end
+
 ---------------------------------------
 
 -- Functions
@@ -115,7 +126,7 @@ local function CheckEntity(hit, datatable, entity, distance)
 	local slot = 0
 	for o, data in pairs(datatable) do
 		if CheckOptions(data, entity, distance) then
-			slot += 1
+			slot = data.position
 			sendData[slot] = data
 			sendData[slot].entity = entity
 			nuiData[slot] = {
@@ -242,7 +253,7 @@ local function EnableTarget()
 							local slot = 0
 							for o, data in pairs(datatable) do
 								if CheckOptions(data, entity, #(coords - closestPos)) then
-									slot += 1
+									slot = data.position
 									sendData[slot] = data
 									sendData[slot].entity = entity
 									nuiData[slot] = {
@@ -326,7 +337,7 @@ local function EnableTarget()
 					local slot = 0
 					for o, data in pairs(closestZone.targetoptions.options) do
 						if CheckOptions(data, entity, distance) then
-							slot += 1
+							slot = data.position
 							sendData[slot] = data
 							sendData[slot].entity = entity
 							nuiData[slot] = {
@@ -366,6 +377,7 @@ local function EnableTarget()
 end
 
 local function AddCircleZone(name, center, radius, options, targetoptions)
+	table.sort(options, compare)
 	center = type(center) == 'table' and vector3(center.x, center.y, center.z) or center
 	Zones[name] = CircleZone:Create(center, radius, options)
 	targetoptions.distance = targetoptions.distance or Config.MaxDistance
@@ -376,6 +388,7 @@ end
 exports("AddCircleZone", AddCircleZone)
 
 local function AddBoxZone(name, center, length, width, options, targetoptions)
+	table.sort(options, compare)
 	center = type(center) == 'table' and vector3(center.x, center.y, center.z) or center
 	Zones[name] = BoxZone:Create(center, length, width, options)
 	targetoptions.distance = targetoptions.distance or Config.MaxDistance
@@ -386,6 +399,7 @@ end
 exports("AddBoxZone", AddBoxZone)
 
 local function AddPolyZone(name, points, options, targetoptions)
+	table.sort(options, compare)
 	local _points = {}
 	if type(points[1]) == 'table' then
 		for i = 1, #points do
@@ -401,6 +415,7 @@ end
 exports("AddPolyZone", AddPolyZone)
 
 local function AddComboZone(zones, options, targetoptions)
+	table.sort(options, compare)
 	Zones[name] = ComboZone:Create(zones, options)
 	targetoptions.distance = targetoptions.distance or Config.MaxDistance
 	Zones[name].targetoptions = targetoptions
@@ -414,15 +429,19 @@ local function AddTargetBone(bones, parameters)
 	if type(bones) == 'table' then
 		for _, bone in pairs(bones) do
 			if not Bones.Options[bone] then Bones.Options[bone] = {} end
+			table.sort(options, compare)
 			for k, v in pairs(options) do
 				if not v.distance or v.distance > distance then v.distance = distance end
+				v.position = k
 				Bones.Options[bone][v.label] = v
 			end
 		end
 	elseif type(bones) == 'string' then
 		if not Bones.Options[bones] then Bones.Options[bones] = {} end
+		table.sort(options, compare)
 		for k, v in pairs(options) do
 			if not v.distance or v.distance > distance then v.distance = distance end
+			v.position = k
 			Bones.Options[bones][v.label] = v
 		end
 	end
@@ -435,15 +454,19 @@ local function AddTargetEntity(entities, parameters)
 	if type(entities) == 'table' then
 		for _, entity in pairs(entities) do
 			if not Entities[entity] then Entities[entity] = {} end
+			table.sort(options, compare)
 			for k, v in pairs(options) do
 				if not v.distance or v.distance > distance then v.distance = distance end
+				v.position = k
 				Entities[entity][v.label] = v
 			end
 		end
 	elseif type(entities) == 'number' then
 		if not Entities[entities] then Entities[entities] = {} end
+		table.sort(options, compare)
 		for k, v in pairs(options) do
 			if not v.distance or v.distance > distance then v.distance = distance end
+			v.position = k
 			Entities[entities][v.label] = v
 		end
 	end
@@ -452,6 +475,7 @@ end
 exports("AddTargetEntity", AddTargetEntity)
 
 local function AddEntityZone(name, entity, options, targetoptions)
+	table.sort(options, compare)
 	Zones[name] = EntityZone:Create(entity, options)
 	targetoptions.distance = targetoptions.distance or Config.MaxDistance
 	Zones[name].targetoptions = targetoptions
@@ -466,16 +490,20 @@ local function AddTargetModel(models, parameters)
 		for _, model in pairs(models) do
 			if type(model) == 'string' then model = GetHashKey(model) end
 			if not Models[model] then Models[model] = {} end
+			table.sort(options, compare)
 			for k, v in pairs(options) do
 				if not v.distance or v.distance > distance then v.distance = distance end
+				v.position = k
 				Models[model][v.label] = v
 			end
 		end
 	else
 		if type(models) == 'string' then models = GetHashKey(models) end
 		if not Models[models] then Models[models] = {} end
+		table.sort(options, compare)
 		for k, v in pairs(options) do
 			if not v.distance or v.distance > distance then v.distance = distance end
+			v.position = k
 			Models[models][v.label] = v
 		end
 	end
@@ -591,8 +619,10 @@ exports("RemoveTargetEntity", RemoveTargetEntity)
 
 local function AddGlobalType(type, parameters)
 	local distance, options = parameters.distance or Config.MaxDistance, parameters.options
+	table.sort(options, compare)
 	for k, v in pairs(options) do
 		if not v.distance or v.distance > distance then v.distance = distance end
+		v.position = k
 		Types[type][v.label] = v
 	end
 end
@@ -613,8 +643,10 @@ exports("AddGlobalObject", AddGlobalObject)
 
 local function AddGlobalPlayer(parameters)
 	local distance, options = parameters.distance or Config.MaxDistance, parameters.options
+	table.sort(options, compare)
 	for k, v in pairs(options) do
 		if not v.distance or v.distance > distance then v.distance = distance end
+		v.position = k
 		Players[v.label] = v
 	end
 end

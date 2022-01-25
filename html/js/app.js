@@ -103,29 +103,31 @@ const Targeting = Vue.createApp({
             const ResetColor = this.StandardColor;
             const AlsoChangeTextIconColor = this.ChangeTextIconColor;
             item.data.forEach(function(item, index) {
-                if (AlsoChangeTextIconColor) {
-                    TargetLabel += "<div id='target-" + index + "' style='margin-bottom: 1vh;'><span id='target-icon-" + index + "' style='color: " + ResetColor + "'><i class='" + item.icon + "'></i></span>&nbsp" + item.label + "</div>";
-                } else {
-                    TargetLabel += "<div id='target-" + index + "' style='margin-bottom: 1vh;'><span id='target-icon-" + index + "' style='color: " + FoundColor + "'><i class='" + item.icon + "'></i></span>&nbsp" + item.label + "</div>";
-                };
+                if (item !== null) {
+                    if (AlsoChangeTextIconColor) {
+                        TargetLabel += "<div id='target-" + index + "' style='margin-bottom: 1vh;'><span id='target-icon-" + index + "' style='color: " + ResetColor + "'><i class='" + item.icon + "'></i></span>&nbsp" + item.label + "</div>";
+                    } else {
+                        TargetLabel += "<div id='target-" + index + "' style='margin-bottom: 1vh;'><span id='target-icon-" + index + "' style='color: " + FoundColor + "'><i class='" + item.icon + "'></i></span>&nbsp" + item.label + "</div>";
+                    };
 
-                setTimeout(function() {
-                    const hoverelem = document.getElementById("target-" + index);
+                    setTimeout(function() {
+                        const hoverelem = document.getElementById("target-" + index);
 
-                    hoverelem.addEventListener("mouseenter", function(event) {
-                        event.target.style.color = FoundColor;
-                        if (AlsoChangeTextIconColor) {
-                            document.getElementById("target-icon-" + index).style.color = FoundColor;
-                        };
-                    });
+                        hoverelem.addEventListener("mouseenter", function(event) {
+                            event.target.style.color = FoundColor;
+                            if (AlsoChangeTextIconColor) {
+                                document.getElementById("target-icon-" + index).style.color = FoundColor;
+                            };
+                        });
 
-                    hoverelem.addEventListener("mouseleave", function(event) {
-                        event.target.style.color = ResetColor;
-                        if (AlsoChangeTextIconColor) {
-                            document.getElementById("target-icon-" + index).style.color = ResetColor;
-                        };
-                    });
-                }, 10)
+                        hoverelem.addEventListener("mouseleave", function(event) {
+                            event.target.style.color = ResetColor;
+                            if (AlsoChangeTextIconColor) {
+                                document.getElementById("target-icon-" + index).style.color = ResetColor;
+                            };
+                        });
+                    }, 10)
+                }
             });
             this.TargetHTML = TargetLabel;
         },
