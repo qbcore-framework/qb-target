@@ -647,9 +647,8 @@ targetoptions = {
 CreateThread(function()
   local entity = CreatePed(2, `a_m_m_indian_01`, 500.0, 500.0, 100.0, 12.0, true, false)
   exports['qb-target']:AddEntityZone("name", entity, { -- The specified entity number
-    {
       name = "name", -- This is the name of the zone recognized by PolyZone, this has to be unique so it doesn't mess up with other zones
-      debugPoly = false, -- This is for enabling/disabling the drawing of the box, it accepts only a boolean value (true or false), when true it will draw the polyzone in green  
+      debugPoly = false, -- This is for enabling/disabling the drawing of the box, it accepts only a boolean value (true or false), when true it will draw the polyzone in green 
     }, {
       options = { -- This is your options table, in this table all the options will be specified for the target to accept
         { -- This is the first table with options, you can make as many options inside the options table as you want
