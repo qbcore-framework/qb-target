@@ -401,10 +401,10 @@ end
 exports("AddPolyZone", AddPolyZone)
 
 local function AddComboZone(zones, options, targetoptions)
-	Zones[name] = ComboZone:Create(zones, options)
+	Zones[options.name] = ComboZone:Create(zones, options)
 	targetoptions.distance = targetoptions.distance or Config.MaxDistance
-	Zones[name].targetoptions = targetoptions
-	return Zones[name]
+	Zones[options.name].targetoptions = targetoptions
+	return Zones[options.name]
 end
 
 exports("AddComboZone", AddComboZone)
