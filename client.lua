@@ -621,13 +621,13 @@ end
 
 exports("AddGlobalPlayer", AddGlobalPlayer)
 
-local function RemoveGlobalType(type, labels)
+local function RemoveGlobalType(typ, labels)
 	if type(labels) == 'table' then
 		for k, v in pairs(labels) do
-			Types[type][v] = nil
+			Types[typ][v] = nil
 		end
 	elseif type(labels) == 'string' then
-		Types[type][labels] = nil
+		Types[typ][labels] = nil
 	end
 end
 
