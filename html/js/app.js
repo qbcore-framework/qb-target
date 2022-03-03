@@ -53,8 +53,8 @@ const Targeting = Vue.createApp({
             }
 
             if (event.button == 2) {
-                this.CloseTarget();
-                fetch(`https://${GetParentResourceName()}/closeTarget`, {
+                this.LeftTarget();
+                fetch(`https://${GetParentResourceName()}/leftTarget`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json; charset=UTF-8', },
                     body: ''

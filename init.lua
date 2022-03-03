@@ -37,10 +37,12 @@ Config.DisableInVehicle = false
 
 -- Key to open the target
 Config.OpenKey = 'LMENU' -- Left Alt
-Config.OpenControlKey = 19 -- Control for keypress detection also Left Alt for the eye itself, controls are found here https://docs.fivem.net/docs/game-references/controls/
 
 -- Key to open the menu
 Config.MenuControlKey = 238 -- Control for keypress detection on the context menu, this is the Right Mouse Button, controls are found here https://docs.fivem.net/docs/game-references/controls/
+
+-- Whether to have the target as a toggle or not
+Config.Toggle = false
 
 -------------------------------------------------------------------------------
 -- Target Configs
@@ -165,12 +167,18 @@ CreateThread(function()
 		end)
 	else
 		local firstSpawn = false
-		AddEventHandler('playerSpawned', function()
-			if not firstSpawn then
-				SpawnPeds()
-				firstSpawn = true
-			end
+		local event = AddEventHandler('playerSpawned', function()
+			SpawnPeds()
+			firstSpawn = true
 		end)
+		-- Remove event after it has been triggered
+		while true do
+			if firstSpawn then
+				RemoveEventHandler(event)
+				break
+			end
+			Wait(1000)
+		end
 	end
 end)
 

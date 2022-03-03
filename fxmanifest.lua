@@ -2,8 +2,8 @@ fx_version 'cerulean'
 game 'gta5'
 
 author 'BerkieB'
-description 'An optimized interaction system for FiveM, based on qtarget and bt-target'
-version '5.1.3'
+description 'An optimized interaction system for FiveM, based on qtarget'
+version '5.2.0'
 
 ui_page 'html/index.html'
 

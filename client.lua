@@ -91,7 +91,7 @@ end
 exports('LeftTarget', LeftTarget)
 
 local function DisableTarget(forcedisable)
-	if not targetActive or hasFocus or not forcedisable then return end
+	if (not targetActive and hasFocus and not Config.Toggle) or not forcedisable then return end
 	SetNuiFocus(false, false)
 	SetNuiFocusKeepInput(false)
 	Wait(100)
@@ -159,7 +159,7 @@ exports('CheckEntity', CheckEntity)
 local Bones = Load('bones')
 local function CheckBones(coords, entity, bonelist)
 	local closestBone = -1
-	local closestDistance = 20
+	local closestDistance = 100
 	local closestPos, closestBoneName
 	for k, v in pairs(bonelist) do
 		if Bones.Options[v] then
@@ -225,10 +225,10 @@ local function EnableTarget()
 
 				-- Player and Ped targets
 				if entityType == 1 then
-					local data = Models[GetEntityModel(entity)]
-					if IsPedAPlayer(entity) then data = Players end
-					if data and next(data) then
-						CheckEntity(hit, data, entity, distance)
+					local datatable = Models[GetEntityModel(entity)]
+					if IsPedAPlayer(entity) then datatable = Players end
+					if data and next(datatable) then
+						CheckEntity(hit, datatable, entity, distance)
 					end
 
 				-- Vehicle bones
@@ -366,7 +366,7 @@ local function EnableTarget()
 end
 
 local function AddCircleZone(name, center, radius, options, targetoptions)
-	center = type(center) == 'table' and vector3(center.x, center.y, center.z) or center
+	center = type(center) == 'table' and vec3(center.x, center.y, center.z) or center
 	Zones[name] = CircleZone:Create(center, radius, options)
 	targetoptions.distance = targetoptions.distance or Config.MaxDistance
 	Zones[name].targetoptions = targetoptions
@@ -376,7 +376,7 @@ end
 exports("AddCircleZone", AddCircleZone)
 
 local function AddBoxZone(name, center, length, width, options, targetoptions)
-	center = type(center) == 'table' and vector3(center.x, center.y, center.z) or center
+	center = type(center) == 'table' and vec3(center.x, center.y, center.z) or center
 	Zones[name] = BoxZone:Create(center, length, width, options)
 	targetoptions.distance = targetoptions.distance or Config.MaxDistance
 	Zones[name].targetoptions = targetoptions
@@ -389,7 +389,7 @@ local function AddPolyZone(name, points, options, targetoptions)
 	local _points = {}
 	if type(points[1]) == 'table' then
 		for i = 1, #points do
-			_points[i] = vector2(points[i].x, points[i].y)
+			_points[i] = vec2(points[i].x, points[i].y)
 		end
 	end
 	Zones[name] = PolyZone:Create(#_points > 0 and _points or points, options)
@@ -685,6 +685,7 @@ function SpawnPeds()
 			end
 
 			if v.scenario then
+				SetPedCanPlayAmbientAnims(spawnedped, true)
 				TaskStartScenarioInPlace(spawnedped, v.scenario, 0, true)
 			end
 
@@ -753,6 +754,7 @@ local function SpawnPed(data)
 				end
 
 				if v.scenario then
+					SetPedCanPlayAmbientAnims(spawnedped, true)
 					TaskStartScenarioInPlace(spawnedped, v.scenario, 0, true)
 				end
 
@@ -813,6 +815,7 @@ local function SpawnPed(data)
 			end
 
 			if data.scenario then
+				SetPedCanPlayAmbientAnims(spawnedped, true)
 				TaskStartScenarioInPlace(spawnedped, data.scenario, 0, true)
 			end
 
@@ -946,12 +949,36 @@ RegisterNUICallback('closeTarget', function(data, cb)
 	cb('ok')
 end)
 
+RegisterNUICallback('leftTarget', function(data, cb)
+	if Config.Toggle then
+		SetNuiFocus(false, false)
+		SetNuiFocusKeepInput(false)
+		Wait(100)
+		table_wipe(sendData)
+		success, hasFocus = false, false
+	else
+		DisableTarget(true)
+	end
+	cb('ok')
+end)
+
 -- Startup thread
 
 CreateThread(function()
-    RegisterCommand('+playerTarget', EnableTarget, false)
-    RegisterCommand('-playerTarget', DisableTarget, false)
-    RegisterKeyMapping("+playerTarget", "Enable targeting", "keyboard", Config.OpenKey)
+	if Config.Toggle then
+		RegisterCommand('playerTarget', function()
+			if targetActive then
+				DisableTarget(true)
+			else
+				EnableTarget()
+			end
+		end, false)
+		RegisterKeyMapping("playerTarget", "Toggle targeting", "keyboard", Config.OpenKey)
+	else
+		RegisterCommand('+playerTarget', EnableTarget, false)
+		RegisterCommand('-playerTarget', DisableTarget, false)
+		RegisterKeyMapping("+playerTarget", "Enable targeting", "keyboard", Config.OpenKey)
+	end
 
     if next(Config.CircleZones) then
         for k, v in pairs(Config.CircleZones) do
