@@ -228,7 +228,7 @@ local function EnableTarget()
 				if entityType == 1 then
 					local datatable = Models[GetEntityModel(entity)]
 					if IsPedAPlayer(entity) then datatable = Players end
-					if data and next(datatable) then
+					if datatable and next(datatable) then
 						CheckEntity(hit, datatable, entity, distance)
 					end
 
