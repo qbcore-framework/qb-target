@@ -7,8 +7,8 @@ local pairs = pairs
 local CheckOptions
 
 ---------------------------------------
----Source: https://github.com/citizenfx/lua/blob/luaglm-dev/cfx/libs/scripts/examples/scripting_gta.lua
----Credits to gottfriedleibniz
+--- Source: https://github.com/citizenfx/lua/blob/luaglm-dev/cfx/libs/scripts/examples/scripting_gta.lua
+--- Credits to gottfriedleibniz
 local glm = require 'glm'
 
 -- Cache common functions
@@ -104,6 +104,7 @@ exports('DisableTarget', DisableTarget)
 local function DrawOutlineEntity(entity, bool)
 	if not Config.EnableOutline or IsEntityAPed(entity) then return end
 	SetEntityDrawOutline(entity, bool)
+	SetEntityDrawOutlineColor(entity, Config.OutlineColor[1], Config.OutlineColor[2], Config.OutlineColor[3])
 end
 
 exports('DrawOutlineEntity', DrawOutlineEntity)
