@@ -38,6 +38,3 @@ The TEMPLATES.md and EXAMPLES.md are always being improved and new examples can 
 - Support checking for job, gang, citizenid, items, or specific entities
 - Utilise the `canInteract` function for advanced checks to show or hide an option based on any trigger
 - Ped spawner to spawn peds and assign target options to them all in one place
-
-## Issues and Suggestions
-Please use the GitHub issues system to report issues or make suggestions, when making suggestion, please keep `[Suggestion]` in the title to make it clear that it is a suggestion or join the [discord](https://discord.gg/qbcore).
