@@ -1,7 +1,7 @@
-local targeting = exports['qb-target']
-local CurrentResourceName = GetCurrentResourceName()
+local currentResourceName = GetCurrentResourceName()
+local targeting = exports[currentResourceName]
 
-AddEventHandler(CurrentResourceName..':debug', function(data)
+AddEventHandler(currentResourceName..':debug', function(data)
     print('Entity: '..data.entity, 'Model: '..GetEntityModel(data.entity), 'Type: '..GetEntityType(data.entity))
     if data.remove then
         targeting:RemoveTargetEntity(data.entity, 'Hello World')
@@ -10,7 +10,7 @@ AddEventHandler(CurrentResourceName..':debug', function(data)
             options = {
                 {
                     type = "client",
-                    event = CurrentResourceName..':debug',
+                    event = currentResourceName..':debug',
                     icon = "fas fa-box-circle-check",
                     label = "Hello World",
                     remove = true
@@ -25,7 +25,7 @@ targeting:AddGlobalPed({
     options = {
         {
             type = "client",
-            event = CurrentResourceName..':debug',
+            event = currentResourceName..':debug',
             icon = "fas fa-male",
             label = "(Debug) Ped",
         },
@@ -37,7 +37,7 @@ targeting:AddGlobalVehicle({
     options = {
         {
             type = "client",
-            event = CurrentResourceName..':debug',
+            event = currentResourceName..':debug',
             icon = "fas fa-car",
             label = "(Debug) Vehicle",
         },
@@ -49,7 +49,7 @@ targeting:AddGlobalObject({
     options = {
         {
             type = "client",
-            event = CurrentResourceName..':debug',
+            event = currentResourceName..':debug',
             icon = "fas fa-cube",
             label = "(Debug) Object",
         },
@@ -61,7 +61,7 @@ targeting:AddGlobalPlayer({
     options = {
         {
             type = "client",
-            event = CurrentResourceName..':debug',
+            event = currentResourceName..':debug',
             icon = "fas fa-cube",
             label = "(Debug) Player",
         },

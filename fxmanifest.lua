@@ -3,7 +3,7 @@ game 'gta5'
 
 author 'BerkieB'
 description 'An optimized interaction system for FiveM, based on qtarget'
-version '5.2.2'
+version '5.3.0'
 
 ui_page 'html/index.html'
 
@@ -25,5 +25,6 @@ files {
 }
 
 lua54 'yes'
+use_fxv2_oal 'yes'
 
 dependency 'PolyZone'
