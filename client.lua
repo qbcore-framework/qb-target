@@ -1,11 +1,3 @@
-local currentResourceName = GetCurrentResourceName()
-local Config, Types, Players, Entities, Models, Zones, nuiData, sendData, sendDistance = Config, {{}, {}, {}}, {}, {}, {}, {}, {}, {}, {}
-local playerPed, targetActive, hasFocus, success, pedsReady, allowTarget = PlayerPedId(), false, false, false, false, true
-local screen = {}
-local table_wipe = table.wipe
-local pairs = pairs
-local CheckOptions
-local Bones = Load('bones')
 local GetEntityCoords = GetEntityCoords
 local Wait = Wait
 local IsDisabledControlPressed = IsDisabledControlPressed
@@ -18,6 +10,18 @@ local NetworkGetEntityIsNetworked = NetworkGetEntityIsNetworked
 local NetworkGetNetworkIdFromEntity = NetworkGetNetworkIdFromEntity
 local GetEntityModel = GetEntityModel
 local IsPedAPlayer = IsPedAPlayer
+local GetEntityType = GetEntityType
+local PlayerPedId = PlayerPedId
+local GetShapeTestResult = GetShapeTestResult
+local StartShapeTestLosProbe = StartShapeTestLosProbe
+local currentResourceName = GetCurrentResourceName()
+local Config, Types, Players, Entities, Models, Zones, nuiData, sendData, sendDistance = Config, {{}, {}, {}}, {}, {}, {}, {}, {}, {}, {}
+local playerPed, targetActive, hasFocus, success, pedsReady, allowTarget = PlayerPedId(), false, false, false, false, true
+local screen = {}
+local table_wipe = table.wipe
+local pairs = pairs
+local CheckOptions
+local Bones = Load('bones')
 
 ---------------------------------------
 --- Source: https://github.com/citizenfx/lua/blob/luaglm-dev/cfx/libs/scripts/examples/scripting_gta.lua
@@ -147,7 +151,7 @@ local function CheckEntity(flag, datatable, entity, distance)
 	SendNUIMessage({response = "foundTarget", data = sendData[slot].targeticon})
 	DrawOutlineEntity(entity, true)
 	while targetActive and success do
-		local _, _, dist, entity2, _ = RaycastCamera(flag)
+		local _, dist, entity2, _ = RaycastCamera(flag)
 		if entity ~= entity2 then
 			LeftTarget()
 			DrawOutlineEntity(entity, false)
@@ -686,10 +690,17 @@ function SpawnPeds()
 			end
 
 			if v.target then
-				AddTargetModel(v.model, {
-					options = v.target.options,
-					distance = v.target.distance
-				})
+				if v.target.useModel then
+					AddTargetModel(v.model, {
+						options = v.target.options,
+						distance = v.target.distance
+					})
+				else
+					AddTargetEntity(spawnedped, {
+						options = v.target.options,
+						distance = v.target.distance
+					})
+				end
 			end
 
 			Config.Peds[k].currentpednumber = spawnedped
@@ -755,10 +766,17 @@ local function SpawnPed(data)
 				end
 
 				if v.target then
-					AddTargetModel(v.model, {
-						options = v.target.options,
-						distance = v.target.distance
-					})
+					if v.target.useModel then
+						AddTargetModel(v.model, {
+							options = v.target.options,
+							distance = v.target.distance
+						})
+					else
+						AddTargetEntity(spawnedped, {
+							options = v.target.options,
+							distance = v.target.distance
+						})
+					end
 				end
 
 				v.currentpednumber = spawnedped
@@ -816,10 +834,17 @@ local function SpawnPed(data)
 			end
 
 			if data.target then
-				AddTargetModel(data.model, {
-					options = data.target.options,
-					distance = data.target.distance
-				})
+				if data.target.useModel then
+					AddTargetModel(data.model, {
+						options = data.target.options,
+						distance = data.target.distance
+					})
+				else
+					AddTargetEntity(spawnedped, {
+						options = data.target.options,
+						distance = data.target.distance
+					})
+				end
 			end
 
 			data.currentpednumber = spawnedped

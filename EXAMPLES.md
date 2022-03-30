@@ -161,7 +161,14 @@ This is an example from a postop resource. Players can rent delivery vehicles in
 This is an example using **exports**
 
 ```lua
-exports['qb-target']:AddTargetEntity('mule2', {
+local model = `mule2`
+RequestModel(model)
+while not HasModelLoaded(model) do
+    Wait(0)
+end
+local mule = CreateVehicle(model, GetEntityCoords(PlayerPedId()), GetEntityHeading(PlayerPedId()), true, false)
+TaskWarpPedIntoVehicle(PlayerPedId(), mule, -1)
+exports['qb-target']:AddTargetEntity(mule, {
     options = {
         {
             type = "client",
@@ -175,26 +182,6 @@ exports['qb-target']:AddTargetEntity('mule2', {
 })
 ```
 
-This is an example using the provided **config**
-
-```lua
-Config.TargetEntities = {
-    ["entity1"] = {
-        entity = 'mule2',
-        options = {
-            {
-                type = "client",
-                event = "postop:getPackage",
-                icon = "fas fa-box-circle-check",
-                label = "Get Package",
-                job = "postop",
-            },
-        },
-        distance = 3.0,
-    },
-}
-```
-
 ## Passing Item Data
 In this example, we define the model of the coffee machines you see around the map, and allow players to purchase a coffee. You'll have to provide your own logic for the purchase, but this is how you would handle it with qb-target, and how you would pass data through to an event for future use.
 
@@ -203,7 +190,7 @@ This is an example using **exports**
 The event should **not** go into the config, hence why it's not provided with the config example, it's meant for a client file
 
 ```lua
-exports['qb-target']:AddTargetModel(690372739, {
+exports['qb-target']:AddTargetModel(`prop_vend_coffe_01`, {
     options = {
         {
             type = "client",
@@ -227,7 +214,7 @@ This is an example using the provided **config**
 ```lua
 Config.TargetModels = {
     ['buyCoffee'] = {
-        models = 690372739,
+        models = `prop_vend_coffe_01`,
         options = {
             {
                 type = "client",

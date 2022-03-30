@@ -506,41 +506,16 @@ parameters = {
 }
 ```
 
-### Config option, this will go into the Config.TargetEntities table
-
-```lua
-  ["index"] = { -- This can be a string or a number
-    entity = 5939885 -- This is the specified entity, this is not intended for the config as these numbers are randomized per entity but it's there, you'd have to get the entity's number
-    options = { -- This is your options table, in this table all the options will be specified for the target to accept
-      { -- This is the first table with options, you can make as many options inside the options table as you want
-        type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
-        event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
-        icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
-        label = 'Test', -- This is the label of this option which you would be able to click on to trigger everything, this has to be a string
-        targeticon = 'fas fa-example', -- This is the icon of the target itself, the icon changes to this when it turns blue on this specific option, this is OPTIONAL
-        item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
-        action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
-          if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
-        end,
-        canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
-          if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          return true
-        end,
-        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
-        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
-        citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
-      }
-    },
-    distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
-  },
-```
-
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
-  local entity = CreatePed(2, `a_m_m_indian_01`, 500.0, 500.0, 100.0, 12.0, true, false)
+  local model = `a_m_m_indian_01`
+  RequestModel(model)
+  while not HasModelLoaded(model) do
+    Wait(0)
+  end
+  local entity = CreatePed(0, model, GetEntityCoords(PlayerPedId()), GetEntityHeading(PlayerPedId()), true, false)
   exports['qb-target']:AddTargetEntity(entity, { -- The specified entity number
     options = { -- This is your options table, in this table all the options will be specified for the target to accept
       { -- This is the first table with options, you can make as many options inside the options table as you want
@@ -599,43 +574,16 @@ targetoptions = {
 }
 ```
 
-### Config option, this will go into the Config.EntityZones table
-
-```lua
-  ["index"] = { -- This can be a string or a number
-    name = "name", -- This is the name of the zone recognized by PolyZone, this has to be unique so it doesn't mess up with other zones
-    debugPoly = false, -- This is for enabling/disabling the drawing of the box, it accepts only a boolean value (true or false), when true it will draw the polyzone in green
-    entity = 5939885 -- This is the specified entity, this is not intended for the config as these numbers are randomized per entity but it's there, you'd have to get the entity's number
-    options = { -- This is your options table, in this table all the options will be specified for the target to accept
-      { -- This is the first table with options, you can make as many options inside the options table as you want
-        type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
-        event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
-        icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
-        label = 'Test', -- This is the label of this option which you would be able to click on to trigger everything, this has to be a string
-        targeticon = 'fas fa-example', -- This is the icon of the target itself, the icon changes to this when it turns blue on this specific option, this is OPTIONAL
-        item = 'handcuffs', -- This is the item it has to check for, this option will only show up if the player has this item, this is OPTIONAL
-        action = function(entity) -- This is the action it has to perform, this REPLACES the event and this is OPTIONAL
-          if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
-        end,
-        canInteract = function(entity, distance, data) -- This will check if you can interact with it, this won't show up if it returns false, this is OPTIONAL
-          if IsPedAPlayer(entity) then return false end -- This will return false if the entity interacted with is a player and otherwise returns true
-          return true
-        end,
-        job = 'police', -- This is the job, this option won't show up if the player doesn't have this job, this can also be done with multiple jobs and grades, if you want multiple jobs you always need a grade with it: job = {["police"] = 0, ["ambulance"] = 2},
-        gang = 'ballas', -- This is the gang, this option won't show up if the player doesn't have this gang, this can also be done with multiple gangs and grades, if you want multiple gangs you always need a grade with it: gang = {["ballas"] = 0, ["thelostmc"] = 2},
-        citizenid = 'JFD98238', -- This is the citizenid, this option won't show up if the player doesn't have this citizenid, this can also be done with multiple citizenid's, if you want multiple citizenid's there is a specific format to follow: citizenid = {["JFD98238"] = true, ["HJS29340"] = true},
-      }
-    },
-    distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
-  },
-```
-
 ### Export option, this will go into any client side resource file aside from qb-target's one
 
 ```lua
 CreateThread(function()
-  local entity = CreatePed(2, `a_m_m_indian_01`, 500.0, 500.0, 100.0, 12.0, true, false)
+  local model = `a_m_m_indian_01`
+  RequestModel(model)
+  while not HasModelLoaded(model) do
+    Wait(0)
+  end
+  local entity = CreatePed(0, model, GetEntityCoords(PlayerPedId()), GetEntityHeading(PlayerPedId()), true, false)
   exports['qb-target']:AddEntityZone("name", entity, { -- The specified entity number
     name = "name", -- This is the name of the zone recognized by PolyZone, this has to be unique so it doesn't mess up with other zones
     debugPoly = false, -- This is for enabling/disabling the drawing of the box, it accepts only a boolean value (true or false), when true it will draw the polyzone in green 
@@ -1215,7 +1163,7 @@ exports['qb-target']:RemoveGlobalPlayer('Test')
 ### Function Format
 
 ```lua
-RaycastCamera(flag: number, playerCoords: vector3) -- Preferably 30 or -1, -1 will not interact with any hashes higher than 32 bit and 30 will not interact with polyzones
+RaycastCamera(flag: number, playerCoords: vector3) -- Preferably 30 or -1, -1 will not interact with any hashes higher than 32 bit and 30 will not interact with the world
 ```
 
 ### Export option, this will go into any client side resource file aside from qb-target's one
@@ -1224,7 +1172,7 @@ RaycastCamera(flag: number, playerCoords: vector3) -- Preferably 30 or -1, -1 wi
 CreateThread(function()
   while true do
     local curFlag = 30
-    local hit, coords, entity, entityType = exports['qb-target']:RaycastCamera(-1, GetEntityCoords(PlayerPedId()))
+    local coords, entity, entityType = exports['qb-target']:RaycastCamera(-1, GetEntityCoords(PlayerPedId()))
     if entityType > 0 then
       print('gotten')
     end
@@ -1254,6 +1202,7 @@ datatable = {
   flag: number,
   scenario: string,
   target = {
+    useModel: boolean,
     options = {
       {
         type: string,
@@ -1287,6 +1236,7 @@ datatable = {
     flag: number,
     scenario: string,
     target = {
+      useModel: boolean,
       options = {
         {
           type: string,
@@ -1324,6 +1274,7 @@ datatable = {
   flag = 1, -- This is the flag of the animation to play, for all the flags, check the TaskPlayAnim native here https://docs.fivem.net/natives/?_0x5AB552C6 (OPTIONAL)
   scenario = 'WORLD_HUMAN_AA_COFFEE', -- This is the scenario that will play the whole time the ped is spawned, this cannot pair with anim and animDict (OPTIONAL)
   target = { -- This is the target options table, here you can specify all the options to display when targeting the ped (OPTIONAL)
+    useModel = false, -- This is the option for which target function to use, when this is set to true it'll use AddTargetModel and add these to al models of the given ped model, if it is false it will only add the options to this specific ped
     options = { -- This is your options table, in this table all the options will be specified for the target to accept
       { -- This is the first table with options, you can make as many options inside the options table as you want
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
@@ -1367,6 +1318,7 @@ exports['qb-target']:SpawnPed({
   flag = 1, -- This is the flag of the animation to play, for all the flags, check the TaskPlayAnim native here https://docs.fivem.net/natives/?_0x5AB552C6 (OPTIONAL)
   scenario = 'WORLD_HUMAN_AA_COFFEE', -- This is the scenario that will play the whole time the ped is spawned, this cannot pair with anim and animDict (OPTIONAL)
   target = { -- This is the target options table, here you can specify all the options to display when targeting the ped (OPTIONAL)
+    useModel = false, -- This is the option for which target function to use, when this is set to true it'll use AddTargetModel and add these to al models of the given ped model, if it is false it will only add the options to this specific ped
     options = { -- This is your options table, in this table all the options will be specified for the target to accept
       { -- This is the first table with options, you can make as many options inside the options table as you want
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
@@ -1407,6 +1359,7 @@ exports['qb-target']:SpawnPed({
     flag = 1, -- This is the flag of the animation to play, for all the flags, check the TaskPlayAnim native here https://docs.fivem.net/natives/?_0x5AB552C6 (OPTIONAL)
     scenario = 'WORLD_HUMAN_AA_COFFEE', -- This is the scenario that will play the whole time the ped is spawned, this cannot pair with anim and animDict (OPTIONAL)
     target = { -- This is the target options table, here you can specify all the options to display when targeting the ped (OPTIONAL)
+      useModel = false, -- This is the option for which target function to use, when this is set to true it'll use AddTargetModel and add these to al models of the given ped model, if it is false it will only add the options to this specific ped
       options = { -- This is your options table, in this table all the options will be specified for the target to accept
         { -- This is the first table with options, you can make as many options inside the options table as you want
           type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
@@ -1444,6 +1397,7 @@ exports['qb-target']:SpawnPed({
     flag = 1, -- This is the flag of the animation to play, for all the flags, check the TaskPlayAnim native here https://docs.fivem.net/natives/?_0x5AB552C6 (OPTIONAL)
     scenario = 'WORLD_HUMAN_AA_COFFEE', -- This is the scenario that will play the whole time the ped is spawned, this cannot pair with anim and animDict (OPTIONAL)
     target = { -- This is the target options table, here you can specify all the options to display when targeting the ped (OPTIONAL)
+      useModel = false, -- This is the option for which target function to use, when this is set to true it'll use AddTargetModel and add these to al models of the given ped model, if it is false it will only add the options to this specific ped
       options = { -- This is your options table, in this table all the options will be specified for the target to accept
         { -- This is the first table with options, you can make as many options inside the options table as you want
           type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
