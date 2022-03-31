@@ -108,7 +108,7 @@ local function CitizenCheck() return true end
 CreateThread(function()
 	if not Config.Standalone then
 		local QBCore = exports['qb-core']:GetCoreObject()
-		local PlayerData = QBCore.Functions.GetPlayerData()
+		local PlayerData = exports['qbr-core']:GetPlayerData()
 
 		ItemCount = function(item)
 			for _, v in pairs(PlayerData.items) do
@@ -148,7 +148,7 @@ CreateThread(function()
 		end
 
 		RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-			PlayerData = QBCore.Functions.GetPlayerData()
+			PlayerData = exports['qbr-core']:GetPlayerData()
 			SpawnPeds()
 		end)
 
