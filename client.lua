@@ -689,6 +689,16 @@ function SpawnPeds()
 				TaskStartScenarioInPlace(spawnedped, v.scenario, 0, true)
 			end
 
+			if v.weapon then
+				if type(v.weapon.name) == 'string' then v.weapon.name = GetHashKey(v.weapon.name) end
+
+				if IsWeaponValid(v.weapon.name) then
+					SetCanPedEquipWeapon(spawnedped, v.weapon.name, true)
+					GiveWeaponToPed(spawnedped, v.weapon.name, v.weapon.ammo, false, false, true)
+					SetPedCurrentWeaponVisible(spawnedped, true, true)
+				end
+			end
+
 			if v.target then
 				if v.target.useModel then
 					AddTargetModel(v.model, {
