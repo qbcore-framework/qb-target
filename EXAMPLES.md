@@ -183,11 +183,9 @@ exports['qb-target']:AddTargetEntity(mule, {
 ```
 
 ## Add interactable Ped at specific coordinates
-This is an example for adding an interactable Ped with a weapon in given coordinates. It does this by defining a BoxZone outside of Mission Row. 
+This is an example for adding an interactable Ped with a weapon in given coordinates. 
 
-The below `Config.Peds` table is located in `init.lua`. The export is then called from another script, similar to the **AddBoxZone / Job Check** example above.
-
-**Note:** If the ped doesn't have `blockevents` enabled and they disappear or respond to an event the ped may no longer be in the interactable spot. However, the interactable spot will still be usable, despite no ped being present.
+The below `Config.Peds` table is located in `init.lua`. 
 
 ```lua 
 Config.Peds = {
@@ -201,31 +199,21 @@ Config.Peds = {
             name = `weapon_carbinerifle`,
             ammo = 0,
             hidden = false,
-        } 
+        }, 
+        target = {
+            options = {
+                {
+                    type = "client",
+                    event = "qb-policejob:ToggleDuty",
+                    icon = "fas fa-sign-in-alt",
+                    label = "Sign In",
+                    job = "police",
+                },
+            },
+            distance = 2.5
+        }
     }
 }
-```
-
-This export is called in another script, not to be used within `qb-target`.
-```lua
-exports['qb-target']:AddBoxZone("MissionRowSecurity", vector3(433.0, -985.71, 30.71), 0.45, 0.55, {
-    name = "MissionRowSecurity",
-    heading = 11.0,
-    debugPoly = true,
-    minZ = 29.00,
-    maxZ = 31.51,
-}, {
-    options = {
-        {
-            type = "client",
-            event = "qb-policejob:ToggleDuty",
-            icon = "fas fa-sign-in-alt",
-            label = "Sign In",
-            job = "police",
-        },
-    },
-    distance = 2.5
-})
 ```
 
 ## Passing Item Data
