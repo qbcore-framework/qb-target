@@ -733,14 +733,14 @@ function SpawnPeds()
 			end
 
 			if v.weapon then
-				if type(v.weapon.name) == 'string' then v.weapon.name = GetHashKey(v.weapon.name) end
-
+				if type(v.weapon.name) == 'string' then v.weapon.name = joaat(v.weapon.name) end
+			
 				if IsWeaponValid(v.weapon.name) then
 					SetCanPedEquipWeapon(spawnedped, v.weapon.name, true)
-					GiveWeaponToPed(spawnedped, v.weapon.name, v.weapon.ammo, false, false, true)
+					GiveWeaponToPed(spawnedped, v.weapon.name, v.weapon.ammo, v.weapon.hidden or false, true)
 					SetPedCurrentWeaponVisible(spawnedped, true, true)
 				end
-			end
+			end			
 
 			if v.target then
 				if v.target.useModel then
