@@ -182,6 +182,52 @@ exports['qb-target']:AddTargetEntity(mule, {
 })
 ```
 
+## Add interactable Ped at specific coordinates
+This is an example for adding an interactable Ped with a weapon in given coordinates. It does this by defining a BoxZone outside of Mission Row. 
+
+The below `Config.Peds` table is located in `init.lua`. The export is then called from another script, similar to the **AddBoxZone / Job Check** example above.
+
+**Note:** If the ped doesn't have `blockevents` enabled and they disappear respond to an event they encounter the ped may no longer be in the interactable spot. However, the interactable spot will still be usable, despite no ped being present.
+
+```lua 
+Config.Peds = {
+    {
+        model = `mp_m_securoguard_01`, 
+        coords = vector4(433.0, -985.71, 30.71, 26.92),
+        networked = true,
+        invincible = true,
+        blockevents = true,
+        weapon = {
+            name = `weapon_carbinerifle`,
+            ammo = 0,
+            hidden = false,
+        } 
+    }
+}
+```
+
+This export is called in another script, not to be used within `qb-target`.
+```lua
+exports['qb-target']:AddBoxZone("MissionRowSecurity", vector3(433.0, -985.71, 30.71), 0.45, 0.55, {
+    name = "MissionRowSecurity",
+    heading = 11.0,
+    debugPoly = true,
+    minZ = 29.00,
+    maxZ = 31.51,
+}, {
+    options = {
+        {
+            type = "client",
+            event = "qb-policejob:ToggleDuty",
+            icon = "fas fa-sign-in-alt",
+            label = "Sign In",
+            job = "police",
+        },
+    },
+    distance = 2.5
+})
+```
+
 ## Passing Item Data
 In this example, we define the model of the coffee machines you see around the map, and allow players to purchase a coffee. You'll have to provide your own logic for the purchase, but this is how you would handle it with qb-target, and how you would pass data through to an event for future use.
 
