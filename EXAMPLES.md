@@ -187,7 +187,7 @@ This is an example for adding an interactable Ped with a weapon in given coordin
 
 The below `Config.Peds` table is located in `init.lua`. The export is then called from another script, similar to the **AddBoxZone / Job Check** example above.
 
-**Note:** If the ped doesn't have `blockevents` enabled and they disappear respond to an event they encounter the ped may no longer be in the interactable spot. However, the interactable spot will still be usable, despite no ped being present.
+**Note:** If the ped doesn't have `blockevents` enabled and they disappear or respond to an event the ped may no longer be in the interactable spot. However, the interactable spot will still be usable, despite no ped being present.
 
 ```lua 
 Config.Peds = {
