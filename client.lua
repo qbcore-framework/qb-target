@@ -518,40 +518,39 @@ local function RemoveTargetEntity(entities, labels)
 					Entities[entity] = nil
 				end
 			end
-			return
 		else
 			if Entities[entities] then
 				Entities[entities] = nil
 			end
-			return
 		end
-	end
-	if type(entities) == 'table' then
-		for _, entity in pairs(entities) do
-			if NetworkGetEntityIsNetworked(entity) then entity = NetworkGetNetworkIdFromEntity(entity) end -- Allow non-networked entities to be targeted
-			if type(labels) == 'table' then
-				for k, v in pairs(labels) do
+	else
+		if type(entities) == 'table' then
+			for _, entity in pairs(entities) do
+				if NetworkGetEntityIsNetworked(entity) then entity = NetworkGetNetworkIdFromEntity(entity) end -- Allow non-networked entities to be targeted
+				if type(labels) == 'table' then
+					for k, v in pairs(labels) do
+						if Entities[entity] then
+							Entities[entity][v] = nil
+						end
+					end
+				elseif type(labels) == 'string' then
 					if Entities[entity] then
-						Entities[entity][v] = nil
+						Entities[entity][labels] = nil
+					end
+				end
+			end
+		elseif type(entities) == 'number' then
+			if NetworkGetEntityIsNetworked(entities) then entities = NetworkGetNetworkIdFromEntity(entities) end -- Allow non-networked entities to be targeted
+			if type(labels) == 'table' then
+				for _, v in pairs(labels) do
+					if Entities[entities] then
+						Entities[entities][v] = nil
 					end
 				end
 			elseif type(labels) == 'string' then
-				if Entities[entity] then
-					Entities[entity][labels] = nil
-				end
-			end
-		end
-	elseif type(entities) == 'number' then
-		if NetworkGetEntityIsNetworked(entities) then entities = NetworkGetNetworkIdFromEntity(entities) end -- Allow non-networked entities to be targeted
-		if type(labels) == 'table' then
-			for _, v in pairs(labels) do
 				if Entities[entities] then
-					Entities[entities][v] = nil
+					Entities[entities][labels] = nil
 				end
-			end
-		elseif type(labels) == 'string' then
-			if Entities[entities] then
-				Entities[entities][labels] = nil
 			end
 		end
 	end
