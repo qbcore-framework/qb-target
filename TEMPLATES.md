@@ -1322,6 +1322,11 @@ exports['qb-target']:SpawnPed({
   anim = 'csb_abigail_dual-0', -- This is the animation that will play chosen from the animDict, this will loop the whole time the ped is spawned (OPTIONAL)
   flag = 1, -- This is the flag of the animation to play, for all the flags, check the TaskPlayAnim native here https://docs.fivem.net/natives/?_0x5AB552C6 (OPTIONAL)
   scenario = 'WORLD_HUMAN_AA_COFFEE', -- This is the scenario that will play the whole time the ped is spawned, this cannot pair with anim and animDict (OPTIONAL)
+  weapon = { -- This is the ped's weapon table, here you can specify what weapon, the ammo and if the weapon is hidden or not (OPTIONAL)
+      name = 'weapon_carbinerifle', -- This is the weapon weapon that you would like to give the spawned ped
+      ammo = 0, -- This is the amount of ammo you would like for the ped to have
+      hidden = false, -- This is whether or not the weapon will be visibly displayed on the ped when spawned
+  },
   target = { -- This is the target options table, here you can specify all the options to display when targeting the ped (OPTIONAL)
     useModel = false, -- This is the option for which target function to use, when this is set to true it'll use AddTargetModel and add these to al models of the given ped model, if it is false it will only add the options to this specific ped
     options = { -- This is your options table, in this table all the options will be specified for the target to accept
@@ -1363,6 +1368,11 @@ exports['qb-target']:SpawnPed({
     anim = 'csb_abigail_dual-0', -- This is the animation that will play chosen from the animDict, this will loop the whole time the ped is spawned (OPTIONAL)
     flag = 1, -- This is the flag of the animation to play, for all the flags, check the TaskPlayAnim native here https://docs.fivem.net/natives/?_0x5AB552C6 (OPTIONAL)
     scenario = 'WORLD_HUMAN_AA_COFFEE', -- This is the scenario that will play the whole time the ped is spawned, this cannot pair with anim and animDict (OPTIONAL)
+    weapon = { -- This is the ped's weapon table, here you can specify what weapon, the ammo and if the weapon is hidden or not (OPTIONAL)
+      name = 'weapon_carbinerifle', -- This is the weapon weapon that you would like to give the spawned ped
+      ammo = 0, -- This is the amount of ammo you would like for the ped to have
+      hidden = false, -- This is whether or not the weapon will be visibly displayed on the ped when spawned
+    },
     target = { -- This is the target options table, here you can specify all the options to display when targeting the ped (OPTIONAL)
       useModel = false, -- This is the option for which target function to use, when this is set to true it'll use AddTargetModel and add these to al models of the given ped model, if it is false it will only add the options to this specific ped
       options = { -- This is your options table, in this table all the options will be specified for the target to accept
@@ -1401,6 +1411,11 @@ exports['qb-target']:SpawnPed({
     anim = 'csb_abigail_dual-0', -- This is the animation that will play chosen from the animDict, this will loop the whole time the ped is spawned (OPTIONAL)
     flag = 1, -- This is the flag of the animation to play, for all the flags, check the TaskPlayAnim native here https://docs.fivem.net/natives/?_0x5AB552C6 (OPTIONAL)
     scenario = 'WORLD_HUMAN_AA_COFFEE', -- This is the scenario that will play the whole time the ped is spawned, this cannot pair with anim and animDict (OPTIONAL)
+    weapon = { -- This is the ped's weapon table, here you can specify what weapon, the ammo and if the weapon is hidden or not (OPTIONAL)
+      name = 'weapon_carbinerifle', -- This is the weapon weapon that you would like to give the spawned ped
+      ammo = 0, -- This is the amount of ammo you would like for the ped to have
+      hidden = false, -- This is whether or not the weapon will be visibly displayed on the ped when spawned
+    },
     target = { -- This is the target options table, here you can specify all the options to display when targeting the ped (OPTIONAL)
       useModel = false, -- This is the option for which target function to use, when this is set to true it'll use AddTargetModel and add these to al models of the given ped model, if it is false it will only add the options to this specific ped
       options = { -- This is your options table, in this table all the options will be specified for the target to accept
