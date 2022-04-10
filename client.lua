@@ -511,6 +511,21 @@ end
 exports("AddTargetEntity", AddTargetEntity)
 
 local function RemoveTargetEntity(entities, labels)
+	if not labels then
+		if type(entities) == 'table' then
+			for _, entity in pairs(entities) do
+				if Entities[entities] then
+					Entities[entity] = nil
+				end
+			end
+			return
+		else
+			if Entities[entities] then
+				Entities[entities] = nil
+			end
+			return
+		end
+	end
 	if type(entities) == 'table' then
 		for _, entity in pairs(entities) do
 			if NetworkGetEntityIsNetworked(entity) then entity = NetworkGetNetworkIdFromEntity(entity) end -- Allow non-networked entities to be targeted
