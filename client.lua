@@ -738,7 +738,7 @@ function SpawnPeds()
 				if IsWeaponValid(v.weapon.name) then
 					SetCanPedEquipWeapon(spawnedped, v.weapon.name, true)
 					GiveWeaponToPed(spawnedped, v.weapon.name, v.weapon.ammo, v.weapon.hidden or false, true)
-					SetPedCurrentWeaponVisible(spawnedped, true, true)
+					SetPedCurrentWeaponVisible(spawnedped, not v.weapon.hidden or false, true)
 				end
 			end
 
