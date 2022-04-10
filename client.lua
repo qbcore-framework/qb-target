@@ -775,6 +775,16 @@ local function SpawnPed(data)
 					TaskStartScenarioInPlace(spawnedped, v.scenario, 0, true)
 				end
 
+				if v.weapon then
+					if type(v.weapon.name) == 'string' then v.weapon.name = joaat(v.weapon.name) end
+	
+					if IsWeaponValid(v.weapon.name) then
+						SetCanPedEquipWeapon(spawnedped, v.weapon.name, true)
+						GiveWeaponToPed(spawnedped, v.weapon.name, v.weapon.ammo, v.weapon.hidden or false, true)
+						SetPedCurrentWeaponVisible(spawnedped, not v.weapon.hidden or false, true)
+					end
+				end
+
 				if v.target then
 					if v.target.useModel then
 						AddTargetModel(v.model, {
@@ -841,6 +851,16 @@ local function SpawnPed(data)
 			if data.scenario then
 				SetPedCanPlayAmbientAnims(spawnedped, true)
 				TaskStartScenarioInPlace(spawnedped, data.scenario, 0, true)
+			end
+
+			if data.weapon then
+				if type(data.weapon.name) == 'string' then data.weapon.name = joaat(data.weapon.name) end
+
+				if IsWeaponValid(data.weapon.name) then
+					SetCanPedEquipWeapon(spawnedped, data.weapon.name, true)
+					GiveWeaponToPed(spawnedped, data.weapon.name, data.weapon.ammo, data.weapon.hidden or false, true)
+					SetPedCurrentWeaponVisible(spawnedped, not data.weapon.hidden or false, true)
+				end
 			end
 
 			if data.target then
