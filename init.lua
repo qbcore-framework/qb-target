@@ -32,8 +32,8 @@ Config.EnableOutline = false
 -- Whether to have the target as a toggle or not
 Config.Toggle = false
 
--- The color of the outline in rgb, the first value is red, the second value is green and the last value is blue. Here is a link to a color picker to get these values: https://htmlcolorcodes.com/color-picker/
-Config.OutlineColor = {255, 255, 255}
+-- The color of the outline in rgb, the first value is red, the second value is green, the third value is blue and the last value is alpha. Here is a link to a color picker to get these values: https://htmlcolorcodes.com/color-picker/
+Config.OutlineColor = {255, 255, 255, 255}
 
 -- Enable default options (Toggling vehicle doors)
 Config.EnableDefaultOptions = true

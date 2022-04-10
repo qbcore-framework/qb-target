@@ -120,7 +120,7 @@ exports('DisableTarget', DisableTarget)
 local function DrawOutlineEntity(entity, bool)
 	if not Config.EnableOutline or IsEntityAPed(entity) then return end
 	SetEntityDrawOutline(entity, bool)
-	SetEntityDrawOutlineColor(entity, Config.OutlineColor[1], Config.OutlineColor[2], Config.OutlineColor[3])
+	SetEntityDrawOutlineColor(Config.OutlineColor[1], Config.OutlineColor[2], Config.OutlineColor[3], Config.OutlineColor[4])
 end
 
 exports('DrawOutlineEntity', DrawOutlineEntity)
