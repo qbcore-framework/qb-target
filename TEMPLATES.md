@@ -1201,6 +1201,11 @@ datatable = {
   anim: string,
   flag: number,
   scenario: string,
+  weapon = {
+      name: string or number,
+      ammo: number,
+      hidden: boolean,
+  },
   target = {
     useModel: boolean,
     options = {
@@ -1235,6 +1240,11 @@ datatable = {
     anim: string,
     flag: number,
     scenario: string,
+    weapon = {
+      name: string or number,
+      ammo: number,
+      hidden: boolean,
+    },
     target = {
       useModel: boolean,
       options = {
