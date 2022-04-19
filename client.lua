@@ -22,6 +22,7 @@ local table_wipe = table.wipe
 local pairs = pairs
 local CheckOptions
 local Bones = Load('bones')
+local listSprite = {}
 
 ---------------------------------------
 --- Source: https://github.com/citizenfx/lua/blob/luaglm-dev/cfx/libs/scripts/examples/scripting_gta.lua
@@ -54,6 +55,38 @@ end
 ---------------------------------------
 
 -- Functions
+
+local function DrawTarget()
+	CreateThread(function()
+		while not HasStreamedTextureDictLoaded("shared") do Wait(10) RequestStreamedTextureDict("shared", true) end
+		local sleep
+		local r, g, b, a
+		while targetActive do
+			sleep = 500
+			for _, zone in pairs(listSprite) do
+				sleep = 0
+
+				r = zone.targetoptions.drawColor?[1] or Config.DrawColor[1]
+				g = zone.targetoptions.drawColor?[2] or Config.DrawColor[2]
+				b = zone.targetoptions.drawColor?[3] or Config.DrawColor[3]
+				a = zone.targetoptions.drawColor?[4] or Config.DrawColor[4]
+
+				if zone.success then
+					r = zone.targetoptions.successDrawColor?[1] or Config.SuccessDrawColor[1]
+					g = zone.targetoptions.successDrawColor?[2] or Config.SuccessDrawColor[2]
+					b = zone.targetoptions.successDrawColor?[3] or Config.SuccessDrawColor[3]
+					a = zone.targetoptions.successDrawColor?[4] or Config.SuccessDrawColor[4]
+				end
+
+				SetDrawOrigin(zone.center.x, zone.center.y, zone.center.z, 0)
+				DrawSprite("shared", "emptydot_32", 0, 0, 0.02, 0.035, 0, r, g, b, a)
+				ClearDrawOrigin()
+			end
+			Wait(sleep)
+		end
+		listSprite = {}
+	end)
+end
 
 local function RaycastCamera(flag, playerCoords)
 	if not playerPed then playerPed = PlayerPedId() end
@@ -205,6 +238,7 @@ local function EnableTarget()
 	playerPed = PlayerPedId()
 	screen.ratio = GetAspectRatio(true)
 	screen.fov = GetFinalRenderedCamFov()
+	if Config.DrawSprite then DrawTarget() end
 
 	SendNUIMessage({response = "openTarget"})
 	CreateThread(function()
@@ -324,11 +358,19 @@ local function EnableTarget()
 			else sleep += 20 end
 			if not success then
 				-- Zone targets
-				local closestDis, closestZone
-				for _, zone in pairs(Zones) do
+				local closestDis, closestZone, playerCoords
+				if Config.DrawSprite then playerCoords = GetEntityCoords(playerPed) end
+				for k, zone in pairs(Zones) do
 					if distance < (closestDis or Config.MaxDistance) and distance <= zone.targetoptions.distance and zone:isPointInside(coords) then
 						closestDis = distance
 						closestZone = zone
+					end
+					if Config.DrawSprite then
+						if #(playerCoords - zone.center) < (zone.targetoptions.drawDistance or Config.DrawDistance) then
+							listSprite[k] = zone
+						else
+							listSprite[k] = nil
+						end
 					end
 				end
 				if closestZone then
@@ -348,6 +390,7 @@ local function EnableTarget()
 					if next(nuiData) then
 						success = true
 						SendNUIMessage({response = "foundTarget", data = sendData[slot].targeticon})
+						listSprite[closestZone.name].success = true
 						DrawOutlineEntity(entity, true)
 						while targetActive and success do
 							local coords, distance = RaycastCamera(flag)
@@ -360,6 +403,9 @@ local function EnableTarget()
 								DrawOutlineEntity(entity, false)
 							end
 							Wait(0)
+						end
+						if listSprite[closestZone.name] then -- Check for when the targetActive is false and it removes the zone from listSprite
+							listSprite[closestZone.name].success = false
 						end
 						LeftTarget()
 						DrawOutlineEntity(entity, false)
@@ -723,7 +769,7 @@ exports("DeletePeds", DeletePeds)
 local function SpawnPed(data)
 	local spawnedped = 0
 	local key, value = next(data)
-	if type(value) == 'table' and key ~= 'target' and key ~= 'coords' then
+	if type(value) == 'table' and type(key) ~= 'string' then
 		for _, v in pairs(data) do
 			if v.spawnNow then
 				RequestModel(v.model)
@@ -788,11 +834,6 @@ local function SpawnPed(data)
 			Config.Peds[nextnumber] = v
 		end
 	else
-		if type(value) == 'table' and key ~= 'target' and key ~= 'coords' then
-			if Config.Debug then print('Wrong table format for SpawnPed export') end
-			return
-		end
-
 		if data.spawnNow then
 			RequestModel(data.model)
 			while not HasModelLoaded(data.model) do
@@ -924,7 +965,12 @@ exports("GetPeds", function() return Config.Peds end)
 
 exports("UpdatePedsData", function(index, data) Config.Peds[index] = data end)
 
-exports("AllowTargeting", function(bool) allowTarget = bool end)
+exports("AllowTargeting", function(bool)
+	allowTarget = bool
+	if not allowTarget then
+		DisableTarget(true)
+	end
+end)
 
 -- NUI Callbacks
 

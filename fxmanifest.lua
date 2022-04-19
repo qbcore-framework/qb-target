@@ -3,7 +3,7 @@ game 'gta5'
 
 author 'BerkieB'
 description 'An optimized interaction system for FiveM, based on qtarget'
-version '5.3.3'
+version '5.3.4'
 
 ui_page 'html/index.html'
 
