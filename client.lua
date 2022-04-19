@@ -425,7 +425,8 @@ local function EnableTarget()
 end
 
 local function AddCircleZone(name, center, radius, options, targetoptions)
-	center = type(center) == 'table' and vec3(center.x, center.y, center.z) or center
+	local centerType = type(center)
+	center = (centerType == 'table' or centerType == 'vector4') and vec3(center.x, center.y, center.z) or center
 	Zones[name] = CircleZone:Create(center, radius, options)
 	targetoptions.distance = targetoptions.distance or Config.MaxDistance
 	Zones[name].targetoptions = targetoptions
@@ -435,7 +436,8 @@ end
 exports("AddCircleZone", AddCircleZone)
 
 local function AddBoxZone(name, center, length, width, options, targetoptions)
-	center = type(center) == 'table' and vec3(center.x, center.y, center.z) or center
+	local centerType = type(center)
+	center = (centerType == 'table' or centerType == 'vector4') and vec3(center.x, center.y, center.z) or center
 	Zones[name] = BoxZone:Create(center, length, width, options)
 	targetoptions.distance = targetoptions.distance or Config.MaxDistance
 	Zones[name].targetoptions = targetoptions
@@ -446,7 +448,8 @@ exports("AddBoxZone", AddBoxZone)
 
 local function AddPolyZone(name, points, options, targetoptions)
 	local _points = {}
-	if type(points[1]) == 'table' then
+	local pointsType = type(points[1])
+	if pointsType == 'table' or pointsType == 'vector3' or pointsType == 'vector4' then
 		for i = 1, #points do
 			_points[i] = vec2(points[i].x, points[i].y)
 		end
