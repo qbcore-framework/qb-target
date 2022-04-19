@@ -363,15 +363,14 @@ local function EnableTarget()
 			else sleep += 20 end
 			if not success then
 				-- Zone targets
-				local closestDis, closestZone, playerCoords
-				if Config.DrawSprite then playerCoords = GetEntityCoords(playerPed) end
+				local closestDis, closestZone
 				for k, zone in pairs(Zones) do
 					if distance < (closestDis or Config.MaxDistance) and distance <= zone.targetoptions.distance and zone:isPointInside(coords) then
 						closestDis = distance
 						closestZone = zone
 					end
 					if Config.DrawSprite then
-						if #(playerCoords - zone.center) < (zone.targetoptions.drawDistance or Config.DrawDistance) then
+						if #(coords - zone.center) < (zone.targetoptions.drawDistance or Config.DrawDistance) then
 							listSprite[k] = zone
 						else
 							listSprite[k] = nil
