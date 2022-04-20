@@ -44,8 +44,6 @@ const Targeting = Vue.createApp({
             if (element.id) {
                 const split = element.id.split("-");
                 if (split[0] === 'target' && split[1] !== 'eye' && event.button == 0) {
-                    const numberTest = Number(split[1]);
-                    if (!isNaN(numberTest)) split[1] = numberTest + 1;
                     fetch(`https://${GetParentResourceName()}/selectTarget`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json; charset=UTF-8' },
@@ -103,11 +101,14 @@ const Targeting = Vue.createApp({
             const FoundColor = this.SuccessColor;
             const ResetColor = this.StandardColor;
             const AlsoChangeTextIconColor = this.ChangeTextIconColor;
-            for (const index in item.data) {
+            for (let index in item.data) {
+                const itemData = item.data[index];
+                const numberTest = Number(index);
+                if (!isNaN(numberTest)) index = numberTest + 1;
                 if (AlsoChangeTextIconColor) {
-                    TargetLabel += "<div id='target-" + index + "' style='margin-bottom: 1vh;'><span id='target-icon-" + index + "' style='color: " + ResetColor + "'><i class='" + item.data[index].icon + "'></i></span>&nbsp" + item.data[index].label + "</div>";
+                    TargetLabel += "<div id='target-" + index + "' style='margin-bottom: 1vh;'><span id='target-icon-" + index + "' style='color: " + ResetColor + "'><i class='" + itemData.icon + "'></i></span>&nbsp" + itemData.label + "</div>";
                 } else {
-                    TargetLabel += "<div id='target-" + index + "' style='margin-bottom: 1vh;'><span id='target-icon-" + index + "' style='color: " + FoundColor + "'><i class='" + item.data[index].icon + "'></i></span>&nbsp" + item.data[index].label + "</div>";
+                    TargetLabel += "<div id='target-" + index + "' style='margin-bottom: 1vh;'><span id='target-icon-" + index + "' style='color: " + FoundColor + "'><i class='" + itemData.icon + "'></i></span>&nbsp" + itemData.label + "</div>";
                 }
 
                 setTimeout(() => {

@@ -972,6 +972,7 @@ end)
 -- NUI Callbacks
 
 RegisterNUICallback('selectTarget', function(option, cb)
+	option = tonumber(option) or option
     SetNuiFocus(false, false)
     SetNuiFocusKeepInput(false)
 	Wait(100)
