@@ -16,6 +16,7 @@ options = {
 targetoptions = {
   options = {
     {
+      num: number,
       type: string,
       event: string,
       icon: string,
@@ -45,6 +46,7 @@ targetoptions = {
     debugPoly = false, -- This is for enabling/disabling the drawing of the box, it accepts only a boolean value (true or false), when true it will draw the polyzone in green
     options = { -- This is your options table, in this table all the options will be specified for the target to accept
       { -- This is the first table with options, you can make as many options inside the options table as you want
+        num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
         event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
         icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -80,6 +82,7 @@ exports['qb-target']:AddCircleZone("name", vector3(x, y, z), 1.5, { -- The name 
 }, {
   options = { -- This is your options table, in this table all the options will be specified for the target to accept
     { -- This is the first table with options, you can make as many options inside the options table as you want
+      num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
       type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
       event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
       icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -125,6 +128,7 @@ options = {
 targetoptions = {
   options = {
     {
+      num: number,
       type: string,
       event: string,
       icon: string,
@@ -158,6 +162,7 @@ targetoptions = {
     maxZ = 38.9, -- This is the top of the boxzone, this can be different from the Z value in the coords, this has to be a float value
     options = { -- This is your options table, in this table all the options will be specified for the target to accept
       { -- This is the first table with options, you can make as many options inside the options table as you want
+        num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
         event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
         icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -196,6 +201,7 @@ exports['qb-target']:AddBoxZone("name", vector3(x, y, z), 1.5, 1.6, { -- The nam
 }, {
   options = { -- This is your options table, in this table all the options will be specified for the target to accept
     { -- This is the first table with options, you can make as many options inside the options table as you want
+      num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
       type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
       event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
       icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -244,6 +250,7 @@ options = {
 targetoptions = {
   options = {
     {
+      num: number,
       type: string,
       event: string,
       icon: string,
@@ -276,6 +283,7 @@ targetoptions = {
     maxZ = 38.9, -- This is the top of the boxzone, this can be different from the Z value in the coords, this has to be a float value
     options = { -- This is your options table, in this table all the options will be specified for the target to accept
       { -- This is the first table with options, you can make as many options inside the options table as you want
+        num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
         event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
         icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -316,6 +324,7 @@ exports['qb-target']:AddPolyZone("name", points, {
 }, {
   options = { -- This is your options table, in this table all the options will be specified for the target to accept
     { -- This is the first table with options, you can make as many options inside the options table as you want
+      num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
       type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
       event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
       icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -360,6 +369,7 @@ options = {
 targetoptions = {
   options = {
     {
+      num: number,
       type: string,
       event: string,
       icon: string,
@@ -397,6 +407,7 @@ exports['qb-target']:AddComboZone(zones, {
 }, {
   options = { -- This is your options table, in this table all the options will be specified for the target to accept
     { -- This is the first table with options, you can make as many options inside the options table as you want
+      num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
       type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
       event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
       icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -434,6 +445,7 @@ AddTargetBone(bones: table or string, parameters: table)
 parameters = {
   options = {
     {
+      num: number,
       type: string,
       event: string,
       icon: string,
@@ -457,6 +469,7 @@ parameters = {
     bones = {'boot', 'bonnet'} -- This is your bones table, this specifies all the bones that have to be added to the targetoptions, this can be a string or a table
     options = { -- This is your options table, in this table all the options will be specified for the target to accept
       { -- This is the first table with options, you can make as many options inside the options table as you want
+        num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
         event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
         icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -490,6 +503,7 @@ local bones = {
 exports['qb-target']:AddTargetBone(bones, { -- The bones can be a string or a table
   options = { -- This is your options table, in this table all the options will be specified for the target to accept
     { -- This is the first table with options, you can make as many options inside the options table as you want
+      num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
       type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
       event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
       icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -523,6 +537,7 @@ AddTargetEntity(entity: number or table, parameters: table)
 parameters = {
   options = {
     {
+      num: number,
       type: string,
       event: string,
       icon: string,
@@ -552,6 +567,7 @@ CreateThread(function()
   exports['qb-target']:AddTargetEntity(entity, { -- The specified entity number
     options = { -- This is your options table, in this table all the options will be specified for the target to accept
       { -- This is the first table with options, you can make as many options inside the options table as you want
+        num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
         event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
         icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -591,6 +607,7 @@ options = {
 targetoptions = {
   options = {
     {
+      num: number,
       type: string,
       event: string,
       icon: string,
@@ -626,6 +643,7 @@ CreateThread(function()
   }, {
     options = { -- This is your options table, in this table all the options will be specified for the target to accept
       { -- This is the first table with options, you can make as many options inside the options table as you want
+        num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
         event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
         icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -663,6 +681,7 @@ AddTargetModel(models: string or table, parameters: table)
 parameters = {
   options = {
     {
+      num: number,
       type: string,
       event: string,
       icon: string,
@@ -688,6 +707,7 @@ parameters = {
     }
     options = { -- This is your options table, in this table all the options will be specified for the target to accept
       { -- This is the first table with options, you can make as many options inside the options table as you want
+        num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
         event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
         icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -720,6 +740,7 @@ local models = {
 exports['qb-target']:AddTargetModel(models, { -- This defines the models, can be a string or a table
   options = { -- This is your options table, in this table all the options will be specified for the target to accept
     { -- This is the first table with options, you can make as many options inside the options table as you want
+      num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
       type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
       event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
       icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -809,6 +830,7 @@ AddGlobalPed(parameters: table)
 parameters = {
   options = {
     {
+      num: number,
       type: string,
       event: string,
       icon: string,
@@ -830,6 +852,7 @@ parameters = {
 ```lua
   options = { -- This is your options table, in this table all the options will be specified for the target to accept
     { -- This is the first table with options, you can make as many options inside the options table as you want
+      num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
       type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
       event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
       icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -858,6 +881,7 @@ parameters = {
 exports['qb-target']:AddGlobalPed({
   options = { -- This is your options table, in this table all the options will be specified for the target to accept
     { -- This is the first table with options, you can make as many options inside the options table as you want
+      num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
       type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
       event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
       icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -891,6 +915,7 @@ AddGlobalVehicle(parameters: table)
 parameters = {
   options = {
     {
+      num: number,
       type: string,
       event: string,
       icon: string,
@@ -912,6 +937,7 @@ parameters = {
 ```lua
   options = { -- This is your options table, in this table all the options will be specified for the target to accept
     { -- This is the first table with options, you can make as many options inside the options table as you want
+      num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
       type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
       event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
       icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -940,6 +966,7 @@ parameters = {
 exports['qb-target']:AddGlobalVehicle({
   options = { -- This is your options table, in this table all the options will be specified for the target to accept
     { -- This is the first table with options, you can make as many options inside the options table as you want
+      num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
       type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
       event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
       icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -973,6 +1000,7 @@ AddGlobalObject(parameters: table)
 parameters = {
   options = {
     {
+      num: number,
       type: string,
       event: string,
       icon: string,
@@ -994,6 +1022,7 @@ parameters = {
 ```lua
   options = { -- This is your options table, in this table all the options will be specified for the target to accept
     { -- This is the first table with options, you can make as many options inside the options table as you want
+      num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
       type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
       event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
       icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -1022,6 +1051,7 @@ parameters = {
 exports['qb-target']:AddGlobalObject({
   options = { -- This is your options table, in this table all the options will be specified for the target to accept
     { -- This is the first table with options, you can make as many options inside the options table as you want
+      num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
       type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
       event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
       icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -1055,6 +1085,7 @@ AddGlobalPlayer(parameters: table)
 parameters = {
   options = {
     {
+      num: number,
       type: string,
       event: string,
       icon: string,
@@ -1076,6 +1107,7 @@ parameters = {
 ```lua
   options = { -- This is your options table, in this table all the options will be specified for the target to accept
     { -- This is the first table with options, you can make as many options inside the options table as you want
+      num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
       type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
       event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
       icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -1104,6 +1136,7 @@ parameters = {
 exports['qb-target']:AddGlobalPlayer({
   options = { -- This is your options table, in this table all the options will be specified for the target to accept
     { -- This is the first table with options, you can make as many options inside the options table as you want
+      num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
       type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
       event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
       icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -1211,9 +1244,9 @@ RaycastCamera(flag: number, playerCoords: vector3) -- Preferably 30 or -1, -1 wi
 CreateThread(function()
   while true do
     local curFlag = 30
-    local coords, entity, entityType = exports['qb-target']:RaycastCamera(-1, GetEntityCoords(PlayerPedId()))
+    local coords, distance, entity, entityType = exports['qb-target']:RaycastCamera(-1, GetEntityCoords(PlayerPedId()))
     if entityType > 0 then
-      print('gotten')
+      print('Got an entity')
     end
     if curFlag = 30 then curFlag = -1 else curFlag = 30 end
     Wait(100)
@@ -1244,6 +1277,7 @@ datatable = {
     useModel: boolean,
     options = {
       {
+        num: number,
         type: string,
         event: string,
         icon: string,
@@ -1278,6 +1312,7 @@ datatable = {
       useModel: boolean,
       options = {
         {
+          num: number,
           type: string,
           event: string,
           icon: string,
@@ -1316,6 +1351,7 @@ datatable = {
     useModel = false, -- This is the option for which target function to use, when this is set to true it'll use AddTargetModel and add these to al models of the given ped model, if it is false it will only add the options to this specific ped
     options = { -- This is your options table, in this table all the options will be specified for the target to accept
       { -- This is the first table with options, you can make as many options inside the options table as you want
+        num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
         event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
         icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -1360,6 +1396,7 @@ exports['qb-target']:SpawnPed({
     useModel = false, -- This is the option for which target function to use, when this is set to true it'll use AddTargetModel and add these to al models of the given ped model, if it is false it will only add the options to this specific ped
     options = { -- This is your options table, in this table all the options will be specified for the target to accept
       { -- This is the first table with options, you can make as many options inside the options table as you want
+        num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
         type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
         event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
         icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -1401,6 +1438,7 @@ exports['qb-target']:SpawnPed({
       useModel = false, -- This is the option for which target function to use, when this is set to true it'll use AddTargetModel and add these to al models of the given ped model, if it is false it will only add the options to this specific ped
       options = { -- This is your options table, in this table all the options will be specified for the target to accept
         { -- This is the first table with options, you can make as many options inside the options table as you want
+          num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
           type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
           event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
           icon = 'fas fa-example', -- This is the icon that will display next to this trigger option
@@ -1439,6 +1477,7 @@ exports['qb-target']:SpawnPed({
       useModel = false, -- This is the option for which target function to use, when this is set to true it'll use AddTargetModel and add these to al models of the given ped model, if it is false it will only add the options to this specific ped
       options = { -- This is your options table, in this table all the options will be specified for the target to accept
         { -- This is the first table with options, you can make as many options inside the options table as you want
+          num = 1, -- This is the position number of your option in the list of options in the qb-target context menu (OPTIONAL)
           type = "client", -- This specifies the type of event the target has to trigger on click, this can be "client", "server", "command" or "qbcommand", this is OPTIONAL and will only work if the event is also specified
           event = "Test:Event", -- This is the event it will trigger on click, this can be a client event, server event, command or qbcore registered command, NOTICE: Normal command can't have arguments passed through, QBCore registered ones can have arguments passed through
           icon = 'fas fa-example', -- This is the icon that will display next to this trigger option

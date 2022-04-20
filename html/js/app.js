@@ -44,11 +44,13 @@ const Targeting = Vue.createApp({
             if (element.id) {
                 const split = element.id.split("-");
                 if (split[0] === 'target' && split[1] !== 'eye' && event.button == 0) {
+                    const numberTest = Number(split[1]);
+                    if (!isNaN(numberTest)) split[1] = numberTest + 1;
                     fetch(`https://${GetParentResourceName()}/selectTarget`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-                        body: JSON.stringify(Number(split[1]) + 1)
-                    }).then(resp => resp.json()).then(resp => {});
+                        body: JSON.stringify(split[1])
+                    }).then(resp => resp.json()).then(_ => {});
                     this.TargetHTML = "";
                     this.Show = false;
                 }
@@ -60,7 +62,7 @@ const Targeting = Vue.createApp({
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json; charset=UTF-8' },
                     body: ''
-                }).then(resp => resp.json()).then(resp => {});
+                }).then(resp => resp.json()).then(_ => {});
             }
         });
 
@@ -71,7 +73,7 @@ const Targeting = Vue.createApp({
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json; charset=UTF-8' },
                     body: ''
-                }).then(resp => resp.json()).then(resp => {});
+                }).then(resp => resp.json()).then(_ => {});
             }
         });
     },
@@ -101,11 +103,11 @@ const Targeting = Vue.createApp({
             const FoundColor = this.SuccessColor;
             const ResetColor = this.StandardColor;
             const AlsoChangeTextIconColor = this.ChangeTextIconColor;
-            item.data.forEach((item, index) => {
+            for (const index in item.data) {
                 if (AlsoChangeTextIconColor) {
-                    TargetLabel += "<div id='target-" + index + "' style='margin-bottom: 1vh;'><span id='target-icon-" + index + "' style='color: " + ResetColor + "'><i class='" + item.icon + "'></i></span>&nbsp" + item.label + "</div>";
+                    TargetLabel += "<div id='target-" + index + "' style='margin-bottom: 1vh;'><span id='target-icon-" + index + "' style='color: " + ResetColor + "'><i class='" + item.data[index].icon + "'></i></span>&nbsp" + item.data[index].label + "</div>";
                 } else {
-                    TargetLabel += "<div id='target-" + index + "' style='margin-bottom: 1vh;'><span id='target-icon-" + index + "' style='color: " + FoundColor + "'><i class='" + item.icon + "'></i></span>&nbsp" + item.label + "</div>";
+                    TargetLabel += "<div id='target-" + index + "' style='margin-bottom: 1vh;'><span id='target-icon-" + index + "' style='color: " + FoundColor + "'><i class='" + item.data[index].icon + "'></i></span>&nbsp" + item.data[index].label + "</div>";
                 }
 
                 setTimeout(() => {
@@ -123,7 +125,7 @@ const Targeting = Vue.createApp({
                         if (AlsoChangeTextIconColor) document.getElementById("target-icon-" + index).style.color = ResetColor;
                     });
                 }, 10)
-            });
+            }
             this.TargetHTML = TargetLabel;
         },
 
