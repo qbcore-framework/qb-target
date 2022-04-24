@@ -7,7 +7,6 @@ const Targeting = Vue.createApp({
             CurrentIcon: "far fa-eye",
             SuccessColor: "rgb(30, 144, 255)",
             StandardColor: "white",
-            TargetHTML: "",
             TargetEyeStyleObject: {
                 color: "white", // This is the standardcolor, change this to the same as the StandardColor if you have changed it
             },
@@ -49,7 +48,8 @@ const Targeting = Vue.createApp({
                         headers: { 'Content-Type': 'application/json; charset=UTF-8' },
                         body: JSON.stringify(split[1])
                     }).then(resp => resp.json()).then(_ => {});
-                    this.TargetHTML = "";
+                    const targetLabel = document.getElementById("target-label");
+                    targetLabel.innerHTML = "";
                     this.Show = false;
                 }
             }
@@ -77,13 +77,15 @@ const Targeting = Vue.createApp({
     },
     methods: {
         OpenTarget() {
-            this.TargetHTML = "";
+            const targetLabel = document.getElementById("target-label");
+            targetLabel.innerHTML = "";
             this.Show = true;
             this.TargetEyeStyleObject.color = this.StandardColor;
         },
 
         CloseTarget() {
-            this.TargetHTML = "";
+            const targetLabel = document.getElementById("target-label");
+            targetLabel.innerHTML = "";
             this.TargetEyeStyleObject.color = this.StandardColor;
             this.Show = false;
             this.CurrentIcon = this.StandardEyeIcon;
@@ -96,42 +98,54 @@ const Targeting = Vue.createApp({
         },
 
         ValidTarget(item) {
-            this.TargetHTML = "";
-            let TargetLabel = this.TargetHTML;
+            const targetLabel = document.getElementById("target-label");
+            targetLabel.innerHTML = "";
             const FoundColor = this.SuccessColor;
             const ResetColor = this.StandardColor;
-            const AlsoChangeTextIconColor = this.ChangeTextIconColor;
+            const ChangeTextIconColor = this.ChangeTextIconColor;
             for (let index in item.data) {
                 const itemData = item.data[index];
                 const numberTest = Number(index);
+
                 if (!isNaN(numberTest)) index = numberTest + 1;
-                if (AlsoChangeTextIconColor) {
-                    TargetLabel += "<div id='target-" + index + "' style='margin-bottom: 1vh;'><span id='target-icon-" + index + "' style='color: " + ResetColor + "'><i class='" + itemData.icon + "'></i></span>&nbsp" + itemData.label + "</div>";
+
+                const targetLabel = document.getElementById("target-label");
+
+                if (ChangeTextIconColor) {
+                    targetLabel.innerHTML +=
+                    `<div id='target-${index}' style='margin-bottom: 1vh;'>
+                        <span id='target-icon-${index}' style='color: ${ResetColor}'>
+                            <i class='${itemData.icon}'></i>
+                        </span>
+                        ${itemData.label}
+                    </div>`;
                 } else {
-                    TargetLabel += "<div id='target-" + index + "' style='margin-bottom: 1vh;'><span id='target-icon-" + index + "' style='color: " + FoundColor + "'><i class='" + itemData.icon + "'></i></span>&nbsp" + itemData.label + "</div>";
+                    targetLabel.innerHTML +=
+                    `<div id='target-${index}' style='margin-bottom: 1vh;'>
+                        <span id='target-icon-${index}' style='color: ${FoundColor}'>
+                            <i class='${itemData.icon}'></i>
+                        </span>
+                        ${itemData.label}
+                    </div>`;
                 }
 
-                setTimeout(() => {
-                    const hoverelem = document.getElementById("target-" + index);
+                const hoverelem = document.getElementById("target-" + index);
 
-                    hoverelem.addEventListener("mouseenter", (event) => {
-                        event.target.style.color = FoundColor;
-                        if (AlsoChangeTextIconColor) {
-                            document.getElementById("target-icon-" + index).style.color = FoundColor;
-                        };
-                    });
+                hoverelem.addEventListener("mouseenter", (event) => {
+                    event.target.style.color = FoundColor;
+                    if (ChangeTextIconColor) document.getElementById("target-icon-" + index).style.color = FoundColor;
+                });
 
-                    hoverelem.addEventListener("mouseleave", (event) => {
-                        event.target.style.color = ResetColor;
-                        if (AlsoChangeTextIconColor) document.getElementById("target-icon-" + index).style.color = ResetColor;
-                    });
-                }, 10)
+                hoverelem.addEventListener("mouseleave", (event) => {
+                    event.target.style.color = ResetColor;
+                    if (ChangeTextIconColor) document.getElementById("target-icon-" + index).style.color = ResetColor;
+                });
             }
-            this.TargetHTML = TargetLabel;
         },
 
         LeftTarget() {
-            this.TargetHTML = "";
+            const targetLabel = document.getElementById("target-label");
+            targetLabel.innerHTML = "";
             this.CurrentIcon = this.StandardEyeIcon;
             this.TargetEyeStyleObject.color = this.StandardColor;
         }
