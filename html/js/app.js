@@ -50,7 +50,7 @@ const Targeting = Vue.createApp({
                     fetch(`https://${GetParentResourceName()}/selectTarget`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json; charset=UTF-8" },
-                        body: JSON.stringify(split[1])
+                        body: JSON.stringify(split[2])
                     }).then(resp => resp.json()).then(_ => {});
                     this.targetLabel.innerHTML = "";
                     this.Show = false;
