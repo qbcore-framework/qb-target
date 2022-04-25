@@ -123,26 +123,28 @@ const Targeting = Vue.createApp({
         ValidTarget(item) {
             this.targetLabel.innerHTML = "";
             for (let [index, itemData] of Object.entries(item.data)) {
-                const numberTest = Number(index);
+                if (itemData !== null) {
+                    const numberTest = Number(index);
 
-                if (!isNaN(numberTest)) index = numberTest + 1;
-
-                if (this.ChangeTextIconColor) {
-                    this.targetLabel.innerHTML +=
-                    `<div id="target-option-${index}" style="margin-bottom: 1vh;">
-                        <span id="target-icon-${index}" style="color: ${this.StandardColor}">
-                            <i class="${itemData.icon}"></i>
-                        </span>
-                        ${itemData.label}
-                    </div>`;
-                } else {
-                    this.targetLabel.innerHTML +=
-                    `<div id="target-option-${index}" style="margin-bottom: 1vh;">
-                        <span id="target-icon-${index}" style="color: ${this.SuccessColor}">
-                            <i class="${itemData.icon}"></i>
-                        </span>
-                        ${itemData.label}
-                    </div>`;
+                    if (!isNaN(numberTest)) index = numberTest + 1;
+    
+                    if (this.ChangeTextIconColor) {
+                        this.targetLabel.innerHTML +=
+                        `<div id="target-option-${index}" style="margin-bottom: 1vh; color: ${this.StandardColor}">
+                            <span id="target-icon-${index}" style="color: ${this.StandardColor}">
+                                <i class="${itemData.icon}"></i>
+                            </span>
+                            ${itemData.label}
+                        </div>`;
+                    } else {
+                        this.targetLabel.innerHTML +=
+                        `<div id="target-option-${index}" style="margin-bottom: 1vh; color: ${this.StandardColor}">
+                            <span id="target-icon-${index}" style="color: ${this.SuccessColor}">
+                                <i class="${itemData.icon}"></i>
+                            </span>
+                            ${itemData.label}
+                        </div>`;
+                    }
                 }
             }
         },
