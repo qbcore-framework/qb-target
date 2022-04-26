@@ -1,15 +1,14 @@
 const Targeting = Vue.createApp({
     data() {
         return {
-            Show: false,
+            Show: false, // leave this
             ChangeTextIconColor: false, // This is if you want to change the color of the icon next to the option text with the text color
-            StandardEyeIcon: "far fa-eye",
-            CurrentIcon: "far fa-eye",
-            SuccessColor: "rgb(30, 144, 255)",
-            StandardColor: "white",
-            TargetHTML: "",
+            StandardEyeIcon: "far fa-eye", // This is the default eye icon
+            CurrentIcon: this.StandardEyeIcon, // leave this
+            SuccessColor: "rgb(30, 144, 255)", // This is the color when the target has found the option
+            StandardColor: "white", // This is the standard color, change this to the same as the StandardColor if you have changed it
             TargetEyeStyleObject: {
-                color: "white", // This is the standardcolor, change this to the same as the StandardColor if you have changed it
+                color: this.StandardColor, // leave this
             },
         }
     },
@@ -17,8 +16,12 @@ const Targeting = Vue.createApp({
         window.removeEventListener("message", this.messageListener);
         window.removeEventListener("mousedown", this.mouseListener);
         window.removeEventListener("keydown", this.keyListener);
+        window.removeEventListener("mouseover", this.mouseOverListener);
+        window.removeEventListener("mouseout", this.mouseOutListener);
     },
     mounted() {
+        this.targetLabel = document.getElementById("target-label");
+
         this.messageListener = window.addEventListener("message", (event) => {
             switch (event.data.response) {
                 case "openTarget":
@@ -43,13 +46,13 @@ const Targeting = Vue.createApp({
             let element = event.target;
             if (element.id) {
                 const split = element.id.split("-");
-                if (split[0] === 'target' && split[1] !== 'eye' && event.button == 0) {
+                if (split[0] === "target" && split[1] !== "eye" && event.button == 0) {
                     fetch(`https://${GetParentResourceName()}/selectTarget`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-                        body: JSON.stringify(Number(split[1]) + 1)
-                    }).then(resp => resp.json()).then(resp => {});
-                    this.TargetHTML = "";
+                        method: "POST",
+                        headers: { "Content-Type": "application/json; charset=UTF-8" },
+                        body: JSON.stringify(split[2])
+                    }).then(resp => resp.json()).then(_ => {});
+                    this.targetLabel.innerHTML = "";
                     this.Show = false;
                 }
             }
@@ -57,33 +60,55 @@ const Targeting = Vue.createApp({
             if (event.button == 2) {
                 this.LeftTarget();
                 fetch(`https://${GetParentResourceName()}/leftTarget`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-                    body: ''
-                }).then(resp => resp.json()).then(resp => {});
+                    method: "POST",
+                    headers: { "Content-Type": "application/json; charset=UTF-8" },
+                    body: ""
+                }).then(resp => resp.json()).then(_ => {});
             }
         });
 
         this.keyListener = window.addEventListener("keydown", (event) => {
-            if (event.key == 'Escape' || event.key == 'Backspace') {
+            if (event.key == "Escape" || event.key == "Backspace") {
                 this.CloseTarget();
                 fetch(`https://${GetParentResourceName()}/closeTarget`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-                    body: ''
-                }).then(resp => resp.json()).then(resp => {});
+                    method: "POST",
+                    headers: { "Content-Type": "application/json; charset=UTF-8" },
+                    body: ""
+                }).then(resp => resp.json()).then(_ => {});
+            }
+        });
+
+        this.mouseOverListener = window.addEventListener("mouseover", (event) => {
+            const element = event.target;
+            if (element.id) {
+                const split = element.id.split("-");
+                if (split[0] === "target" && split[1] === "option") {
+                    event.target.style.color = this.SuccessColor;
+                    if (this.ChangeTextIconColor) document.getElementById(`target-icon-${index}`).style.color = this.SuccessColor;
+                }
+            }
+        });
+
+        this.mouseOutListener = window.addEventListener("mouseout", (event) => {
+            const element = event.target;
+            if (element.id) {
+                const split = element.id.split("-");
+                if (split[0] === "target" && split[1] === "option") {
+                    element.style.color = this.StandardColor;
+                    if (this.ChangeTextIconColor) document.getElementById(`target-icon-${index}`).style.color = this.StandardColor;
+                }
             }
         });
     },
     methods: {
         OpenTarget() {
-            this.TargetHTML = "";
+            this.targetLabel.innerHTML = "";
             this.Show = true;
             this.TargetEyeStyleObject.color = this.StandardColor;
         },
 
         CloseTarget() {
-            this.TargetHTML = "";
+            this.targetLabel.innerHTML = "";
             this.TargetEyeStyleObject.color = this.StandardColor;
             this.Show = false;
             this.CurrentIcon = this.StandardEyeIcon;
@@ -96,39 +121,36 @@ const Targeting = Vue.createApp({
         },
 
         ValidTarget(item) {
-            this.TargetHTML = "";
-            let TargetLabel = this.TargetHTML;
-            const FoundColor = this.SuccessColor;
-            const ResetColor = this.StandardColor;
-            const AlsoChangeTextIconColor = this.ChangeTextIconColor;
-            item.data.forEach((item, index) => {
-                if (AlsoChangeTextIconColor) {
-                    TargetLabel += "<div id='target-" + index + "' style='margin-bottom: 1vh;'><span id='target-icon-" + index + "' style='color: " + ResetColor + "'><i class='" + item.icon + "'></i></span>&nbsp" + item.label + "</div>";
-                } else {
-                    TargetLabel += "<div id='target-" + index + "' style='margin-bottom: 1vh;'><span id='target-icon-" + index + "' style='color: " + FoundColor + "'><i class='" + item.icon + "'></i></span>&nbsp" + item.label + "</div>";
+            this.targetLabel.innerHTML = "";
+            for (let [index, itemData] of Object.entries(item.data)) {
+                if (itemData !== null) {
+                    const numberTest = Number(index);
+
+                    if (!isNaN(numberTest)) index = numberTest + 1;
+    
+                    if (this.ChangeTextIconColor) {
+                        this.targetLabel.innerHTML +=
+                        `<div id="target-option-${index}" style="margin-bottom: 1vh; color: ${this.StandardColor}">
+                            <span id="target-icon-${index}" style="color: ${this.StandardColor}">
+                                <i class="${itemData.icon}"></i>
+                            </span>
+                            ${itemData.label}
+                        </div>`;
+                    } else {
+                        this.targetLabel.innerHTML +=
+                        `<div id="target-option-${index}" style="margin-bottom: 1vh; color: ${this.StandardColor}">
+                            <span id="target-icon-${index}" style="color: ${this.SuccessColor}">
+                                <i class="${itemData.icon}"></i>
+                            </span>
+                            ${itemData.label}
+                        </div>`;
+                    }
                 }
-
-                setTimeout(() => {
-                    const hoverelem = document.getElementById("target-" + index);
-
-                    hoverelem.addEventListener("mouseenter", (event) => {
-                        event.target.style.color = FoundColor;
-                        if (AlsoChangeTextIconColor) {
-                            document.getElementById("target-icon-" + index).style.color = FoundColor;
-                        };
-                    });
-
-                    hoverelem.addEventListener("mouseleave", (event) => {
-                        event.target.style.color = ResetColor;
-                        if (AlsoChangeTextIconColor) document.getElementById("target-icon-" + index).style.color = ResetColor;
-                    });
-                }, 10)
-            });
-            this.TargetHTML = TargetLabel;
+            }
         },
 
         LeftTarget() {
-            this.TargetHTML = "";
+            this.targetLabel.innerHTML = "";
             this.CurrentIcon = this.StandardEyeIcon;
             this.TargetEyeStyleObject.color = this.StandardColor;
         }
