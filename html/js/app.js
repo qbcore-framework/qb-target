@@ -124,10 +124,8 @@ const Targeting = Vue.createApp({
             this.targetLabel.innerHTML = "";
             for (let [index, itemData] of Object.entries(item.data)) {
                 if (itemData !== null) {
-                    const numberTest = Number(index);
+                    index += 1;
 
-                    if (!isNaN(numberTest)) index = numberTest + 1;
-    
                     if (this.ChangeTextIconColor) {
                         this.targetLabel.innerHTML +=
                         `<div id="target-option-${index}" style="margin-bottom: 1vh; color: ${this.StandardColor}">

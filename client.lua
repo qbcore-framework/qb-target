@@ -167,9 +167,9 @@ local function SetupOptions(datatable, entity, distance, isZone)
 	if not isZone then table_wipe(sendDistance) end
 	table_wipe(nuiData)
 	local slot = 0
-	for index, data in pairs(datatable) do
+	for _, data in pairs(datatable) do
 		if CheckOptions(data, entity, distance) then
-			slot = data.num or index
+			slot = data.num or slot + 1
 			sendData[slot] = data
 			sendData[slot].entity = entity
 			nuiData[slot] = {
