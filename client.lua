@@ -748,7 +748,7 @@ function SpawnPeds()
 					SetRelationshipBetweenGroups(v.pedrelations.toowngroup, pedgrouphash, pedgrouphash)
 				end
 			else
-				if Config.Debug then print(v.pedrelations.groupname .. ' is not a string') end
+				error(v.pedrelations.groupname .. ' is not a string')
 			end
 
 			if v.weapon then
@@ -857,7 +857,7 @@ local function SpawnPed(data)
 						SetRelationshipBetweenGroups(v.pedrelations.toowngroup, pedgrouphash, pedgrouphash)
 					end
 				else
-					if Config.Debug then print(v.pedrelations.groupname .. ' is not a string') end
+					error(v.pedrelations.groupname .. ' is not a string')
 				end
 
 				if v.weapon then
@@ -953,7 +953,7 @@ local function SpawnPed(data)
 					SetRelationshipBetweenGroups(data.pedrelations.toowngroup, pedgrouphash, pedgrouphash)
 				end
 			else
-				if Config.Debug then print(data.pedrelations.groupname .. ' is not a string') end
+				error(v.pedrelations.groupname .. ' is not a string')
 			end
 
 			if data.weapon then
