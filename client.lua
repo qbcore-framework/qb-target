@@ -303,7 +303,7 @@ local function EnableTarget()
 					if IsPedAPlayer(entity) then data = Players end
 					if data and next(data) then CheckEntity(flag, data, entity, distance) end
 
-				-- Vehicle bones
+				-- Vehicle bones and models
 				elseif entityType == 2 then
 					local closestBone, _, closestBoneName = CheckBones(coords, entity, Bones.Vehicle)
 					local datatable = Bones.Options[closestBoneName]
@@ -343,11 +343,11 @@ local function EnableTarget()
 							LeftTarget()
 							DrawOutlineEntity(entity, false)
 						end
-					else
-						-- Vehicle Model targets
-						local data = Models[GetEntityModel(entity)]
-						if data then CheckEntity(flag, data, entity, distance) end
 					end
+
+					-- Vehicle model targets
+					local data = Models[GetEntityModel(entity)]
+					if data then CheckEntity(flag, data, entity, distance) end
 
 				-- Entity targets
 				elseif entityType > 2 then
