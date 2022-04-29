@@ -110,7 +110,7 @@ Config.Peds = {
 -------------------------------------------------------------------------------
 local function JobCheck() return true end
 local function GangCheck() return true end
-local function ItemCount() return true end
+local function ItemCheck() return true end
 local function CitizenCheck() return true end
 
 CreateThread(function()
@@ -143,33 +143,34 @@ CreateThread(function()
 		local QBCore = exports['qb-core']:GetCoreObject()
 		local PlayerData = QBCore.Functions.GetPlayerData()
 
-		ItemCount = function(items)
+		ItemCheck = function(items)
+			local isTable = type(items) == 'table'
+			local isArray = isTable and table.type(items) == 'array' or false
 			local finalcount = 0
 			local count = 0
-			for _ in pairs(items) do finalcount += 1 end
-			for _, itemData in pairs(PlayerData.items) do
-				if type(items) == 'table' then
-					for k, v in pairs(items) do
-						if type(k) == 'string' then
-							if itemData and itemData.name == k then
-								if itemData.amount >= v then
-									count += 1
-									if count == finalcount then
-										return true
-									end
-								end
-							end
-						else
-							if itemData and itemData.name == v then
+			if isTable then for _ in pairs(items) do finalcount += 1 end end
+			for _, v in pairs(PlayerData.items) do
+				if isTable then
+					if isArray then
+						for _, item in pairs(items) do
+							if v and v.name == item then
 								count += 1
-								if count == finalcount then
+								if count == finalcount then -- This is to make sure it checks all items in the array instead of only one of the items
 									return true
 								end
 							end
 						end
+					else -- Table expected in this format {['itemName'] = amount}
+						local itemAmount = items[v.name]
+						if itemAmount and v and v.amount >= itemAmount then
+							count += 1
+							if count == finalcount then -- This is to make sure it checks all items in the table instead of only one of the items
+								return true
+							end
+						end
 					end
-				else
-					if itemData and itemData.name == items then
+				else -- When items is a string
+					if v and v.name == items then
 						return true
 					end
 				end
@@ -233,7 +234,7 @@ function CheckOptions(data, entity, distance)
 	if distance and data.distance and distance > data.distance then return false end
 	if data.job and not JobCheck(data.job) then return false end
 	if data.gang and not GangCheck(data.gang) then return false end
-	if data.item and not ItemCount(data.item) then return false end
+	if data.item and not ItemCheck(data.item) then return false end
 	if data.citizenid and not CitizenCheck(data.citizenid) then return false end
 	if data.canInteract and not data.canInteract(entity, distance, data) then return false end
 	return true
