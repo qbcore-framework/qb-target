@@ -151,23 +151,20 @@ CreateThread(function()
 			if isTable then for _ in pairs(items) do finalcount += 1 end end
 			for _, v in pairs(PlayerData.items) do
 				if isTable then
-					if isArray then
+					if isArray then -- Table expected in this format {'itemName1', 'itemName2', 'etc'}
 						for _, item in pairs(items) do
 							if v and v.name == item then
 								count += 1
-								if count == finalcount then -- This is to make sure it checks all items in the array instead of only one of the items
-									return true
-								end
 							end
 						end
 					else -- Table expected in this format {['itemName'] = amount}
 						local itemAmount = items[v.name]
 						if itemAmount and v and v.amount >= itemAmount then
 							count += 1
-							if count == finalcount then -- This is to make sure it checks all items in the table instead of only one of the items
-								return true
-							end
 						end
+					end
+					if count == finalcount then -- This is to make sure it checks all items in the table instead of only one of the items
+						return true
 					end
 				else -- When items is a string
 					if v and v.name == items then
