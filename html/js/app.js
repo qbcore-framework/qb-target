@@ -124,7 +124,7 @@ const Targeting = Vue.createApp({
             this.targetLabel.innerHTML = "";
             for (let [index, itemData] of Object.entries(item.data)) {
                 if (itemData !== null) {
-                    index += 1;
+                    index = Number(index) + 1;
 
                     if (this.ChangeTextIconColor) {
                         this.targetLabel.innerHTML +=
