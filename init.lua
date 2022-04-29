@@ -143,10 +143,35 @@ CreateThread(function()
 		local QBCore = exports['qb-core']:GetCoreObject()
 		local PlayerData = QBCore.Functions.GetPlayerData()
 
-		ItemCount = function(item)
-			for _, v in pairs(PlayerData.items) do
-				if v.name == item then
-					return true
+		ItemCount = function(items)
+			local finalcount = 0
+			local count = 0
+			for _ in pairs(items) do finalcount += 1 end
+			for _, itemData in pairs(PlayerData.items) do
+				if type(items) == 'table' then
+					for k, v in pairs(items) do
+						if type(k) == 'string' then
+							if itemData and itemData.name == k then
+								if itemData.amount >= v then
+									count += 1
+									if count == finalcount then
+										return true
+									end
+								end
+							end
+						else
+							if itemData and itemData.name == v then
+								count += 1
+								if count == finalcount then
+									return true
+								end
+							end
+						end
+					end
+				else
+					if itemData and itemData.name == items then
+						return true
+					end
 				end
 			end
 			return false
