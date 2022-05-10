@@ -182,6 +182,40 @@ exports['qb-target']:AddTargetEntity(mule, {
 })
 ```
 
+## Add interactable Ped at specific coordinates
+This is an example for adding an interactable Ped with a weapon in given coordinates. 
+
+The below `Config.Peds` table is located in `init.lua`. 
+
+```lua 
+Config.Peds = {
+    {
+        model = `mp_m_securoguard_01`, 
+        coords = vector4(433.0, -985.71, 30.71, 26.92),
+        networked = true,
+        invincible = true,
+        blockevents = true,
+        weapon = {
+            name = `weapon_carbinerifle`,
+            ammo = 0,
+            hidden = false,
+        }, 
+        target = {
+            options = {
+                {
+                    type = "client",
+                    event = "qb-policejob:ToggleDuty",
+                    icon = "fas fa-sign-in-alt",
+                    label = "Sign In",
+                    job = "police",
+                },
+            },
+            distance = 2.5
+        }
+    }
+}
+```
+
 ## Passing Item Data
 In this example, we define the model of the coffee machines you see around the map, and allow players to purchase a coffee. You'll have to provide your own logic for the purchase, but this is how you would handle it with qb-target, and how you would pass data through to an event for future use.
 

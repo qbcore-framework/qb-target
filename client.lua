@@ -732,6 +732,35 @@ function SpawnPeds()
 				TaskStartScenarioInPlace(spawnedped, v.scenario, 0, true)
 			end
 
+			if v.pedrelations and type(v.pedrelations.groupname) == 'string' then
+				local pedgrouphash = joaat(v.pedrelations.groupname) 
+
+				if not DoesRelationshipGroupExist(pedgrouphash) then
+					AddRelationshipGroup(v.pedrelations.groupname)
+				end
+
+				SetPedRelationshipGroupHash(spawnedped, pedgrouphash)
+				if v.pedrelations.toplayer then
+					SetRelationshipBetweenGroups(v.pedrelations.toplayer, pedgrouphash, joaat('PLAYER'))
+				end
+
+				if v.pedrelations.toowngroup then
+					SetRelationshipBetweenGroups(v.pedrelations.toowngroup, pedgrouphash, pedgrouphash)
+				end
+			else
+				error(v.pedrelations.groupname .. ' is not a string')
+			end
+
+			if v.weapon then
+				if type(v.weapon.name) == 'string' then v.weapon.name = joaat(v.weapon.name) end
+
+				if IsWeaponValid(v.weapon.name) then
+					SetCanPedEquipWeapon(spawnedped, v.weapon.name, true)
+					GiveWeaponToPed(spawnedped, v.weapon.name, v.weapon.ammo, v.weapon.hidden or false, true)
+					SetPedCurrentWeaponVisible(spawnedped, not v.weapon.hidden or false, true)
+				end
+			end
+
 			if v.target then
 				if v.target.useModel then
 					AddTargetModel(v.model, {
@@ -747,6 +776,10 @@ function SpawnPeds()
 			end
 
 			Config.Peds[k].currentpednumber = spawnedped
+
+			if v.action then
+				v.action(Config.Peds[k])
+			end
 		end
 	end
 	pedsReady = true
@@ -808,6 +841,35 @@ local function SpawnPed(data)
 					TaskStartScenarioInPlace(spawnedped, v.scenario, 0, true)
 				end
 
+				if v.pedrelations and type(v.pedrelations.groupname) == 'string' then
+					local pedgrouphash = joaat(v.pedrelations.groupname)
+
+					if not DoesRelationshipGroupExist(pedgrouphash) then
+						AddRelationshipGroup(v.pedrelations.groupname)
+					end
+
+					SetPedRelationshipGroupHash(spawnedped, pedgrouphash)
+					if v.pedrelations.toplayer then
+						SetRelationshipBetweenGroups(v.pedrelations.toplayer, pedgrouphash, joaat('PLAYER'))
+					end
+
+					if v.pedrelations.toowngroup then
+						SetRelationshipBetweenGroups(v.pedrelations.toowngroup, pedgrouphash, pedgrouphash)
+					end
+				else
+					error(v.pedrelations.groupname .. ' is not a string')
+				end
+
+				if v.weapon then
+					if type(v.weapon.name) == 'string' then v.weapon.name = joaat(v.weapon.name) end
+
+					if IsWeaponValid(v.weapon.name) then
+						SetCanPedEquipWeapon(spawnedped, v.weapon.name, true)
+						GiveWeaponToPed(spawnedped, v.weapon.name, v.weapon.ammo, v.weapon.hidden or false, true)
+						SetPedCurrentWeaponVisible(spawnedped, not v.weapon.hidden or false, true)
+					end
+				end
+
 				if v.target then
 					if v.target.useModel then
 						AddTargetModel(v.model, {
@@ -823,6 +885,10 @@ local function SpawnPed(data)
 				end
 
 				v.currentpednumber = spawnedped
+
+				if v.action then
+					v.action(Config.Peds[k])
+				end
 			end
 
 			local nextnumber = #Config.Peds + 1
@@ -871,6 +937,35 @@ local function SpawnPed(data)
 				TaskStartScenarioInPlace(spawnedped, data.scenario, 0, true)
 			end
 
+			if data.pedrelations and type(data.pedrelations.groupname) == 'string' then
+				local pedgrouphash = joaat(data.pedrelations.groupname) 
+
+				if not DoesRelationshipGroupExist(pedgrouphash) then
+					AddRelationshipGroup(data.pedrelations.groupname)
+				end
+
+				SetPedRelationshipGroupHash(spawnedped, pedgrouphash)
+				if data.pedrelations.toplayer then
+					SetRelationshipBetweenGroups(data.pedrelations.toplayer, pedgrouphash, joaat('PLAYER'))
+				end
+
+				if data.pedrelations.toowngroup then
+					SetRelationshipBetweenGroups(data.pedrelations.toowngroup, pedgrouphash, pedgrouphash)
+				end
+			else
+				error(v.pedrelations.groupname .. ' is not a string')
+			end
+
+			if data.weapon then
+				if type(data.weapon.name) == 'string' then data.weapon.name = joaat(data.weapon.name) end
+
+				if IsWeaponValid(data.weapon.name) then
+					SetCanPedEquipWeapon(spawnedped, data.weapon.name, true)
+					GiveWeaponToPed(spawnedped, data.weapon.name, data.weapon.ammo, data.weapon.hidden or false, true)
+					SetPedCurrentWeaponVisible(spawnedped, not data.weapon.hidden or false, true)
+				end
+			end
+
 			if data.target then
 				if data.target.useModel then
 					AddTargetModel(data.model, {
@@ -886,6 +981,10 @@ local function SpawnPed(data)
 			end
 
 			data.currentpednumber = spawnedped
+
+			if data.action then
+				data.action(Config.Peds[k])
+			end
 		end
 
 		local nextnumber = #Config.Peds + 1
