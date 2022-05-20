@@ -116,12 +116,11 @@ local function CitizenCheck() return true end
 CreateThread(function()
 	local state = GetResourceState('qb-core')
 	if state ~= 'missing' then
-		if state ~= 'started' then
-			local timeout = 0
-			repeat
-				timeout += 1
-				Wait(0)
-			until GetResourceState('qb-core') == 'started' or timeout > 100
+		local timeout = 0
+		while state ~= 'started' and timeout <= 100 do
+			timeout += 1
+			state = GetResourceState('qb-core')
+			Wait(0)
 		end
 		Config.Standalone = false
 	end
