@@ -25,7 +25,7 @@ local playerPed, targetActive, hasFocus, success, pedsReady, allowTarget = Playe
 local screen = {}
 local table_wipe = table.wipe
 local pairs = pairs
-local CheckOptions
+local CheckOptions = CheckOptions
 local Bones = Load('bones')
 local listSprite = {}
 
@@ -195,7 +195,7 @@ local function CheckEntity(flag, datatable, entity, distance)
 	if not next(datatable) then return end
 	local slot = SetupOptions(datatable, entity, distance)
 	if not next(nuiData) then
-		LeaveTarget()
+		LeftTarget()
 		DrawOutlineEntity(entity, false)
 		return
 	end
@@ -250,8 +250,7 @@ exports('CheckBones', CheckBones)
 
 local function EnableTarget()
 	if not allowTarget or success or (not Config.Standalone and not LocalPlayer.state['isLoggedIn']) or IsNuiFocused() or (Config.DisableInVehicle and IsPedInAnyVehicle(playerPed or PlayerPedId(), false)) then return end
-	if not CheckOptions then CheckOptions = _ENV.CheckOptions end
-	if targetActive or not CheckOptions then return end
+	if targetActive then return end
 
 	targetActive = true
 	playerPed = PlayerPedId()
@@ -558,7 +557,7 @@ local function RemoveTargetEntity(entities, labels)
 		for _, entity in pairs(entities) do
 			if NetworkGetEntityIsNetworked(entity) then entity = NetworkGetNetworkIdFromEntity(entity) end -- Allow non-networked entities to be targeted
 			if type(labels) == 'table' then
-				for k, v in pairs(labels) do
+				for _, v in pairs(labels) do
 					if Entities[entity] then
 						Entities[entity][v] = nil
 					end
@@ -609,7 +608,7 @@ local function RemoveTargetModel(models, labels)
 		for _, model in pairs(models) do
 			if type(model) == 'string' then model = joaat(model) end
 			if type(labels) == 'table' then
-				for k, v in pairs(labels) do
+				for _, v in pairs(labels) do
 					if Models[model] then
 						Models[model][v] = nil
 					end
@@ -623,7 +622,7 @@ local function RemoveTargetModel(models, labels)
 	else
 		if type(models) == 'string' then models = joaat(models) end
 		if type(labels) == 'table' then
-			for k, v in pairs(labels) do
+			for _, v in pairs(labels) do
 				if Models[models] then
 					Models[models][v] = nil
 				end
@@ -692,7 +691,7 @@ function SpawnPeds()
 	if pedsReady or not next(Config.Peds) then return end
 	for k, v in pairs(Config.Peds) do
 		if not v.currentpednumber or v.currentpednumber == 0 then
-			local spawnedped = 0
+			local spawnedped
 			RequestModel(v.model)
 			while not HasModelLoaded(v.model) do
 				Wait(0)
@@ -764,7 +763,7 @@ end
 exports("DeletePeds", DeletePeds)
 
 local function SpawnPed(data)
-	local spawnedped = 0
+	local spawnedped
 	local key, value = next(data)
 	if type(value) == 'table' and type(key) ~= 'string' then
 		for _, v in pairs(data) do
@@ -926,7 +925,7 @@ exports("GetGlobalTypeData", function(type, label) return Types[type][label] end
 
 exports("GetZoneData", function(name) return Zones[name] end)
 
-exports("GetTargetBoneData", function(bone) return Bones.Options[bone][label] end)
+exports("GetTargetBoneData", function(bone, label) return Bones.Options[bone][label] end)
 
 exports("GetTargetEntityData", function(entity, label) return Entities[entity][label] end)
 
@@ -1047,7 +1046,7 @@ CreateThread(function()
 	end
 
     if next(Config.CircleZones) then
-        for k, v in pairs(Config.CircleZones) do
+        for _, v in pairs(Config.CircleZones) do
             AddCircleZone(v.name, v.coords, v.radius, {
                 name = v.name,
                 debugPoly = v.debugPoly,
@@ -1059,7 +1058,7 @@ CreateThread(function()
     end
 
     if next(Config.BoxZones) then
-        for k, v in pairs(Config.BoxZones) do
+        for _, v in pairs(Config.BoxZones) do
             AddBoxZone(v.name, v.coords, v.length, v.width, {
                 name = v.name,
                 heading = v.heading,
@@ -1074,7 +1073,7 @@ CreateThread(function()
     end
 
     if next(Config.PolyZones) then
-        for k, v in pairs(Config.PolyZones) do
+        for _, v in pairs(Config.PolyZones) do
             AddPolyZone(v.name, v.points, {
                 name = v.name,
                 debugPoly = v.debugPoly,
@@ -1088,7 +1087,7 @@ CreateThread(function()
     end
 
     if next(Config.TargetBones) then
-        for k, v in pairs(Config.TargetBones) do
+        for _, v in pairs(Config.TargetBones) do
             AddTargetBone(v.bones, {
                 options = v.options,
                 distance = v.distance
@@ -1097,7 +1096,7 @@ CreateThread(function()
     end
 
     if next(Config.TargetModels) then
-        for k, v in pairs(Config.TargetModels) do
+        for _, v in pairs(Config.TargetModels) do
             AddTargetModel(v.models, {
                 options = v.options,
                 distance = v.distance
