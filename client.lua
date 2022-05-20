@@ -925,7 +925,7 @@ exports("GetGlobalTypeData", function(type, label) return Types[type][label] end
 
 exports("GetZoneData", function(name) return Zones[name] end)
 
-exports("GetTargetBoneData", function(bone) return Bones.Options[bone] end)
+exports("GetTargetBoneData", function(bone, label) return Bones.Options[bone][label] end)
 
 exports("GetTargetEntityData", function(entity, label) return Entities[entity][label] end)
 
