@@ -732,7 +732,7 @@ function SpawnPeds()
 			end
 
 			if v.pedrelations and type(v.pedrelations.groupname) == 'string' then
-				local pedgrouphash = joaat(v.pedrelations.groupname) 
+				local pedgrouphash = joaat(v.pedrelations.groupname)
 
 				if not DoesRelationshipGroupExist(pedgrouphash) then
 					AddRelationshipGroup(v.pedrelations.groupname)
@@ -799,7 +799,7 @@ local function SpawnPed(data)
 	local spawnedped
 	local key, value = next(data)
 	if type(value) == 'table' and type(key) ~= 'string' then
-		for _, v in pairs(data) do
+		for k, v in pairs(data) do
 			if v.spawnNow then
 				RequestModel(v.model)
 				while not HasModelLoaded(v.model) do
@@ -937,7 +937,7 @@ local function SpawnPed(data)
 			end
 
 			if data.pedrelations and type(data.pedrelations.groupname) == 'string' then
-				local pedgrouphash = joaat(data.pedrelations.groupname) 
+				local pedgrouphash = joaat(data.pedrelations.groupname)
 
 				if not DoesRelationshipGroupExist(pedgrouphash) then
 					AddRelationshipGroup(data.pedrelations.groupname)
@@ -952,7 +952,7 @@ local function SpawnPed(data)
 					SetRelationshipBetweenGroups(data.pedrelations.toowngroup, pedgrouphash, pedgrouphash)
 				end
 			else
-				error(v.pedrelations.groupname .. ' is not a string')
+				error(data.pedrelations.groupname .. ' is not a string')
 			end
 
 			if data.weapon then
@@ -982,7 +982,7 @@ local function SpawnPed(data)
 			data.currentpednumber = spawnedped
 
 			if data.action then
-				data.action(Config.Peds[k])
+				data.action(Config.Peds[data])
 			end
 		end
 
