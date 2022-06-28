@@ -5,8 +5,8 @@ The config is in the init.lua
 ### All the exports have to be on the client-side to work!
 
 ## AddBoxZone / Job Check
-This is an example setup for a police job. The resource defines a BoxZone around a clipboard in the `gabz_mrpd` MLO. 
-It's a simple set-up, we provide a **unique** name, define its center point with the vector3, define a length and a width, and then we define some options; the unique name again, the heading of the box, a bool to display a debug poly, and the height of the zone. 
+This is an example setup for a police job. The resource defines a BoxZone around a clipboard in the `gabz_mrpd` MLO.
+It's a simple set-up, we provide a **unique** name, define its center point with the vector3, define a length and a width, and then we define some options; the unique name again, the heading of the box, a bool to display a debug poly, and the height of the zone.
 
 Then, in the actual options themselves, we define 'police' as our required job.
 
@@ -83,7 +83,7 @@ citizenid = {
 }
 ```
 
-When defining multiple jobs or gangs, you **must** provide a minimum grade, even if you don't need one. This is due to how key/value tables work. Set the minimum grade to the minimum grade of the job if you want everyone to access it. 
+When defining multiple jobs or gangs, you **must** provide a minimum grade, even if you don't need one. This is due to how key/value tables work. Set the minimum grade to the minimum grade of the job if you want everyone to access it.
 
 ## AddTargetModel / item / canInteract()
 
@@ -180,6 +180,40 @@ exports['qb-target']:AddTargetEntity(mule, {
     },
     distance = 3.0
 })
+```
+
+## Add interactable Ped at specific coordinates
+This is an example for adding an interactable Ped with a weapon in given coordinates.
+
+The below `Config.Peds` table is located in `init.lua`.
+
+```lua
+Config.Peds = {
+    {
+        model = `mp_m_securoguard_01`,
+        coords = vector4(433.0, -985.71, 30.71, 26.92),
+        networked = true,
+        invincible = true,
+        blockevents = true,
+        weapon = {
+            name = `weapon_carbinerifle`,
+            ammo = 0,
+            hidden = false,
+        },
+        target = {
+            options = {
+                {
+                    type = "client",
+                    event = "qb-policejob:ToggleDuty",
+                    icon = "fas fa-sign-in-alt",
+                    label = "Sign In",
+                    job = "police",
+                },
+            },
+            distance = 2.5
+        }
+    }
+}
 ```
 
 ## Passing Item Data
