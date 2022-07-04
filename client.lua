@@ -1180,6 +1180,7 @@ CreateThread(function()
             AddCircleZone(v.name, v.coords, v.radius, {
                 name = v.name,
                 debugPoly = v.debugPoly,
+				useZ = v.useZ,
             }, {
                 options = v.options,
                 distance = v.distance
