@@ -767,7 +767,7 @@ local function SpawnPed(data)
 	local key, value = next(data)
 	if type(value) == 'table' and type(key) ~= 'string' then
 		for _, v in pairs(data) do
-			if v.spawnNow then
+			if v.spawnNow or v.spawnNow == nil then
 				RequestModel(v.model)
 				while not HasModelLoaded(v.model) do
 					Wait(0)
@@ -830,7 +830,7 @@ local function SpawnPed(data)
 			Config.Peds[nextnumber] = v
 		end
 	else
-		if data.spawnNow then
+		if data.spawnNow or data.spawnNow == nil then
 			RequestModel(data.model)
 			while not HasModelLoaded(data.model) do
 				Wait(0)
