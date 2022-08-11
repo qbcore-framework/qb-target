@@ -98,15 +98,26 @@ local function RaycastCamera(flag, playerCoords)
 	if not playerCoords then playerCoords = GetEntityCoords(playerPed) end
 
 	local rayPos, rayDir = ScreenPositionToCameraRay()
-	local destination = rayPos + 10000 * rayDir
-	local rayHandle = StartShapeTestLosProbe(rayPos.x, rayPos.y, rayPos.z, destination.x, destination.y, destination.z, flag or -1, playerPed, 0)
+	local destination = rayPos + 16 * rayDir
+	local rayHandle = StartShapeTestLosProbe(rayPos.x, rayPos.y, rayPos.z, destination.x, destination.y, destination.z, flag or -1, playerPed, 7)
 
 	while true do
 		local result, _, endCoords, _, entityHit = GetShapeTestResult(rayHandle)
 
 		if result ~= 1 then
 			local distance = playerCoords and #(playerCoords - endCoords)
-			return endCoords, distance, entityHit, entityHit and GetEntityType(entityHit) or 0
+
+			if flag == 30 and entityHit then
+				entityHit = HasEntityClearLosToEntity(entityHit, playerPed, 7) and entityHit
+			end
+
+			local entityType = entityHit and GetEntityType(entityHit)
+
+			if entityType == 0 and pcall(GetEntityModel, entityHit) then
+				entityType = 3
+			end
+
+			return endCoords, distance, entityHit, entityType or 0
 		end
 
 		Wait(0)
@@ -275,7 +286,7 @@ local function EnableTarget()
 		until not targetActive
 	end)
 
-	local flag
+	local flag = 30
 
 	while targetActive do
 		local sleep = 0
@@ -306,6 +317,7 @@ local function EnableTarget()
 				elseif entityType == 2 then
 					local closestBone, _, closestBoneName = CheckBones(coords, entity, Bones.Vehicle)
 					local datatable = Bones.Options[closestBoneName]
+
 					if datatable and next(datatable) and closestBone then
 						local slot = SetupOptions(datatable, entity, distance)
 						if next(nuiData) then
@@ -313,9 +325,9 @@ local function EnableTarget()
 							SendNUIMessage({response = "foundTarget", data = nuiData[slot].targeticon})
 							DrawOutlineEntity(entity, true)
 							while targetActive and success do
-								local _, dist, entity2 = RaycastCamera(flag)
+								local coords2, dist, entity2 = RaycastCamera(flag)
 								if entity == entity2 then
-									local closestBone2 = CheckBones(coords, entity, Bones.Vehicle)
+									local closestBone2 = CheckBones(coords2, entity, Bones.Vehicle)
 									if closestBone ~= closestBone2 then
 										LeftTarget()
 										DrawOutlineEntity(entity, false)
@@ -1072,7 +1084,10 @@ exports("GetGlobalPlayerData", function(label) return Players[label] end)
 
 exports("UpdateGlobalTypeData", function(type, label, data) Types[type][label] = data end)
 
-exports("UpdateZoneData", function(name, data) Zones[name] = data end)
+exports("UpdateZoneData", function(name, data)
+	data.distance = data.distance or Config.MaxDistance
+	Zones[name].targetoptions = data
+end)
 
 exports("UpdateTargetBoneData", function(bone, label, data) Bones.Options[bone][label] = data end)
 
@@ -1162,13 +1177,15 @@ CreateThread(function()
 			if targetActive then
 				DisableTarget(true)
 			else
-				EnableTarget()
+				CreateThread(EnableTarget)
 			end
 		end, false)
 		RegisterKeyMapping("playerTarget", "Toggle targeting", "keyboard", Config.OpenKey)
 		TriggerEvent('chat:removeSuggestion', '/playerTarget')
 	else
-		RegisterCommand('+playerTarget', EnableTarget, false)
+		RegisterCommand('+playerTarget', function()
+			CreateThread(EnableTarget)
+		end, false)
 		RegisterCommand('-playerTarget', DisableTarget, false)
 		RegisterKeyMapping("+playerTarget", "Enable targeting", "keyboard", Config.OpenKey)
 		TriggerEvent('chat:removeSuggestion', '/+playerTarget')

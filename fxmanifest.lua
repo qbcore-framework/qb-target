@@ -25,6 +25,6 @@ files {
 }
 
 lua54 'yes'
-use_fxv2_oal 'yes'
+use_experimental_fxv2_oal 'yes'
 
 dependency 'PolyZone'
