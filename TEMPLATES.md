@@ -639,7 +639,7 @@ CreateThread(function()
   local entity = CreatePed(0, model, GetEntityCoords(PlayerPedId()), GetEntityHeading(PlayerPedId()), true, false)
   exports['qb-target']:AddEntityZone("name", entity, { -- The specified entity number
     name = "name", -- This is the name of the zone recognized by PolyZone, this has to be unique so it doesn't mess up with other zones
-    debugPoly = false, -- This is for enabling/disabling the drawing of the box, it accepts only a boolean value (true or false), when true it will draw the polyzone in green 
+    debugPoly = false, -- This is for enabling/disabling the drawing of the box, it accepts only a boolean value (true or false), when true it will draw the polyzone in green
   }, {
     options = { -- This is your options table, in this table all the options will be specified for the target to accept
       { -- This is the first table with options, you can make as many options inside the options table as you want
@@ -1273,6 +1273,16 @@ datatable = {
   anim: string,
   flag: number,
   scenario: string,
+  pedrelations = {
+    groupname: string or number,
+    toowngroup: number,
+    toplayer: number
+  },
+  weapon = {
+    name: string or number,
+    ammo: number,
+    hidden: boolean
+  },
   target = {
     useModel: boolean,
     options = {
@@ -1292,7 +1302,8 @@ datatable = {
     },
     distance: float
   },
-  currentpednumber: number
+  currentpednumber: number,
+  action: function
 }
 
 -- This is for multiple peds
@@ -1308,6 +1319,16 @@ datatable = {
     anim: string,
     flag: number,
     scenario: string,
+    pedrelations = {
+      groupname: string or number,
+      toowngroup: number,
+      toplayer: number
+    },
+    weapon = {
+      name: string or number,
+      ammo: number,
+      hidden: boolean
+    },
     target = {
       useModel: boolean,
       options = {
@@ -1327,7 +1348,8 @@ datatable = {
       },
       distance: float
     },
-    currentpednumber: number
+    currentpednumber: number,
+    action: function
   }
 }
 ```
@@ -1347,6 +1369,16 @@ datatable = {
   anim = 'csb_abigail_dual-0', -- This is the animation that will play chosen from the animDict, this will loop the whole time the ped is spawned (OPTIONAL)
   flag = 1, -- This is the flag of the animation to play, for all the flags, check the TaskPlayAnim native here https://docs.fivem.net/natives/?_0x5AB552C6 (OPTIONAL)
   scenario = 'WORLD_HUMAN_AA_COFFEE', -- This is the scenario that will play the whole time the ped is spawned, this cannot pair with anim and animDict (OPTIONAL)
+  pedrelations = { -- This is the relationship group the ped is apart of, this can be either a custom relationship group or a preexisting one.
+    groupname = 'AMBIENT_GANG_BALLAS',
+    toowngroup = 0, -- relation to their own group defined above.
+    toplayer = 3,  -- relationship to the player. Check values of this native here https://docs.fivem.net/natives/?_0xBF25EB89375A37AD
+  },
+  weapon = { -- This is the ped's weapon table, here you can specify what weapon, the ammo and if the weapon is hidden or not (OPTIONAL)
+    name = 'weapon_carbinerifle', -- This is the weapon weapon that you would like to give the spawned ped
+    ammo = 0, -- This is the amount of ammo you would like for the ped to have
+    hidden = false, -- This is whether or not the weapon will be visibly displayed on the ped when spawned
+  },
   target = { -- This is the target options table, here you can specify all the options to display when targeting the ped (OPTIONAL)
     useModel = false, -- This is the option for which target function to use, when this is set to true it'll use AddTargetModel and add these to al models of the given ped model, if it is false it will only add the options to this specific ped
     options = { -- This is your options table, in this table all the options will be specified for the target to accept
@@ -1374,6 +1406,9 @@ datatable = {
     distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
   },
   currentpednumber = 0, -- This is the current ped number, this will be assigned when spawned, you can leave this out because it will always be created (OPTIONAL)
+  action = function(spawnedPedData) -- This is a action that performs upon ped spawn, supplying the data used to spawn the ped OPTIONAL
+    TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
+  end,
 },
 ```
 
@@ -1392,6 +1427,16 @@ exports['qb-target']:SpawnPed({
   anim = 'csb_abigail_dual-0', -- This is the animation that will play chosen from the animDict, this will loop the whole time the ped is spawned (OPTIONAL)
   flag = 1, -- This is the flag of the animation to play, for all the flags, check the TaskPlayAnim native here https://docs.fivem.net/natives/?_0x5AB552C6 (OPTIONAL)
   scenario = 'WORLD_HUMAN_AA_COFFEE', -- This is the scenario that will play the whole time the ped is spawned, this cannot pair with anim and animDict (OPTIONAL)
+  pedrelations = { -- This is the relationship group the ped is apart of, this can be either a custom relationship group or a preexisting one.
+    groupname = 'AMBIENT_GANG_BALLAS',
+    toowngroup = 0, -- relation to their own group defined above.
+    toplayer = 3,  -- relationship to the player. Check values of this native here https://docs.fivem.net/natives/?_0xBF25EB89375A37AD
+  },
+  weapon = { -- This is the ped's weapon table, here you can specify what weapon, the ammo and if the weapon is hidden or not (OPTIONAL)
+    name = 'weapon_carbinerifle', -- This is the weapon weapon that you would like to give the spawned ped
+    ammo = 0, -- This is the amount of ammo you would like for the ped to have
+    hidden = false, -- This is whether or not the weapon will be visibly displayed on the ped when spawned
+  },
   target = { -- This is the target options table, here you can specify all the options to display when targeting the ped (OPTIONAL)
     useModel = false, -- This is the option for which target function to use, when this is set to true it'll use AddTargetModel and add these to al models of the given ped model, if it is false it will only add the options to this specific ped
     options = { -- This is your options table, in this table all the options will be specified for the target to accept
@@ -1419,6 +1464,9 @@ exports['qb-target']:SpawnPed({
     distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
   },
   currentpednumber = 0, -- This is the current ped number, this will be assigned when spawned, you can leave this out because it will always be created (OPTIONAL)
+  action = function(spawnedPedData) -- This is a action that performs upon ped spawn, supplying the data used to spawn the ped OPTIONAL
+    TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
+  end,
 })
 
 -- This is for multiple peds, here I used 2 of the same peds
@@ -1434,6 +1482,16 @@ exports['qb-target']:SpawnPed({
     anim = 'csb_abigail_dual-0', -- This is the animation that will play chosen from the animDict, this will loop the whole time the ped is spawned (OPTIONAL)
     flag = 1, -- This is the flag of the animation to play, for all the flags, check the TaskPlayAnim native here https://docs.fivem.net/natives/?_0x5AB552C6 (OPTIONAL)
     scenario = 'WORLD_HUMAN_AA_COFFEE', -- This is the scenario that will play the whole time the ped is spawned, this cannot pair with anim and animDict (OPTIONAL)
+    pedrelations = { -- This is the relationship group the ped is apart of, this can be either a custom relationship group or a preexisting one.
+      groupname = 'AMBIENT_GANG_BALLAS',
+      toowngroup = 0, -- relation to their own group defined above.
+      toplayer = 3,  -- relationship to the player. Check values of this native here https://docs.fivem.net/natives/?_0xBF25EB89375A37AD
+    },
+    weapon = { -- This is the ped's weapon table, here you can specify what weapon, the ammo and if the weapon is hidden or not (OPTIONAL)
+      name = 'weapon_carbinerifle', -- This is the weapon weapon that you would like to give the spawned ped
+      ammo = 0, -- This is the amount of ammo you would like for the ped to have
+      hidden = false, -- This is whether or not the weapon will be visibly displayed on the ped when spawned
+    },
     target = { -- This is the target options table, here you can specify all the options to display when targeting the ped (OPTIONAL)
       useModel = false, -- This is the option for which target function to use, when this is set to true it'll use AddTargetModel and add these to al models of the given ped model, if it is false it will only add the options to this specific ped
       options = { -- This is your options table, in this table all the options will be specified for the target to accept
@@ -1461,6 +1519,9 @@ exports['qb-target']:SpawnPed({
       distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
     },
     currentpednumber = 0, -- This is the current ped number, this will be assigned when spawned, you can leave this out because it will always be created (OPTIONAL)
+    action = function(spawnedPedData) -- This is a action that performs upon ped spawn, supplying the data used to spawn the ped OPTIONAL
+      TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
+    end,
   },
   [2] = {
     model = 'a_m_m_indian_01', -- This is the ped model that is going to be spawning at the given coords
@@ -1473,6 +1534,16 @@ exports['qb-target']:SpawnPed({
     anim = 'csb_abigail_dual-0', -- This is the animation that will play chosen from the animDict, this will loop the whole time the ped is spawned (OPTIONAL)
     flag = 1, -- This is the flag of the animation to play, for all the flags, check the TaskPlayAnim native here https://docs.fivem.net/natives/?_0x5AB552C6 (OPTIONAL)
     scenario = 'WORLD_HUMAN_AA_COFFEE', -- This is the scenario that will play the whole time the ped is spawned, this cannot pair with anim and animDict (OPTIONAL)
+    pedrelations = { -- This is the relationship group the ped is apart of, this can be either a custom relationship group or a preexisting one.
+      groupname = 'AMBIENT_GANG_BALLAS',
+      toowngroup = 0, -- relation to their own group defined above.
+      toplayer = 3,  -- relationship to the player. Check values of this native here https://docs.fivem.net/natives/?_0xBF25EB89375A37AD
+    },
+    weapon = { -- This is the ped's weapon table, here you can specify what weapon, the ammo and if the weapon is hidden or not (OPTIONAL)
+      name = 'weapon_carbinerifle', -- This is the weapon weapon that you would like to give the spawned ped
+      ammo = 0, -- This is the amount of ammo you would like for the ped to have
+      hidden = false, -- This is whether or not the weapon will be visibly displayed on the ped when spawned
+    },
     target = { -- This is the target options table, here you can specify all the options to display when targeting the ped (OPTIONAL)
       useModel = false, -- This is the option for which target function to use, when this is set to true it'll use AddTargetModel and add these to al models of the given ped model, if it is false it will only add the options to this specific ped
       options = { -- This is your options table, in this table all the options will be specified for the target to accept
@@ -1500,6 +1571,9 @@ exports['qb-target']:SpawnPed({
       distance = 2.5, -- This is the distance for you to be at for the target to turn blue, this is in GTA units and has to be a float value
     },
     currentpednumber = 0, -- This is the current ped number, this will be assigned when spawned, you can leave this out because it will always be created (OPTIONAL)
+    action = function(spawnedPedData) -- This is a action that performs upon ped spawn, supplying the data used to spawn the ped OPTIONAL
+      TriggerEvent('testing:event', 'test') -- Triggers a client event called testing:event and sends the argument 'test' with it
+    end,
   }
 })
 ```
