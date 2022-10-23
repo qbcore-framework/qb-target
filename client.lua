@@ -101,7 +101,7 @@ local function RaycastCamera(flag, playerCoords)
 
 	local rayPos, rayDir = ScreenPositionToCameraRay()
 	local destination = rayPos + 16 * rayDir
-	local rayHandle = StartShapeTestLosProbe(rayPos.x, rayPos.y, rayPos.z, destination.x, destination.y, destination.z, flag or -1, playerPed, 7)
+	local rayHandle = StartShapeTestLosProbe(rayPos.x, rayPos.y, rayPos.z, destination.x, destination.y, destination.z, flag or -1, playerPed, 4)
 
 	while true do
 		local result, _, endCoords, _, entityHit = GetShapeTestResult(rayHandle)
