@@ -43,7 +43,7 @@ if Config.EnableDefaultOptions then
     }
 
     local function ToggleDoor(vehicle, door)
-        if GetVehicleDoorLockStatus(vehicle) ~= 2 then
+        if GetVehicleDoorLockStatus(vehicle) < 2 then
             if GetVehicleDoorAngleRatio(vehicle, door) > 0.0 then
                 SetVehicleDoorShut(vehicle, door, false)
             else
