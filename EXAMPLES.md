@@ -27,6 +27,8 @@ exports['qb-target']:AddBoxZone("MissionRowDutyClipboard", vector3(441.7989, -98
 			icon = "fas fa-sign-in-alt",
 			label = "Sign In",
 			job = "police",
+            excludejob = 'ambulance', -- this would exclude ambulance job from seeing this target exact opposite of feature above
+            excludegang = 'ballas', -- this would exclude ballas gang from seeing this target
 		},
 	},
 	distance = 2.5
