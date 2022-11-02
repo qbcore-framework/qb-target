@@ -110,6 +110,7 @@ Config.Peds = {
 -------------------------------------------------------------------------------
 local function JobCheck() return true end
 local function GangCheck() return true end
+local function JobTypeCheck() return true end
 local function ItemCheck() return true end
 local function CitizenCheck() return true end
 
@@ -151,6 +152,18 @@ CreateThread(function()
 					return true
 				end
 			elseif job == 'all' or job == PlayerData.job.name then
+				return true
+			end
+			return false
+		end
+
+		JobTypeCheck = function(jobType)
+			if type(jobType) == 'table' then
+				jobType = jobType[PlayerData.job.type]
+				if jobType then
+					return true
+				end
+			elseif jobType == 'all' or jobType == PlayerData.job.type then
 				return true
 			end
 			return false
