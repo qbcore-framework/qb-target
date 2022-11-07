@@ -214,7 +214,7 @@ function CheckOptions(data, entity, distance)
 	if data.job and not JobCheck(data.job) then return false end
 	if data.excludejob and JobCheck(data.excludejob) then return false end
 	if data.jobType and not JobTypeCheck(data.jobType) then return false end
-	if data.excludejobType and not JobTypeCheck(data.excludejobType) then return false end
+	if data.excludejobType and JobTypeCheck(data.excludejobType) then return false end
 	if data.gang and not GangCheck(data.gang) then return false end
 	if data.excludegang and GangCheck(data.excludegang) then return false end
 	if data.item and not ItemCheck(data.item) then return false end
