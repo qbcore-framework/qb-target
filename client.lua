@@ -1032,6 +1032,7 @@ local function SpawnPed(data)
 		if nextnumber <= 0 then nextnumber = 1 end
 
 		Config.Peds[nextnumber] = data
+		return spawnedped
 	end
 end
 
