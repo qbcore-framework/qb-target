@@ -1293,6 +1293,9 @@ CreateThread(function()
     if table.type(Config.GlobalPlayerOptions) ~= 'empty' then
         AddGlobalPlayer(Config.GlobalPlayerOptions)
     end
+
+    screen.ratio = GetAspectRatio(true)
+    screen.fov = GetFinalRenderedCamFov()
 end)
 
 -- Events
