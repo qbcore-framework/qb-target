@@ -110,6 +110,7 @@ Config.Peds = {
 -------------------------------------------------------------------------------
 local function JobCheck() return true end
 local function GangCheck() return true end
+local function JobTypeCheck() return true end
 local function ItemCheck() return true end
 local function CitizenCheck() return true end
 
@@ -151,6 +152,18 @@ CreateThread(function()
 					return true
 				end
 			elseif job == 'all' or job == PlayerData.job.name then
+				return true
+			end
+			return false
+		end
+
+		JobTypeCheck = function(jobType)
+			if type(jobType) == 'table' then
+				jobType = jobType[PlayerData.job.type]
+				if jobType then
+					return true
+				end
+			elseif jobType == 'all' or jobType == PlayerData.job.type then
 				return true
 			end
 			return false
@@ -200,6 +213,8 @@ function CheckOptions(data, entity, distance)
 	if distance and data.distance and distance > data.distance then return false end
 	if data.job and not JobCheck(data.job) then return false end
 	if data.excludejob and JobCheck(data.excludejob) then return false end
+	if data.jobType and not JobTypeCheck(data.jobType) then return false end
+	if data.excludejobType and JobTypeCheck(data.excludejobType) then return false end
 	if data.gang and not GangCheck(data.gang) then return false end
 	if data.excludegang and GangCheck(data.excludegang) then return false end
 	if data.item and not ItemCheck(data.item) then return false end
