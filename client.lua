@@ -821,6 +821,7 @@ function SpawnPeds()
 			end
 
 			Config.Peds[k].currentpednumber = spawnedped
+            return k
 		end
 	end
 	pedsReady = true
@@ -936,6 +937,8 @@ local function SpawnPed(data)
 			if nextnumber <= 0 then nextnumber = 1 end
 
 			Config.Peds[nextnumber] = v
+
+            return nextnumber
 		end
 	else
 		if data.spawnNow then
@@ -1032,6 +1035,8 @@ local function SpawnPed(data)
 		if nextnumber <= 0 then nextnumber = 1 end
 
 		Config.Peds[nextnumber] = data
+
+        return nextnumber
 	end
 end
 
@@ -1126,6 +1131,9 @@ exports("UpdateGlobalPlayerData", UpdateGlobalPlayerData)
 
 local function GetPeds() return Config.Peds end
 exports("GetPeds", GetPeds)
+
+local function GetPed(ped) return Config.Peds[ped] end
+exports("GetPed", GetPed)
 
 local function UpdatePedsData(index, data) Config.Peds[index] = data end
 exports("UpdatePedsData", UpdatePedsData)
