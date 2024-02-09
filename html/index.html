@@ -29,7 +29,7 @@
 
 <body>
     <div id="target-wrapper">
-        <q-icon id="target-eye" :name="CurrentIcon" v-show="Show" :style="TargetEyeStyleObject"></q-icon>
+        <q-icon id="target-eye" :name="CurrentIcon" v-if="Show" :style="TargetEyeStyleObject"></q-icon>
         <div id="target-label-wrapper">
             <div id="target-label"></div>
         </div>
