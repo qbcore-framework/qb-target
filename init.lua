@@ -33,19 +33,19 @@ Config.EnableOutline = false
 Config.Toggle = false
 
 -- Draw a Sprite on the center of a PolyZone to hint where it's located
-Config.DrawSprite = false
+Config.DrawSprite = true
 
 -- The default distance to draw the Sprite
 Config.DrawDistance = 10.0
 
 -- The color of the sprite in rgb, the first value is red, the second value is green, the third value is blue and the last value is alpha (opacity). Here is a link to a color picker to get these values: https://htmlcolorcodes.com/color-picker/
-Config.DrawColor = {255, 255, 255, 255}
+Config.DrawColor = { 255, 255, 255, 255 }
 
 -- The color of the sprite in rgb when the PolyZone is targeted, the first value is red, the second value is green, the third value is blue and the last value is alpha (opacity). Here is a link to a color picker to get these values: https://htmlcolorcodes.com/color-picker/
-Config.SuccessDrawColor = {30, 144, 255, 255}
+Config.SuccessDrawColor = { 220, 20, 60, 255 }
 
 -- The color of the outline in rgb, the first value is red, the second value is green, the third value is blue and the last value is alpha (opacity). Here is a link to a color picker to get these values: https://htmlcolorcodes.com/color-picker/
-Config.OutlineColor = {255, 255, 255, 255}
+Config.OutlineColor = { 255, 255, 255, 255 }
 
 -- Enable default options (Toggling vehicle doors)
 Config.EnableDefaultOptions = true

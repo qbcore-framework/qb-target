@@ -6,8 +6,9 @@ body {
     position: absolute;
     top: 50%;
     left: 50%;
+    display: none;
     transform: translateY(-50%) translateX(-50%);
-    font-size: 3vh;
+    font-size: 2vh;
     text-shadow: 0.2vh 0.2vh 0.2vh #000000;
 }
 
@@ -25,9 +26,9 @@ body {
 
 #target-label {
     list-style: none;
-    font-size: 1.3vh;
+    font-size: 1vh;
     font-weight: bold;
-    font-family: sans-serif;
+    font-family: Arial, sans-serif;
     color: white;
     user-select: none;
     white-space: nowrap;

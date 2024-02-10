@@ -1,4 +1,4 @@
-local Bones = {Options = {}, Vehicle = {'chassis', 'windscreen', 'seat_pside_r', 'seat_dside_r', 'bodyshell', 'suspension_lm', 'suspension_lr', 'platelight', 'attach_female', 'attach_male', 'bonnet', 'boot', 'chassis_dummy', 'chassis_Control', 'door_dside_f', 'door_dside_r', 'door_pside_f', 'door_pside_r', 'Gun_GripR', 'windscreen_f', 'platelight', 'VFX_Emitter', 'window_lf', 'window_lr', 'window_rf', 'window_rr', 'engine', 'gun_ammo', 'ROPE_ATTATCH', 'wheel_lf', 'wheel_lr', 'wheel_rf', 'wheel_rr', 'exhaust', 'overheat', 'seat_dside_f', 'seat_pside_f', 'Gun_Nuzzle', 'seat_r'}}
+local Bones = { Options = {}, Vehicle = { 'chassis', 'windscreen', 'seat_pside_r', 'seat_dside_r', 'bodyshell', 'suspension_lm', 'suspension_lr', 'platelight', 'attach_female', 'attach_male', 'bonnet', 'boot', 'chassis_dummy', 'chassis_Control', 'door_dside_f', 'door_dside_r', 'door_pside_f', 'door_pside_r', 'Gun_GripR', 'windscreen_f', 'platelight', 'VFX_Emitter', 'window_lf', 'window_lr', 'window_rf', 'window_rr', 'engine', 'gun_ammo', 'ROPE_ATTATCH', 'wheel_lf', 'wheel_lr', 'wheel_rf', 'wheel_rr', 'exhaust', 'overheat', 'seat_dside_f', 'seat_pside_f', 'Gun_Nuzzle', 'seat_r' } }
 
 if Config.EnableDefaultOptions then
     local BackEngineVehicles = {
@@ -53,9 +53,9 @@ if Config.EnableDefaultOptions then
     end
 
     Bones.Options['seat_dside_f'] = {
-        ["Toggle Front Door"] = {
-            icon = "fas fa-door-open",
-            label = "Toggle Front Door",
+        ['Toggle Front Door'] = {
+            icon = 'fas fa-door-open',
+            label = 'Toggle Front Door',
             canInteract = function(entity)
                 return GetEntityBoneIndexByName(entity, 'door_dside_f') ~= -1
             end,
@@ -63,13 +63,13 @@ if Config.EnableDefaultOptions then
                 ToggleDoor(entity, 0)
             end,
             distance = 1.2
-        }
+        },
     }
 
     Bones.Options['seat_pside_f'] = {
-        ["Toggle Front Door"] = {
-            icon = "fas fa-door-open",
-            label = "Toggle Front Door",
+        ['Toggle Front Door'] = {
+            icon = 'fas fa-door-open',
+            label = 'Toggle Front Door',
             canInteract = function(entity)
                 return GetEntityBoneIndexByName(entity, 'door_pside_f') ~= -1
             end,
@@ -81,9 +81,9 @@ if Config.EnableDefaultOptions then
     }
 
     Bones.Options['seat_dside_r'] = {
-        ["Toggle Rear Door"] = {
-            icon = "fas fa-door-open",
-            label = "Toggle Rear Door",
+        ['Toggle Rear Door'] = {
+            icon = 'fas fa-door-open',
+            label = 'Toggle Rear Door',
             canInteract = function(entity)
                 return GetEntityBoneIndexByName(entity, 'door_dside_r') ~= -1
             end,
@@ -95,9 +95,9 @@ if Config.EnableDefaultOptions then
     }
 
     Bones.Options['seat_pside_r'] = {
-        ["Toggle Rear Door"] = {
-            icon = "fas fa-door-open",
-            label = "Toggle Rear Door",
+        ['Toggle Rear Door'] = {
+            icon = 'fas fa-door-open',
+            label = 'Toggle Rear Door',
             canInteract = function(entity)
                 return GetEntityBoneIndexByName(entity, 'door_pside_r') ~= -1
             end,
@@ -109,9 +109,9 @@ if Config.EnableDefaultOptions then
     }
 
     Bones.Options['bonnet'] = {
-        ["Toggle Hood"] = {
-            icon = "fa-duotone fa-engine",
-            label = "Toggle Hood",
+        ['Toggle Hood'] = {
+            icon = 'fa-duotone fa-engine',
+            label = 'Toggle Hood',
             action = function(entity)
                 ToggleDoor(entity, BackEngineVehicles[GetEntityModel(entity)] and 5 or 4)
             end,
@@ -120,9 +120,9 @@ if Config.EnableDefaultOptions then
     }
 
     Bones.Options['boot'] = {
-        ["Toggle Trunk"] = {
-            icon = "fas fa-truck-ramp-box",
-            label = "Toggle Trunk",
+        ['Toggle Trunk'] = {
+            icon = 'fas fa-truck-ramp-box',
+            label = 'Toggle Trunk',
             action = function(entity)
                 ToggleDoor(entity, BackEngineVehicles[GetEntityModel(entity)] and 4 or 5)
             end,
