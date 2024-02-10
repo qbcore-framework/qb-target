@@ -6,19 +6,41 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     const targetEye = document.getElementById("target-eye");
-    let targetLabel = document.getElementById("target-label");
-    let TargetEyeStyleObject = targetEye.style;
+    const targetLabel = document.getElementById("target-label");
+    const TargetEyeStyleObject = targetEye.style;
 
     function OpenTarget() {
-        targetLabel.innerHTML = "";
+        targetLabel.textContent = "";
         targetEye.style.display = "block";
         targetEye.className = config.StandardEyeIcon;
         TargetEyeStyleObject.color = config.StandardColor;
     }
 
     function CloseTarget() {
-        targetLabel.innerHTML = "";
+        targetLabel.textContent = "";
         targetEye.style.display = "none";
+    }
+
+    function createTargetOption(index, itemData) {
+        if (itemData !== null) {
+            index = Number(index) + 1;
+            const targetOption = document.createElement("div");
+            targetOption.id = `target-option-${index}`;
+            targetOption.style.marginBottom = "0.2vh";
+            targetOption.style.borderRadius = "0.15rem";
+            targetOption.style.padding = "0.45rem";
+            targetOption.style.background = "rgba(23, 23, 23, 40%)";
+            targetOption.style.color = config.StandardColor;
+            const targetIcon = document.createElement("span");
+            targetIcon.id = `target-icon-${index}`;
+            const icon = document.createElement("i");
+            icon.className = itemData.icon;
+            targetIcon.appendChild(icon);
+            targetIcon.appendChild(document.createTextNode(" "));
+            targetOption.appendChild(targetIcon);
+            targetOption.appendChild(document.createTextNode(itemData.label));
+            targetLabel.appendChild(targetOption);
+        }
     }
 
     function FoundTarget(item) {
@@ -26,66 +48,56 @@ document.addEventListener("DOMContentLoaded", function () {
             targetEye.className = item.data;
         }
         TargetEyeStyleObject.color = config.SuccessColor;
-        targetLabel.innerHTML = "";
+        targetLabel.textContent = "";
         for (let [index, itemData] of Object.entries(item.options)) {
-            if (itemData !== null) {
-                index = Number(index) + 1;
-                targetLabel.innerHTML += `<div id="target-option-${index}" style="margin-bottom: 0.2vh;
-                border-radius: 0.15rem; padding: 0.45rem; background: rgba(23, 23, 23, 40%);
-                color: ${config.StandardColor}"><span id="target-icon-${index}"><i class="${itemData.icon}"></i> </span>${itemData.label}</div>`;
-            }
+            createTargetOption(index, itemData);
         }
     }
 
     function ValidTarget(item) {
-        targetLabel.innerHTML = "";
+        targetLabel.textContent = "";
         for (let [index, itemData] of Object.entries(item.data)) {
-            if (itemData !== null) {
-                index = Number(index) + 1;
-                targetLabel.innerHTML += `<div id="target-option-${index}" style="margin-bottom: 0.2vh;
-                border-radius: 0.15rem; padding: 0.45rem; background: rgba(23, 23, 23, 40%);
-                color: ${config.StandardColor}"><span id="target-icon-${index}"><i class="${itemData.icon}"></i> </span>${itemData.label}</div>`;
-            }
+            createTargetOption(index, itemData);
         }
     }
 
     function LeftTarget() {
-        targetLabel.innerHTML = "";
+        targetLabel.textContent = "";
         TargetEyeStyleObject.color = config.StandardColor;
         targetEye.className = config.StandardEyeIcon;
     }
 
     function handleMouseDown(event) {
-        let element = event.target;
+        const element = event.target; // use const instead of let
         if (element.id) {
             const split = element.id.split("-");
-            if (split[0] === "target" && split[1] !== "eye" && event.button == 0) {
+            if (split[0] === "target" && split[1] !== "eye" && event.button === 0) {
                 fetch(`https://${GetParentResourceName()}/selectTarget`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json; charset=UTF-8" },
                     body: JSON.stringify(split[2]),
-                });
-                targetLabel.innerHTML = "";
+                }).catch((error) => console.error("Error:", error));
+                targetLabel.textContent = "";
             }
         }
-        if (event.button == 2) {
+        if (event.button === 2) {
             LeftTarget();
             fetch(`https://${GetParentResourceName()}/leftTarget`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json; charset=UTF-8" },
                 body: "",
-            });
+            }).catch((error) => console.error("Error:", error));
         }
     }
 
     function handleKeyDown(event) {
-        if (event.key == "Escape" || event.key == "Backspace") {
+        if (event.key === "Escape" || event.key === "Backspace") {
             CloseTarget();
             fetch(`https://${GetParentResourceName()}/closeTarget`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json; charset=UTF-8" },
                 body: "",
-            });
+            }).catch((error) => console.error("Error:", error));
         }
     }
 
