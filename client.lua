@@ -282,13 +282,23 @@ local function EnableTarget()
 	CreateThread(function()
 		repeat
 			SetPauseMenuActive(false)
-			DisableAllControlActions(0)
-			EnableControlAction(0, 30, true)
-			EnableControlAction(0, 31, true)
+			if Config.DisableControls then
+				DisableAllControlActions(0)
+			else
+				DisableControlAction(0, 1, true) -- look left/right
+				DisableControlAction(0, 2, true) -- look up/down
+				DisableControlAction(0, 4, true) -- look down only
+				DisableControlAction(0, 5, true) -- look left only
+				DisableControlAction(0, 6, true) -- look right only
+				DisableControlAction(0, 25, true) -- input aim
+				DisableControlAction(0, 24, true) -- attack
+			end
+			EnableControlAction(0, 30, true) -- move left/right
+			EnableControlAction(0, 31, true) -- move forward/back
 
 			if not hasFocus then
-				EnableControlAction(0, 1, true)
-				EnableControlAction(0, 2, true)
+				EnableControlAction(0, 1, true) -- look left/right
+				EnableControlAction(0, 2, true) -- look up/down
 			end
 
 			Wait(0)

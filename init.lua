@@ -59,6 +59,9 @@ Config.OpenKey = 'LMENU' -- Left Alt
 -- Control for key press detection on the context menu, it's the Right Mouse Button by default, controls are found here https://docs.fivem.net/docs/game-references/controls/
 Config.MenuControlKey = 238
 
+-- Whether to disable ALL controls or only specificed ones
+Config.DisableControls = true
+
 -------------------------------------------------------------------------------
 -- Target Configs
 -------------------------------------------------------------------------------
