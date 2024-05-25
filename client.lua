@@ -191,9 +191,6 @@ local function SetupOptions(datatable, entity, distance, isZone)
 			slot = data.num or slot + 1
 			sendData[slot] = data
 			sendData[slot].entity = entity
-			if entity then
-				sendData[slot].coords = GetEntityCoords(entity)
-			end
 			nuiData[slot] = {
 				icon = data.icon,
 				targeticon = data.targeticon,
@@ -1195,6 +1192,9 @@ RegisterNUICallback('selectTarget', function(option, cb)
 	table_wipe(sendData)
 	CreateThread(function()
 		Wait(0)
+		if data.entity ~= nil then
+			data.coords = GetEntityCoords(data.entity)
+		end
 		if data.action then
 			data.action(data.entity)
 		elseif data.event then
