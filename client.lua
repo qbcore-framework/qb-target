@@ -191,6 +191,9 @@ local function SetupOptions(datatable, entity, distance, isZone)
 			slot = data.num or slot + 1
 			sendData[slot] = data
 			sendData[slot].entity = entity
+			if entity then
+				sendData[slot].coords = GetEntityCoords(entity)
+			end
 			nuiData[slot] = {
 				icon = data.icon,
 				targeticon = data.targeticon,
