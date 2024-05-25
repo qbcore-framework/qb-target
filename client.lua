@@ -390,7 +390,7 @@ local function EnableTarget()
 					if data and next(data) then CheckEntity(flag, data, entity, distance) end
 				end
 			else
-				sleep += 20
+				sleep = sleep + 20
 			end
 			if not success then
 				-- Zone targets
@@ -436,14 +436,14 @@ local function EnableTarget()
 						DrawOutlineEntity(entity, false)
 					end
 				else
-					sleep += 20
+					sleep = sleep + 20
 				end
 			else
 				LeftTarget()
 				DrawOutlineEntity(entity, false)
 			end
 		else
-			sleep += 20
+			sleep = sleep + 20
 		end
 		Wait(sleep)
 	end
