@@ -401,7 +401,8 @@ local function EnableTarget()
 						closestZone = zone
 					end
 					if Config.DrawSprite then
-						if #(coords - zone.center) < (zone.targetoptions.drawDistance or Config.DrawDistance) then
+						local testCentre = type(zone.center) == 'vector2' and vector3(zone.center.x, zone.center.y, zone.maxZ) or zone.center
+						if #(coords - testCentre) < (zone.targetoptions.drawDistance or Config.DrawDistance) then
 							listSprite[k] = zone
 						else
 							listSprite[k] = nil
