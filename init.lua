@@ -122,7 +122,7 @@ CreateThread(function()
 	if state ~= 'missing' then
 		local timeout = 0
 		while state ~= 'started' and timeout <= 100 do
-			timeout += 1
+			timeout = timeout + 1
 			state = GetResourceState('qb-core')
 			Wait(0)
 		end
