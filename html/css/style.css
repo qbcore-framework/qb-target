@@ -1,5 +1,37 @@
+@import url("https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;500;600;700&display=swap");
+
+:root {
+    /* Colors */
+    --md-primary: #f44336;
+    --md-on-primary: #ffffff;
+    --md-error: #b3261e;
+    --md-on-error: #ffffff;
+    --md-success: #386a20;
+    --md-on-success: #ffffff;
+    --md-success-container: #b6f397;
+    --md-on-success-container: #0c2000;
+    --md-surface: #1c1b1f;
+    --md-on-surface: #e6e1e5;
+    --md-surface-container: #211f26;
+    --md-surface-container-high: #2b2930;
+    --md-surface-container-highest: #36343b;
+    --md-shadow: rgba(0, 0, 0, 0.15);
+    --md-radius-small: 8px;
+
+    /* Typography */
+    --md-typescale-label-medium-size: 12px;
+    --font-primary: "Exo 2", Arial, sans-serif;
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-bold: 700;
+
+    /* Elevation */
+    --md-elevation-1: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);
+}
+
 body {
     overflow: hidden;
+    font-family: var(--font-primary);
 }
 
 #target-eye {
@@ -9,7 +41,8 @@ body {
     display: none;
     transform: translateY(-50%) translateX(-50%);
     font-size: 2vh;
-    text-shadow: 0.2vh 0.2vh 0.2vh #000000;
+    text-shadow: 0 2px 4px var(--md-shadow);
+    transition: color 0.3s ease;
 }
 
 #target-label-wrapper {
@@ -26,11 +59,29 @@ body {
 
 #target-label {
     list-style: none;
-    font-size: 1vh;
-    font-weight: bold;
-    font-family: Arial, sans-serif;
-    color: white;
+    font-size: var(--md-typescale-label-medium-size, 1vh);
+    font-weight: var(--font-weight-medium, bold);
+    font-family: var(--font-primary, Arial, sans-serif);
+    color: var(--md-on-surface);
     user-select: none;
     white-space: nowrap;
-    text-shadow: 0.2vh 0.2vh 0.2vh #000000;
+    text-shadow: 0 2px 4px var(--md-shadow);
+}
+
+[id^="target-option-"] {
+    margin-bottom: 0.2vh;
+    padding: 0.45rem;
+    background: var(--md-surface-container-high);
+    color: var(--md-on-surface);
+    box-shadow: var(--md-elevation-1);
+    transition: transform 0.3s ease, background-color 0.2s ease;
+}
+
+[id^="target-option-"]:hover {
+    background: var(--md-surface-container-highest);
+    transform: translateX(10px);
+}
+
+.target-success {
+    color: var(--md-success, #386a20) !important;
 }

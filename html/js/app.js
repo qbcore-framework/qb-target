@@ -1,8 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
     const config = {
         StandardEyeIcon: "fas fa-eye",
-        StandardColor: "white",
-        SuccessColor: "#DC143C",
+        StandardColor: "var(--md-on-surface, white)",
+        SuccessColor: "var(--md-success, #386a20)",
     };
 
     const targetEye = document.getElementById("target-eye");
@@ -26,11 +26,6 @@ document.addEventListener("DOMContentLoaded", function () {
             index = Number(index) + 1;
             const targetOption = document.createElement("div");
             targetOption.id = `target-option-${index}`;
-            targetOption.style.marginBottom = "0.2vh";
-            targetOption.style.borderRadius = "0.15rem";
-            targetOption.style.padding = "0.45rem";
-            targetOption.style.background = "rgba(23, 23, 23, 40%)";
-            targetOption.style.color = config.StandardColor;
             const targetIcon = document.createElement("span");
             targetIcon.id = `target-icon-${index}`;
             const icon = document.createElement("i");
@@ -48,6 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
             targetEye.className = item.data;
         }
         TargetEyeStyleObject.color = config.SuccessColor;
+        targetEye.classList.add("target-success");
         targetLabel.textContent = "";
         for (let [index, itemData] of Object.entries(item.options)) {
             createTargetOption(index, itemData);
@@ -65,10 +61,11 @@ document.addEventListener("DOMContentLoaded", function () {
         targetLabel.textContent = "";
         TargetEyeStyleObject.color = config.StandardColor;
         targetEye.className = config.StandardEyeIcon;
+        targetEye.classList.remove("target-success");
     }
 
     function handleMouseDown(event) {
-        const element = event.target; // use const instead of let
+        const element = event.target;
         if (element.id) {
             const split = element.id.split("-");
             if (split[0] === "target" && split[1] !== "eye" && event.button === 0) {
@@ -101,27 +98,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function handleMouseOver(event) {
-        const element = event.target;
-        if (element.id) {
-            const split = element.id.split("-");
-            if (split[0] === "target" && split[1] === "option") {
-                element.style.transform = "translateX(10px)";
-                element.style.transition = "transform 0.3s ease";
-            }
-        }
-    }
-
-    function handleMouseOut(event) {
-        const element = event.target;
-        if (element.id) {
-            const split = element.id.split("-");
-            if (split[0] === "target" && split[1] === "option") {
-                element.style.transform = "translateX(0)";
-            }
-        }
-    }
-
     window.addEventListener("message", function (event) {
         switch (event.data.response) {
             case "openTarget":
@@ -144,13 +120,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     window.addEventListener("mousedown", handleMouseDown);
     window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("mouseover", handleMouseOver);
-    window.addEventListener("mouseout", handleMouseOut);
 
     window.addEventListener("unload", function () {
         window.removeEventListener("mousedown", handleMouseDown);
         window.removeEventListener("keydown", handleKeyDown);
-        window.removeEventListener("mouseover", handleMouseOver);
-        window.removeEventListener("mouseout", handleMouseOut);
     });
 });
