@@ -189,6 +189,7 @@ local function SetupOptions(datatable, entity, distance, isZone)
 	for _, data in pairs(datatable) do
 		if CheckOptions(data, entity, distance) then
 			slot = data.num or slot + 1
+			if sendData[slot] then slot = #sendData + 1 end
 			sendData[slot] = data
 			sendData[slot].entity = entity
 			nuiData[slot] = {
