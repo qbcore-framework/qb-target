@@ -871,6 +871,7 @@ exports('DeletePeds', DeletePeds)
 local function SpawnPed(data)
 	local spawnedped
 	local key, value = next(data)
+	local createdPeds = {}
 	if type(value) == 'table' and type(key) ~= 'string' then
 		for _, v in pairs(data) do
 			if v.spawnNow then
@@ -972,6 +973,7 @@ local function SpawnPed(data)
 			if nextnumber <= 0 then nextnumber = 1 end
 
 			Config.Peds[nextnumber] = v
+			createdPeds[#createdPeds + 1] = v.currentpednumber
 		end
 	else
 		if data.spawnNow then
@@ -1073,19 +1075,33 @@ local function SpawnPed(data)
 		if nextnumber <= 0 then nextnumber = 1 end
 
 		Config.Peds[nextnumber] = data
+		createdPeds[#createdPeds + 1] = data.currentpednumber
 	end
+	return createdPeds
 end
 
 exports('SpawnPed', SpawnPed)
 
 local function RemovePed(peds)
+
+	local function removePedByNumber(pedNumber)
+			for i = #Config.Peds, 1, -1 do -- Reverse loop to avoid index issues
+					local ped = Config.Peds[i]
+					if ped.currentpednumber == pedNumber then
+							SetEntityAsNoLongerNeeded(ped.currentpednumber)
+							DeletePed(ped.currentpednumber)
+							table.remove(Config.Peds, i)
+							break
+					end
+			end
+	end
+
 	if type(peds) == 'table' then
-		for k, v in pairs(peds) do
-			DeletePed(v)
-			if Config.Peds[k] then Config.Peds[k].currentpednumber = 0 end
-		end
+			for _, pedNumber in pairs(peds) do
+					removePedByNumber(pedNumber)
+			end
 	elseif type(peds) == 'number' then
-		DeletePed(peds)
+			removePedByNumber(peds)
 	end
 end
 
